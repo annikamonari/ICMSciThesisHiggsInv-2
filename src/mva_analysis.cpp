@@ -2,17 +2,23 @@
 #include "../include/bdt_analysis.h"
 #include "../include/mlp_analysis.h"
 
-void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain, SuperVars* super_vars,
-																					std::string method_name, std::string dir_name, std::vector<const char*> NTrees, std::vector<const char*> BoostType,
-																					std::vector<const char*> AdaBoostBeta, std::vector<const char*> SeparationType, std::vector<const char*> nCuts,
-																					std::vector<const char*> NeuronType, std::vector<const char*> NCycles, std::vector<const char*> HiddenLayers)
+void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
+																																											SuperVars* super_vars, std::string method_name, std::string dir_name,
+																																											std::vector<const char*> NTrees, std::vector<const char*> BoostType,
+																																											std::vector<const char*> AdaBoostBeta, std::vector<const char*> SeparationType,
+																																											std::vector<const char*> nCuts, std::vector<const char*> NeuronType, std::vector<const char*> NCycles,
+																																											std::vector<const char*> HiddenLayers, bool unique_output_files, bool create_cards, std::string job_name)
 {
   std::vector<const char*> file_paths = vary_parameters(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, method_name, dir_name,
-																																															   NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles, HiddenLayers);
+																																															   NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles, HiddenLayers,
+																																																		unique_output_files, create_cards, job_name);
 
   std::vector<TFile*> files = get_files_from_paths(file_paths);
-  std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name;
+
+  std::string bg_label = bg_chains[bg_to_train]->label;
+  std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name + "/" + bg_label + "/";
   std::cout << "=> Set Folder Name: " << folder_name << std::endl;
+
   std::vector<Variable*> variables = super_vars->get_signal_cut_vars();
   ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[bg_to_train]->label);
   RocCurves::get_rocs(files, signal_chain, bg_chains[bg_to_train], super_vars, method_name, folder_name);
@@ -60,20 +66,29 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 																																													NeuronType, NCycles, HiddenLayers);
   }
   std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
-	 std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,
+
+  std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,
 																																																																		trained_bg_label, unique_output_files);
-	 std::cout << "=> All background put through BDT" << std::endl;
-	 DataChain* output_signal_chain = get_output_signal_chain(signal_chain, vars, method_name, app_output_name, job_name,
+
+  std::cout << "=> All background put through BDT" << std::endl;
+
+  DataChain* output_signal_chain = get_output_signal_chain(signal_chain, vars, method_name, app_output_name, job_name,
 																																																											trained_bg_label, unique_output_files);
 	 std::cout << "=> Signal put through BDT" << std::endl;
+
 	 DataChain* output_data_chain = get_output_signal_chain(data_chain, vars, method_name, app_output_name, job_name,
 																																																									trained_bg_label, unique_output_files);
 	 std::cout << "=> Data put through BDT" << std::endl;
-  Variable* mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
-  std::cout << "=> Declared MVA_Output Variable" << std::endl;
-  std::string output_graph_name = build_output_graph_name(trained_output, mva_cut);
-  std::cout << "mva output graph name: " << output_graph_name << std::endl;
-  HistoPlot::draw_plot(mva_output, output_bg_chains, output_signal_chain, output_data_chain, true, &vars, false,
+
+	 Variable* mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
+
+	 std::cout << "=> Declared MVA_Output Variable" << std::endl;
+
+	 std::string output_graph_name = build_output_graph_name(trained_output, mva_cut);
+
+	 std::cout << "mva output graph name: " << output_graph_name << std::endl;
+
+	 HistoPlot::draw_plot(mva_output, output_bg_chains, output_signal_chain, output_data_chain, true, &vars, false,
 																							output_graph_name, mva_cut);
 
 
@@ -177,15 +192,12 @@ std::string MVAAnalysis::build_output_graph_name(TFile* trained_output, std::str
 
   if (mva_cut != "")
   {
-  		file_name.insert(file_name.find("/") + 1, mva_cut + "_");
+  		return HistoPlot::replace_all(file_name, ".root", mva_cut + ".png");
   }
   else
   {
-  		file_name.insert(file_name.find("/") + 1, "outputplot_");
+  		return HistoPlot::replace_all(file_name, ".root", "output_nocuts.png");
   }
-  std::cout << "file name of img: " << file_name << std::endl;
-
-  return HistoPlot::replace_all(file_name, ".root", ".png");
 }
 
 
@@ -194,10 +206,11 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
 																																																						std::string dir_name, std::vector<const char*> NTrees, std::vector<const char*> BoostType,
 																				                                  std::vector<const char*> AdaBoostBeta, std::vector<const char*> SeparationType,
 																																																						std::vector<const char*> nCuts, std::vector<const char*> NeuronType,
-																																																						std::vector<const char*> NCycles, std::vector<const char*> HiddenLayers)
+																																																						std::vector<const char*> NCycles, std::vector<const char*> HiddenLayers,
+																																																						bool unique_output_files, bool create_cards, std::string job_name)
 {
 	 std::string bg_label = bg_chains[bg_to_train]->label;
-	 std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name + "/" + bg_label + "/";
+	 std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name + "/" + bg_label;
 
 	 if (method_name == "BDT")
 	 {
@@ -206,9 +219,9 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		const char* files_arr[NTrees.size()];
     		for (int i = 0; i < NTrees.size(); i++)
       	{
-    				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, folder_name + "NTrees=" + NTrees[i],
+    				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, folder_name,
 																																						method_name, NTrees[i], BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0],
-																																						NCycles[0], HiddenLayers[0]);
+																																						NCycles[0], HiddenLayers[0], unique_output_files, create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				files_arr[i] = file_path;
 
@@ -223,9 +236,9 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		for (int i = 0; i < BoostType.size(); i++)
       	{
     				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars,
-																																						folder_name + "BoostType=" + BoostType[i], method_name, NTrees[0],
+																																						folder_name, method_name, NTrees[0],
 																																						BoostType[i], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0],
-																																						NCycles[0], HiddenLayers[0]);
+																																						NCycles[0], HiddenLayers[0], unique_output_files, create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				files_arr[i] = file_path;
       	}
@@ -239,9 +252,9 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		for (int i = 0; i < AdaBoostBeta.size(); i++)
       	{
     				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars,
-																																						folder_name + "AdaBoostBeta=" + AdaBoostBeta[i], method_name, NTrees[0],
+																																						folder_name, method_name, NTrees[0],
 																																						BoostType[0], AdaBoostBeta[i], SeparationType[0], nCuts[0], NeuronType[0],
-																																						NCycles[0], HiddenLayers[0]);
+																																						NCycles[0], HiddenLayers[0], unique_output_files, create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				files_arr[i] = file_path;
       	}
@@ -255,9 +268,9 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		for (int i = 0; i < SeparationType.size(); i++)
       	{
     				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars,
-																																						folder_name + "SeparationType=" + SeparationType[i], method_name, NTrees[0],
+																																						folder_name, method_name, NTrees[0],
 																																						BoostType[0], AdaBoostBeta[0], SeparationType[i], nCuts[0], NeuronType[0],
-																																						NCycles[0], HiddenLayers[0]);
+																																						NCycles[0], HiddenLayers[0], unique_output_files, create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				files_arr[i] = file_path;
       	}
@@ -271,9 +284,10 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		for (int i = 0; i < nCuts.size(); i++)
       	{
     				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars,
-																																						folder_name + "nCuts=" + nCuts[i], method_name, NTrees[0],
+																																						folder_name, method_name, NTrees[0],
 																																						BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[i],
-																																						NeuronType[0], NCycles[0], HiddenLayers[0]);
+																																						NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files,
+																																						create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				files_arr[i] = file_path;
       	}
@@ -291,9 +305,9 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		for (int i = 0; i < NeuronType.size(); i++)
       	{
     				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars,
-																																						folder_name + "NeuronType=" + NeuronType[i], method_name, NTrees[0], BoostType[0],
+																																						folder_name, method_name, NTrees[0], BoostType[0],
 																																						AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[i], NCycles[0],
-																																						HiddenLayers[0]);
+																																						HiddenLayers[0], unique_output_files, create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				std::cout << file_path << std::endl;
     				files_arr[i] = file_path;
@@ -310,9 +324,9 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		for (int i = 0; i < NCycles.size(); i++)
       	{
     				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars,
-																																						folder_name + "NCycles=" + NCycles[i], method_name, NTrees[0], BoostType[0],
+																																						folder_name, method_name, NTrees[0], BoostType[0],
 																																						AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0],
-																																						NCycles[i], HiddenLayers[0]);
+																																						NCycles[i], HiddenLayers[0], unique_output_files, create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				files_arr[i] = file_path;
       	}
@@ -326,9 +340,10 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
     		for (int i = 0; i < HiddenLayers.size(); i++)
       	{
     				TFile* file = get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars,
-																																						folder_name + "HiddenLayers=" + HiddenLayers[i], method_name, NTrees[0],
+																																						folder_name, method_name, NTrees[0],
 																																						BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0],
-																																						NeuronType[0], NCycles[0], HiddenLayers[i]);
+																																						NeuronType[0], NCycles[0], HiddenLayers[i], unique_output_files,
+																																						create_cards, job_name, "");
     				const char* file_path = file->GetName();
     				files_arr[i] = file_path;
       	}
@@ -340,6 +355,7 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
 }
 
 //_________________________________________________________________________________________________________
+//__________________ Unused methods from old TMVA classification attempt with categories __________________
 
 TH1F* MVAAnalysis::plot_output(DataChain* combined_data)
 {

@@ -230,7 +230,7 @@ const char* data_legend = "data";
   std::vector<const char*> BoostType (BoostType_arr, BoostType_arr +
                              sizeof(BoostType_arr)/sizeof(const char*));
 
-  const char* AdaBoostBeta_arr[] ={"0.1", "0.2", "0.4", "0.5", "0.6", "0.7", "0.8"};
+  const char* AdaBoostBeta_arr[] ={"0.1", "0.2", "0.4", "0.5", "0.6", "0.8"};
   std::vector<const char*> AdaBoostBeta (AdaBoostBeta_arr, AdaBoostBeta_arr +
                                sizeof(AdaBoostBeta_arr)/sizeof(const char*));
 
@@ -238,7 +238,7 @@ const char* data_legend = "data";
   std::vector<const char*> SeparationType (SeparationType_arr, SeparationType_arr +
                                  sizeof(SeparationType_arr)/sizeof(const char*));
 
-  const char* nCuts_arr[] = {"30", "5", "10", "20"};
+  const char* nCuts_arr[] = {"5", "7", "10", "12", "15", "20"};
   std::vector<const char*> nCuts (nCuts_arr, nCuts_arr +
                                    sizeof(nCuts_arr)/sizeof(const char*));
   

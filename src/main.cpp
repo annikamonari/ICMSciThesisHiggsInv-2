@@ -13,16 +13,26 @@ void produce_graphs(bool with_cut) {
   DataChain* signal_chain           = super_chains->signal_chain;
   DataChain* data_chain             = super_chains->data_chain;
   const char* mva_type = "BDT";
-  std::string top_folder_name = "analysis"; // the topmost folder for all root files so gitignore ignores properly
-
-  /*MVAAnalysis::get_plots_varying_params(bg_chains, 0, signal_chain, data_chain, super_vars, "BDT", "NTrees", NTrees, BoostType,
-  																			                   AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles, HiddenLayers);*/
-  bool unique_output_files = false;
-  bool create_cards = false;
+  // the topmost folder for all root files so gitignore ignores properly
+  std::string top_folder_name = "analysis";
+  const char* varying_params[] = {"NTrees", "SeparationType", "AdaBoostBeta", "nCuts"};
   // boolean is for whether or not to create separate output app files
-  MVAAnalysis::get_mva_results(bg_chains, 0, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
+  bool unique_output_files = false;
+  // boolean is for whether or not to create datacards
+  bool create_cards = false;
+  for (int i = 0; i < 1 /*bg_chains.size()*/; i++)
+  {
+  		for (int j = 0; j < 1; j++)
+  		{
+  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
+																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
+																																												HiddenLayers);
+  		}
+  }
+
+  /*MVAAnalysis::get_mva_results(bg_chains, 0, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
   																													BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0],
-  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "output>-0.25");
+  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "output>-0.25");*/
 
 }
 
