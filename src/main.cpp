@@ -12,7 +12,8 @@ void produce_graphs(bool with_cut) {
   std::vector<DataChain*> bg_chains = super_chains->get_bg_chains();
   DataChain* signal_chain           = super_chains->signal_chain;
   DataChain* data_chain             = super_chains->data_chain;
-  const char* mva_type = "BDT";  //go into train_and_run_BDT function to change input parameters
+  const char* mva_type = "BDT";
+  std::string top_folder_name = "analysis"; // the topmost folder for all root files so gitignore ignores properly
 
   /*MVAAnalysis::get_plots_varying_params(bg_chains, 0, signal_chain, data_chain, super_vars, "BDT", "NTrees", NTrees, BoostType,
   																			                   AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles, HiddenLayers);*/

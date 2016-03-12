@@ -11,7 +11,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 																																															   NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles, HiddenLayers);
 
   std::vector<TFile*> files = get_files_from_paths(file_paths);
-  std::string folder_name = method_name + "_varying_" + dir_name;
+  std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name;
   std::cout << "=> Set Folder Name: " << folder_name << std::endl;
   std::vector<Variable*> variables = super_vars->get_signal_cut_vars();
   ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[bg_to_train]->label);
@@ -197,7 +197,7 @@ std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg
 																																																						std::vector<const char*> NCycles, std::vector<const char*> HiddenLayers)
 {
 	 std::string bg_label = bg_chains[bg_to_train]->label;
-	 std::string folder_name = method_name + "_varying_" + dir_name + "/" + bg_label + "/";
+	 std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name + "/" + bg_label + "/";
 
 	 if (method_name == "BDT")
 	 {
