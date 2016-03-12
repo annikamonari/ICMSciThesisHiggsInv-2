@@ -1,0 +1,42 @@
+# Ignore the build dir
+build/*
+weights/*
+# Ignore the data dir
+data/*
+
+# Ignore Dan's swp files
+*.swp
+*.swo
+src/*.cpp.*
+# Ignore Debug
+Debug/*
+
+# Ignore any executables
+bin/*
+
+# Ignore Mac specific files
+.DS_Store
+Debug/*
+
+setup.sh
+TMVAClassification.C
+tmvaglob.C
+TMVAGui.C
+TMVAlogon.C
+TMVARegGui.C
+weights/*
+weights
+libTMVA.rootmap
+Makefile.arch
+MakefileOriginial
+effciencies.C
+bg_zll/*
+bg_zll
+TMVApp.root
+
+
+
+mva_output_plots/*
+test/*
+BDT_*/*
+MLP_*/*
