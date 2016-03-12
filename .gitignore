@@ -35,8 +35,20 @@ bg_zll
 TMVApp.root
 
 
-
+# Ignore analysis files
 mva_output_plots/*
 test/*
 BDT_*/*
 MLP_*/*
+analysis/*
+!analysis/*/
+!analysis/*.root
+analysis/*/*
+!analysis/*/*/
+!analysis/*/*.root
+analysis/*/*/*
+!analysis/*/*/*/
+!analysis/*/*/*.root
+analysis/*/*/*/*
+!analysis/*/*/*/*/
+!analysis/*/*/*/*.root
