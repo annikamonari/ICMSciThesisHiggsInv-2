@@ -222,7 +222,7 @@ const char* data_label  = "data_chain";
 const char* data_legend = "data";
 
 /////////////////////// MVA parameters /////////////////////////
-  const char* NTrees_arr[] = {"10", "20", "40", "60", "80" "100"};//, "500", "800", "1000"};
+  const char* NTrees_arr[] = {"10", "20", "50", "80", "100"}; //, "500", "800", "1000"};
   std::vector<const char*> NTrees (NTrees_arr, NTrees_arr +
                            sizeof(NTrees_arr)/sizeof(const char*));
 
@@ -230,7 +230,7 @@ const char* data_legend = "data";
   std::vector<const char*> BoostType (BoostType_arr, BoostType_arr +
                              sizeof(BoostType_arr)/sizeof(const char*));
 
-  const char* AdaBoostBeta_arr[] ={"0.1", "0.2", "0.4", "0.5", "0.6", "0.8"};
+  const char* AdaBoostBeta_arr[] ={"0.1", "0.2", "0.5", "0.6", "0.8"};
   std::vector<const char*> AdaBoostBeta (AdaBoostBeta_arr, AdaBoostBeta_arr +
                                sizeof(AdaBoostBeta_arr)/sizeof(const char*));
 

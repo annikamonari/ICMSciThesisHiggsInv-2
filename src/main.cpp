@@ -15,18 +15,42 @@ void produce_graphs(bool with_cut) {
   const char* mva_type = "BDT";
   // the topmost folder for all root files so gitignore ignores properly
   std::string top_folder_name = "analysis";
-  const char* varying_params[] = {"NTrees", "SeparationType", "AdaBoostBeta", "nCuts"};
+  const char* varying_params[] = {"NTrees", "AdaBoostBeta", "nCuts", "SeparationType"};
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
   bool create_cards = false;
-  for (int i = 0; i < 1 /*bg_chains.size()*/; i++)
+  for (int i = 0; i < bg_chains.size(); i++)
   {
-  		for (int j = 0; j < 1; j++)
+  		for (int j = 0; j < 3; j++)
   		{
   			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
 																																												HiddenLayers);
+
+  			 const char* SeparationType2_arr[] = {"CrossEntropy", "GiniIndex", "MisClassificationError", "SDivSqrtSPlusB"};
+  			 std::vector<const char*> SeparationType2 (SeparationType2_arr, SeparationType2_arr +
+  			                                  sizeof(SeparationType2_arr)/sizeof(const char*));
+
+  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
+  			 																																												NTrees, BoostType, AdaBoostBeta, SeparationType2, nCuts, NeuronType, NCycles,
+  			 																																												HiddenLayers);
+
+  			 const char* SeparationType3_arr[] = {"MisClassificationError", "CrossEntropy", "GiniIndex", "SDivSqrtSPlusB"};
+  			 std::vector<const char*> SeparationType3 (SeparationType3_arr, SeparationType3_arr +
+  			   			                                  sizeof(SeparationType3_arr)/sizeof(const char*));
+
+  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
+  			   			 																																NTrees, BoostType, AdaBoostBeta, SeparationType3, nCuts, NeuronType, NCycles,
+  			   			 																																HiddenLayers);
+
+  			 const char* SeparationType4_arr[] = {"SDivSqrtSPlusB", "MisClassificationError", "CrossEntropy", "GiniIndex"};
+  			 std::vector<const char*> SeparationType4 (SeparationType4_arr, SeparationType4_arr +
+  			   			   			                                  sizeof(SeparationType4_arr)/sizeof(const char*));
+
+  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
+  			   			   			 																																NTrees, BoostType, AdaBoostBeta, SeparationType4, nCuts, NeuronType, NCycles,
+  			   			   			 																																HiddenLayers);
   		}
   }
 
