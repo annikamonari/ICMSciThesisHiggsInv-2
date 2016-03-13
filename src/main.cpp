@@ -20,9 +20,14 @@ void produce_graphs(bool with_cut) {
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
   bool create_cards = false;
-  for (int i = 0; i < bg_chains.size(); i++)
+
+  /*MVAAnalysis::get_mva_results(bg_chains, 5, signal_chain, data_chain, super_vars, "test", "BDT",	NTrees[0], BoostType[0], AdaBoostBeta[0],
+																															SeparationType[0], nCuts[0], NeuronType[0], NCycles[0],
+  																													HiddenLayers[0], unique_output_files, create_cards, "1", "");*/
+/*
+  for (int i = 5; i < bg_chains.size(); i++)
   {
-  		for (int j = 0; j < 3; j++)
+  		for (int j = 2; j < 3; j++)
   		{
   			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
@@ -53,10 +58,10 @@ void produce_graphs(bool with_cut) {
   			   			   			 																																HiddenLayers);
   		}
   }
-
-  /*MVAAnalysis::get_mva_results(bg_chains, 0, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
+*/
+  MVAAnalysis::get_mva_results(bg_chains, 4, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
   																													BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0],
-  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "output>-0.25");*/
+  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "");
 
 }
 

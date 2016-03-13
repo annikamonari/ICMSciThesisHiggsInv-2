@@ -63,7 +63,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
   else if (method_name == "MLP")
   {
   		trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-																																													NeuronType, NCycles, HiddenLayers);
+																																													NeuronType, NCycles, HiddenLayers, job_name);
   }
   std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
 
@@ -80,8 +80,16 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 																																																									trained_bg_label, unique_output_files);
 	 std::cout << "=> Data put through BDT" << std::endl;
 
-	 Variable* mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
+	 Variable* mva_output;
 
+	 if (method_name == "BDT")
+	 {
+	   mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
+	 }
+	 else if (method_name == "MLP")
+	 {
+	 		mva_output = new Variable("output","MVA Output","-1.25","1.5","-1.25","","100","1", "", false);
+	 }
 	 std::cout << "=> Declared MVA_Output Variable" << std::endl;
 
 	 std::string output_graph_name = build_output_graph_name(trained_output, mva_cut);
@@ -161,7 +169,8 @@ std::vector<DataChain*> MVAAnalysis::get_output_bg_chains(std::vector<DataChain*
 	 		}
 	 		else if (method_name == "MLP")
 	 		{
-	 				//needs fixing combined_output = MLPAnalysis::get_MLP_results(bg_chains[i], &vars, app_output_name, job_name);
+	 				combined_output = MLPAnalysis::get_MLP_results(bg_chains[i], &vars, real_app_output_name, job_name,
+	 																																																			unique_output_files);
 	 		}
 
 	 		output_bg_chains.push_back(combined_output);
@@ -182,7 +191,7 @@ DataChain* MVAAnalysis::get_output_signal_chain(DataChain* signal_chain, std::ve
 		}
 		else
 		{
-		 	// needs fixing: return MLPAnalysis::get_MLP_results(signal_chain, &vars, app_output_name, job_name);
+		 	return MLPAnalysis::get_MLP_results(signal_chain, &vars, real_app_output_name, job_name, unique_output_files);
 		}
 }
 

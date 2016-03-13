@@ -27,9 +27,8 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   std::cout << "drew stack" << std::endl;
   TH1F* signal_histo = draw_signal(signal_chain, var, with_cut, legend, variables, mva_cut);
   std::cout << "drew signal" << std::endl;
-
+  std::cout << signal_histo << std::endl;
   TH1F* data_histo;
-  std::cout << data_histo << std::endl;
   if (plot_data) {data_histo = draw_data(data, var, with_cut, legend, variables, mva_cut);}
 
   stack.Draw();
@@ -40,14 +39,14 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   std::cout << "drew all" << std::endl;
   style_stacked_histo(&stack, var->name_styled);
 
-  TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo, signal_histo};
+  /*TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo, signal_histo};
   if (!plot_data) {plot_histos[1] = NULL;}
   std::vector<TH1F*> plot_histos_vector (plot_histos, plot_histos + sizeof(plot_histos) / sizeof(plot_histos[0]));
   TH1F* max_histo      = get_max_histo(plot_histos_vector);
   std::cout << "got max" << max_histo << std::endl;
-  stack.SetMaximum(get_histo_y_max(max_histo)*1.15);
+  stack.SetMaximum(get_histo_y_max(max_histo)*1.15);*/
 
-  build_legend(legend, max_histo, var, with_cut);
+  build_legend(legend, signal_histo, var, with_cut);
 
   draw_subtitle(var, variables, with_cut, data, "", mva_cut);
   std::cout << "drew subtitle" << std::endl;
@@ -57,12 +56,12 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   if (plot_data)
   {
   		std::cout << "data histo isnt null" << std::endl;
-  		data_bg_ratio_histo = data_to_bg_ratio_histo(plot_histos[1], plot_histos[0]);
+  		data_bg_ratio_histo = data_to_bg_ratio_histo(data_histo, (TH1F*)(stack.GetStack()->Last()));
   }
   else
   {
   		std::cout << "data_histo appaz is null" << std::endl;
-  		data_bg_ratio_histo = data_to_bg_ratio_histo(plot_histos[2], plot_histos[0]);
+  		data_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo, (TH1F*)(stack.GetStack()->Last()));
   }
 
   data_bg_ratio_histo->Draw("e1");
