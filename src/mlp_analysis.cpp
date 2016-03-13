@@ -2,7 +2,7 @@
 
 TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,
 																															std::string folder_name, const char* NeuronType, const char* NCycles, const char* HiddenLayers,
-																															std::string job_name)
+																															const char* LearningRate, std::string job_name)
 {
 	  if (!opendir(folder_name.c_str()))
 	  {
@@ -10,7 +10,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	  }
 
 	  std::string output_path = MLP_output_file_path(folder_name, job_name, true, NeuronType, NCycles,
-																																																		HiddenLayers, bg_chain->label);
+																																																		HiddenLayers, LearningRate, bg_chain->label);
 
 	  TFile* output_tmva = TFile::Open(output_path.c_str(),"RECREATE");
 
@@ -41,7 +41,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
 	    				       "SplitMode=Random:NormMode=NumEvents:!V" );
 
-	    factory->BookMethod(TMVA::Types::kMLP, "MLP", MLP_options_str(NeuronType, NCycles, HiddenLayers) );
+	    factory->BookMethod(TMVA::Types::kMLP, "MLP", MLP_options_str(NeuronType, NCycles, HiddenLayers, LearningRate) );
 
   // Train MVAs using the set of training events
   factory->TrainAllMethods();
@@ -84,23 +84,22 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 		   Float_t jet1_pt;
 		   Float_t jet2_pt;
 
-		   Float_t jet1_eta;
+		   /*Float_t jet1_eta;
 		   Float_t jet2_eta;
 		   Float_t jet1_phi;
-		   Float_t jet2_phi;
+		   Float_t jet2_phi;*/
 		   Float_t jet_csv1;
 		   Float_t jet_csv2;
 		   Float_t dijet_dphi;
-		   Float_t metnomu_x;
-		   Float_t metnomu_y;
-		   Float_t sumet;
+		   //Float_t metnomu_x;
+		   //Float_t metnomu_y;
+		   //Float_t sumet;
 		   Float_t mht;
 		   Float_t unclustered_et;
-		   Float_t jetmet_mindphi;
 		   Float_t jetmetnomu_mindphi;
-		   Float_t jetunclet_mindphi;
+		   //Float_t jetunclet_mindphi;
 		   Float_t metnomuunclet_dphi;
-		   Float_t dijetmetnomu_vectorialSum_pt;
+		   //Float_t dijetmetnomu_vectorialSum_pt;
 		   Float_t dijetmetnomu_ptfraction;
 		   Float_t jet1metnomu_scalarprod;
 		   Float_t jet2metnomu_scalarprod;
@@ -116,23 +115,22 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 		   reader->AddVariable("jet1_pt", &jet1_pt);
 		   reader->AddVariable("jet2_pt", &jet2_pt);
 
-		   reader->AddVariable("jet1_eta", &jet1_eta);
-		   reader->AddVariable("jet2_eta", &jet2_eta);
-		   reader->AddVariable("jet1_phi", &jet1_phi);
-		   reader->AddVariable("jet2_phi", &jet2_phi);
+		   //reader->AddVariable("jet1_eta", &jet1_eta);
+		   //reader->AddVariable("jet2_eta", &jet2_eta);
+		   //reader->AddVariable("jet1_phi", &jet1_phi);
+		   //reader->AddVariable("jet2_phi", &jet2_phi);
 		   reader->AddVariable("jet_csv1", &jet_csv1);
 		   reader->AddVariable("jet_csv2", &jet_csv2);
 		   reader->AddVariable("dijet_dphi", &dijet_dphi);
-		   reader->AddVariable("metnomu_x", &metnomu_x);
-		   reader->AddVariable("metnomu_y", &metnomu_y);
-		   reader->AddVariable("sumet", &sumet);
+		   //reader->AddVariable("metnomu_x", &metnomu_x);
+		   //reader->AddVariable("metnomu_y", &metnomu_y);
+		   //reader->AddVariable("sumet", &sumet);
 		   reader->AddVariable("mht", &mht);
 		   reader->AddVariable("unclustered_et", &unclustered_et);
-		   reader->AddVariable("jetmet_mindphi", &jetmet_mindphi);
 		   reader->AddVariable("jetmetnomu_mindphi", &jetmetnomu_mindphi);
-		   reader->AddVariable("jetunclet_mindphi", &jetunclet_mindphi);
+		   //reader->AddVariable("jetunclet_mindphi", &jetunclet_mindphi);
 		   reader->AddVariable("metnomuunclet_dphi", &metnomuunclet_dphi);
-		   reader->AddVariable("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
+		   //reader->AddVariable("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
 		   reader->AddVariable("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
 		   reader->AddVariable("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
 		   reader->AddVariable("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
@@ -157,23 +155,22 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 
 	   	   data->SetBranchAddress("jet1_pt", &jet1_pt);
 	   	   data->SetBranchAddress("jet2_pt", &jet2_pt);
-	   	   data->SetBranchAddress("jet1_eta", &jet1_eta);
+	   	   /*data->SetBranchAddress("jet1_eta", &jet1_eta);
 	   	   data->SetBranchAddress("jet2_eta", &jet2_eta);
 	   	   data->SetBranchAddress("jet1_phi", &jet1_phi);
-	   	   data->SetBranchAddress("jet2_phi", &jet2_phi);
+	   	   data->SetBranchAddress("jet2_phi", &jet2_phi);*/
 	   	   data->SetBranchAddress("jet_csv1", &jet_csv1);
 	   	   data->SetBranchAddress("jet_csv2", &jet_csv2);
 	   	   data->SetBranchAddress("dijet_dphi", &dijet_dphi);
-	   	   data->SetBranchAddress("metnomu_x", &metnomu_x);
-	   	   data->SetBranchAddress("metnomu_y", &metnomu_y);
-	   	   data->SetBranchAddress("sumet", &sumet);
+	   	   //data->SetBranchAddress("metnomu_x", &metnomu_x);
+	   	   //data->SetBranchAddress("metnomu_y", &metnomu_y);
+	   	   //data->SetBranchAddress("sumet", &sumet);
 	   	   data->SetBranchAddress("mht", &mht);
 	   	   data->SetBranchAddress("unclustered_et", &unclustered_et);
-	   	   data->SetBranchAddress("jetmet_mindphi", &jetmet_mindphi);
 	   	   data->SetBranchAddress("jetmetnomu_mindphi", &jetmetnomu_mindphi);
-	   	   data->SetBranchAddress("jetunclet_mindphi", &jetunclet_mindphi);
+	   	   //data->SetBranchAddress("jetunclet_mindphi", &jetunclet_mindphi);
 	   	   data->SetBranchAddress("metnomuunclet_dphi", &metnomuunclet_dphi);
-	   	   data->SetBranchAddress("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
+	   	   //data->SetBranchAddress("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
 	   	   data->SetBranchAddress("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
 	   	   data->SetBranchAddress("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
 	   	   data->SetBranchAddress("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
@@ -258,9 +255,9 @@ DataChain* MLPAnalysis::get_MLP_results(DataChain* bg_chain, std::vector<Variabl
 
 std::string MLPAnalysis::MLP_output_file_path(std::string folder_name, std::string job_name, bool is_train_file,
 																																														const char* NeuronType, const char* NCycles, const char* HiddenLayers,
-																																														const char* bg_chain_label)
+																																														const char* LearningRate, const char* bg_chain_label)
 {
-  std::string file_name = MLP_output_name_str(NeuronType, NCycles, HiddenLayers, bg_chain_label, job_name);
+  std::string file_name = MLP_output_name_str(NeuronType, NCycles, HiddenLayers, LearningRate, bg_chain_label, job_name);
 
   if (!is_train_file)
   {
@@ -278,27 +275,33 @@ std::string MLPAnalysis::MLP_output_file_path(std::string folder_name, std::stri
 }
 
 
-std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCycles, const char* HiddenLayers)
+std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCycles, const char* HiddenLayers, const char* LearningRate)
 {
 	std::string MLP_options = "H:!V:NeuronType=";
 	std::string nt = NeuronType;
 	std::string nc = NCycles;
 	std::string hl = HiddenLayers;
+	std::string lr = LearningRate;
+
 	MLP_options.append(nt);
 	MLP_options += ":VarTransform=N:NCycles=";
 	MLP_options.append(nc);
 	MLP_options += ":HiddenLayers=";
 	MLP_options.append(hl);
+	MLP_options += ":LearningRate=";
+	MLP_options.append(lr);
 	MLP_options += ":TestRate=5:!UseRegulator";
+
  return MLP_options;
 }
 
 std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char* NCycles, const char* HiddenLayers,
-																																													const char* bg_chain_label, std::string job_name)
+																																													const char* LearningRate, const char* bg_chain_label, std::string job_name)
 {
 	std::string nt = NeuronType;
 	std::string nc = NCycles;
 	std::string hl = HiddenLayers;
+	std::string lr = LearningRate;
  std::string bg = bg_chain_label;
 
 	std::string out_nam = "MLP-" + bg + "-NeuronType=";
@@ -307,6 +310,8 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(nc);
 	out_nam += "-HiddenLayers=";
 	out_nam.append(hl);
+	out_nam += "-LearningRate=";
+	out_nam.append(lr);
  out_nam += ".root";
 
 	return out_nam;

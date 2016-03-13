@@ -15,7 +15,8 @@ void produce_graphs(bool with_cut) {
   const char* mva_type = "BDT";
   // the topmost folder for all root files so gitignore ignores properly
   std::string top_folder_name = "analysis";
-  const char* varying_params[] = {"NTrees", "AdaBoostBeta", "nCuts", "SeparationType"};
+  //const char* varying_params[] = {"NTrees", "AdaBoostBeta", "nCuts", "SeparationType"};
+  const char* varying_params[] = {"HiddenLayers", "NCycles", "LearningRate"};
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
@@ -24,44 +25,24 @@ void produce_graphs(bool with_cut) {
   /*MVAAnalysis::get_mva_results(bg_chains, 5, signal_chain, data_chain, super_vars, "test", "BDT",	NTrees[0], BoostType[0], AdaBoostBeta[0],
 																															SeparationType[0], nCuts[0], NeuronType[0], NCycles[0],
   																													HiddenLayers[0], unique_output_files, create_cards, "1", "");*/
-/*
-  for (int i = 5; i < bg_chains.size(); i++)
+
+  for (int i = 0; i < bg_chains.size(); i++)
   {
-  		for (int j = 2; j < 3; j++)
+  		for (int j = 0; j < 3; j++)
   		{
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
+  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "MLP", varying_params[j],
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
-																																												HiddenLayers);
+																																												HiddenLayers, LearningRate, unique_output_files, create_cards, "1");
 
-  			 const char* SeparationType2_arr[] = {"CrossEntropy", "GiniIndex", "MisClassificationError", "SDivSqrtSPlusB"};
-  			 std::vector<const char*> SeparationType2 (SeparationType2_arr, SeparationType2_arr +
-  			                                  sizeof(SeparationType2_arr)/sizeof(const char*));
+  			 const char* NeuronType2_arr[] = {"tanh","sigmoid"};
+  			 std::vector<const char*> NeuronType2 (NeuronType2_arr, NeuronType2_arr +
+  			                                  sizeof(NeuronType2_arr)/sizeof(const char*));
 
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
-  			 																																												NTrees, BoostType, AdaBoostBeta, SeparationType2, nCuts, NeuronType, NCycles,
-  			 																																												HiddenLayers);
-
-  			 const char* SeparationType3_arr[] = {"MisClassificationError", "CrossEntropy", "GiniIndex", "SDivSqrtSPlusB"};
-  			 std::vector<const char*> SeparationType3 (SeparationType3_arr, SeparationType3_arr +
-  			   			                                  sizeof(SeparationType3_arr)/sizeof(const char*));
-
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
-  			   			 																																NTrees, BoostType, AdaBoostBeta, SeparationType3, nCuts, NeuronType, NCycles,
-  			   			 																																HiddenLayers);
-
-  			 const char* SeparationType4_arr[] = {"SDivSqrtSPlusB", "MisClassificationError", "CrossEntropy", "GiniIndex"};
-  			 std::vector<const char*> SeparationType4 (SeparationType4_arr, SeparationType4_arr +
-  			   			   			                                  sizeof(SeparationType4_arr)/sizeof(const char*));
-
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
-  			   			   			 																																NTrees, BoostType, AdaBoostBeta, SeparationType4, nCuts, NeuronType, NCycles,
-  			   			   			 																																HiddenLayers);
+  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "MLP", varying_params[j],
+  			 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType2, NCycles,
+  			 																																												HiddenLayers, LearningRate, unique_output_files, create_cards, "1");
   		}
   }
-*/
-  MVAAnalysis::get_mva_results(bg_chains, 4, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
-  																													BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0],
-  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "");
 
 }
 

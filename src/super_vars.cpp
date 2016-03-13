@@ -28,7 +28,6 @@ SuperVars::SuperVars()
   sumet = new Variable("sumet","sumet", "0.0", "2400.0", "0.0", "2400.0","50","1","");
   mht = new Variable("mht","mht", "0.0", "3000.0", "0.0", "3000.0","50","1","");
   unclustered_et = new Variable("unclustered_et","unclustered_et", "0.0", "2000.0", "0.0", "2000.0","50","1","");
-  jetmet_mindphi = new Variable("jetmet_mindphi","jetmet_mindphi", "0.0", "3.5", "0.0", "3.5","50","1","");
   jetmetnomu_mindphi = new Variable("jetmetnomu_mindphi","jetmetnomu_mindphi", "0.0", "3.5", "0.0", "3.5","50","1","");
   jetunclet_mindphi = new Variable("jetunclet_mindphi","jetunclet_mindphi", "0.0", "3.5", "0.0", "3.5","50","1","");
   metnomuunclet_dphi = new Variable("metnomuunclet_dphi","metnomuunclet_dphi", "0.0", "3.5", "0.0", "3.5","50","1","");
@@ -42,9 +41,9 @@ std::vector<Variable*> SuperVars::get_discriminating_vars()
 {
   Variable* var_arr[] = {
                           alljetsmetnomu_mindphi, forward_tag_eta, dijet_deta, metnomu_significance,
-  		  	                   sqrt_ht, dijet_M, metnomuons ,jet1_pt,jet2_pt, jet1_eta,jet2_eta, jet1_phi,jet2_phi,
-																										jet_csv1,jet_csv2,dijet_dphi,metnomu_x,metnomu_y,sumet,mht,unclustered_et,jetmet_mindphi,
-  		                      jetmetnomu_mindphi,jetunclet_mindphi,metnomuunclet_dphi,dijetmetnomu_vectorialSum_pt,
+  		  	                   sqrt_ht, dijet_M, metnomuons ,jet1_pt,jet2_pt, /*jet1_eta,jet2_eta, jet1_phi,jet2_phi,*/
+																										jet_csv1,jet_csv2,dijet_dphi,/*metnomu_x,metnomu_y,sumet,*/mht,unclustered_et,
+  		                      jetmetnomu_mindphi,/*jetunclet_mindphi,*/metnomuunclet_dphi,/*dijetmetnomu_vectorialSum_pt,*/
 																										dijetmetnomu_ptfraction, jet1metnomu_scalarprod,jet2metnomu_scalarprod
   	                     };
 

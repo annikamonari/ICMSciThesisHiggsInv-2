@@ -121,4 +121,7 @@ extern std::vector<const char*> NCycles;
 extern const char* HiddenLayers_arr[];//number of neurons in each hidden layer
 extern std::vector<const char*> HiddenLayers;
 
+extern const char* LearningRate_arr[];
+extern std::vector<const char*> LearningRate;
+
 #endif
