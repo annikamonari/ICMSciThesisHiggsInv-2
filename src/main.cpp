@@ -26,7 +26,7 @@ void produce_graphs(bool with_cut) {
 																															SeparationType[0], nCuts[0], NeuronType[0], NCycles[0],
   																													HiddenLayers[0], unique_output_files, create_cards, "1", "");*/
 
-  for (int i = 0; i < bg_chains.size(); i++)
+  for (int i = 6; i < bg_chains.size(); i++)
   {
   		for (int j = 0; j < 3; j++)
   		{
