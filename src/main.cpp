@@ -3,8 +3,8 @@
 #include "../include/mva_analysis.h"
 
 //#include "../include/mlp_analysis.h"
-
-void produce_graphs(bool with_cut) {
+using namespace std;
+void produce_graphs(bool with_cut, const char* job_ptr, const char* bg_to_train, const char* vary_param) {
   SuperVars* super_vars             = new SuperVars();
   std::vector<Variable*> vars       = super_vars->get_discriminating_vars();
   std::vector<Variable*> cut_vars   = super_vars->get_signal_cut_vars();
@@ -17,52 +17,58 @@ void produce_graphs(bool with_cut) {
   std::string top_folder_name = "analysis";
   const char* varying_params[] = {"NTrees", "AdaBoostBeta", "nCuts", "SeparationType"};
   // boolean is for whether or not to create separate output app files
-  bool unique_output_files = false;
+  bool unique_output_files = true;
   // boolean is for whether or not to create datacards
   bool create_cards = false;
-  for (int i = 0; i < bg_chains.size(); i++)
-  {
-  		for (int j = 0; j < 3; j++)
-  		{
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
+  std::string job_number = job_ptr;
+  int bg_int = atoi(bg_to_train);
+  int param_int = atoi(vary_param);
+//             0         1             2                3           4          5           6            7
+//bg[8] = {"bg_zll","bg_wjets_ev","bg_wjets_muv","bg_wjets_tauv", "bg_top", "bg_VV", "bg_zjets_vv", "bg_qcd"};
+
+      
+
+  			 MVAAnalysis::get_plots_varying_params(bg_chains, bg_int, signal_chain, data_chain, super_vars, "BDT", varying_params[param_int],
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
-																																												HiddenLayers);
-
-  			 const char* SeparationType2_arr[] = {"CrossEntropy", "GiniIndex", "MisClassificationError", "SDivSqrtSPlusB"};
-  			 std::vector<const char*> SeparationType2 (SeparationType2_arr, SeparationType2_arr +
-  			                                  sizeof(SeparationType2_arr)/sizeof(const char*));
-
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
-  			 																																												NTrees, BoostType, AdaBoostBeta, SeparationType2, nCuts, NeuronType, NCycles,
-  			 																																												HiddenLayers);
-
-  			 const char* SeparationType3_arr[] = {"MisClassificationError", "CrossEntropy", "GiniIndex", "SDivSqrtSPlusB"};
-  			 std::vector<const char*> SeparationType3 (SeparationType3_arr, SeparationType3_arr +
-  			   			                                  sizeof(SeparationType3_arr)/sizeof(const char*));
-
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
-  			   			 																																NTrees, BoostType, AdaBoostBeta, SeparationType3, nCuts, NeuronType, NCycles,
-  			   			 																																HiddenLayers);
-
-  			 const char* SeparationType4_arr[] = {"SDivSqrtSPlusB", "MisClassificationError", "CrossEntropy", "GiniIndex"};
-  			 std::vector<const char*> SeparationType4 (SeparationType4_arr, SeparationType4_arr +
-  			   			   			                                  sizeof(SeparationType4_arr)/sizeof(const char*));
-
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, i, signal_chain, data_chain, super_vars, "BDT", varying_params[j],
-  			   			   			 																																NTrees, BoostType, AdaBoostBeta, SeparationType4, nCuts, NeuronType, NCycles,
-  			   			   			 																																HiddenLayers);
-  		}
-  }
+																																												HiddenLayers, unique_output_files, create_cards, job_number);
 
   /*MVAAnalysis::get_mva_results(bg_chains, 0, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
   																													BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0],
-  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "output>-0.25");*/
+  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "");*/
 
 }
 
 int main(int argc, char** argv) {
   TApplication theApp("tapp", &argc, argv);
-  produce_graphs(true);
+  produce_graphs(true, argv[1], argv[2], argv[3]);
   theApp.Run();
   return 0;
 }
+
+/*
+      std::string bg_label = bg_chains[i]->label;
+cout<<"bg label :"<<bg_label<<"\n";
+						std::string param = varying_params[j];
+cout<<"param: "<<param<<"\n";
+      std::string param_vary_path = "analysis/BDT_varying_";
+      param_vary_path.append(param);
+cout<<"remove folder "<<param_vary_path<<"\n";
+
+      param_vary_path.append("/");
+cout<<"remove folder "<<param_vary_path<<"\n";
+
+      param_vary_path.append(bg_label);
+cout<<"remove folder "<<param_vary_path<<"\n";
+
+      
+
+      param_vary_path.append("/BDT-job_name=2-bg_top-NTrees=50-BoostType=AdaBoost-AdaBoostBeta=0.1-SeparationType=GiniIndex-nCuts=5.root");
+for(int trees=0; tress< NTrees.size();trees++)
+{
+string file = BDTAnalysis::BDT_output_name_str( NTrees[trees], BoostType[0], AdaBoostBeta[0],
+																																													 SeparationType[0], nCuts, bg_chains[i]->label,
+																																													std::string job_name);
+}
+cout<<"remove folder "<<param_vary_path<<"\n";
+*/
+

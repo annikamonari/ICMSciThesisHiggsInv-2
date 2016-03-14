@@ -41,4 +41,5 @@ test/*
 BDT_*/*
 MLP_*/*
 analysis
+analysis/*
 Debug/

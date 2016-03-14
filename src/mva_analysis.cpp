@@ -13,7 +13,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 																																															   NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles, HiddenLayers,
 																																																		unique_output_files, create_cards, job_name);
 
-  std::vector<TFile*> files = get_files_from_paths(file_paths);
+  std::vector<TFile*> files =  get_files_from_paths(file_paths);
 
   std::string bg_label = bg_chains[bg_to_train]->label;
   std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name + "/" + bg_label + "/";
@@ -22,13 +22,24 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
   std::vector<Variable*> variables = super_vars->get_signal_cut_vars();
   ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[bg_to_train]->label);
   RocCurves::get_rocs(files, signal_chain, bg_chains[bg_to_train], super_vars, method_name, folder_name);
+
+for (int i = 0; i < file_paths.size(); i++)
+  	{
+    
+    std::remove(file_paths[i]);
+    //files_arr[i] = TFile::Open(file_paths[i]);
+  	}
+
 }
+//__________________________________________________________________________________________________________________________________________
 
 std::vector<TFile*> MVAAnalysis::get_files_from_paths(std::vector<const char*> file_paths)
 {
   TFile* files_arr[file_paths.size()];
 	 for (int i = 0; i < file_paths.size(); i++)
   	{
+    
+    //std::remove(file_paths[i]);
     files_arr[i] = TFile::Open(file_paths[i]);
   	}
 
@@ -37,7 +48,7 @@ std::vector<TFile*> MVAAnalysis::get_files_from_paths(std::vector<const char*> f
   std::cout << "files size: " << files.size() << std::endl;
 	 return files;
 }
-
+//__________________________________________________________________________________________________________________________________________
 TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
 																																			SuperVars* super_vars, std::string folder_name, std::string method_name, const char* NTrees,
 																																			const char* BoostType, const char* AdaBoostBeta,const char* SeparationType,const char* nCuts,
@@ -78,6 +89,9 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
 	 DataChain* output_data_chain = get_output_signal_chain(data_chain, vars, method_name, app_output_name, job_name,
 																																																									trained_bg_label, unique_output_files);
+
+   std::string a = get_app_filename_for_chain( app_output_name,  bg_chains[bg_to_train]->label, data_chain->label);
+
 	 std::cout << "=> Data put through BDT" << std::endl;
 
 	 Variable* mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
@@ -100,6 +114,8 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
   return trained_output;
 }
+//__________________________________________________________________________________________________________________________________________
+
 // creates datacards for a variety of output values
 void MVAAnalysis::create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
 																																			Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
@@ -133,14 +149,30 @@ void MVAAnalysis::create_datacards(DataChain* output_data_chain, DataChain* outp
 			}
 	}
 }
+//__________________________________________________________________________________________________________________________________________
 
 // gets the name for the reader output Tfile
 std::string MVAAnalysis::get_app_filename_for_chain(std::string app_output_name, const char* trained_bg_label, const char* app_label)
 {
 	 std::string app_label_str = app_label;
+//std::cout<<"original file: "<<app_output_name<<"\n";
 	 std::string trained_bg_label_str = trained_bg_label;
+  std::string analysis =  app_output_name.substr(0,app_output_name.find("/")+1); //  analysis
+  std::string m1 =  app_output_name.substr(app_output_name.find("/")+1,-1); //gives varying/background/file name
+//std::cout<<"analysis: "<<analysis<<"\n";
+//std::cout<<"m1: "<<m1<<"\n";
+  std::string varying_param =  m1.substr(0,m1.find("/")+1); // gives varying param/
+//std::cout<<"varying param: "<<varying_param<<"\n";
 
-	 return HistoPlot::replace_all(app_output_name, trained_bg_label_str, app_label_str);
+  std::string m3 = m1.substr(m1.find("/")+1,-1); //gives background/file name
+//std::cout<<"m3: "<<m3<<"\n";
+  std::string background = m3.substr(0,m3.find("/")+1); // give background/
+//std::cout<<"background: "<<background<<"\n";
+  std::string file = m3.substr(m3.find("/")+1,-1); //file name
+//std::cout<<"file: "<<file<<"\n";
+  file = HistoPlot::replace_all(file, trained_bg_label_str, app_label_str);
+  std::string file_path = analysis + varying_param + background + file;
+	 return file_path;
 }
 
 std::vector<DataChain*> MVAAnalysis::get_output_bg_chains(std::vector<DataChain*> bg_chains, std::vector<Variable*> vars,
@@ -165,20 +197,25 @@ std::vector<DataChain*> MVAAnalysis::get_output_bg_chains(std::vector<DataChain*
 	 		}
 
 	 		output_bg_chains.push_back(combined_output);
+    if(std::ifstream(real_app_output_name.c_str())){remove(real_app_output_name.c_str());} 
+
   }
 
 	 return output_bg_chains;
 }
+//__________________________________________________________________________________________________________________________________________
 
 DataChain* MVAAnalysis::get_output_signal_chain(DataChain* signal_chain, std::vector<Variable*> vars, std::string method_name,
 																																																std::string app_output_name, std::string job_name, const char* trained_bg_label,
 																																																bool unique_output_files)
 {
 	 std::string real_app_output_name = get_app_filename_for_chain(app_output_name, trained_bg_label, signal_chain->label);
-
+  DataChain* combined_output;
 	 if (method_name == "BDT")
 		{
-		  return BDTAnalysis::get_BDT_results(signal_chain, &vars, real_app_output_name, job_name, unique_output_files);
+		  combined_output =  BDTAnalysis::get_BDT_results(signal_chain, &vars, real_app_output_name, job_name, unique_output_files);
+    if(std::ifstream(real_app_output_name.c_str())){remove(real_app_output_name.c_str());} 
+    return combined_output;
 		}
 		else
 		{
@@ -200,6 +237,7 @@ std::string MVAAnalysis::build_output_graph_name(TFile* trained_output, std::str
   }
 }
 
+//__________________________________________________________________________________________________________________________________________
 
 std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain,
 																																																						DataChain* data_chain, SuperVars* super_vars, std::string method_name,
