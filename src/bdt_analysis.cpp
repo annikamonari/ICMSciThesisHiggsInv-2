@@ -263,7 +263,7 @@ std::string BDTAnalysis::BDT_options_str(const char* NTrees, const char* BoostTy
 {
 	std::string BDT_options = "!H:!V:NTrees=";
 	BDT_options.append(NTrees);
-	BDT_options += /*:VarTransform=G,P,N*/":MinNodeSize=2.5%:MaxDepth=3:BoostType=";
+	BDT_options += ":VarTransform=G,P,N:MinNodeSize=2.5%:MaxDepth=3:BoostType=";
 	BDT_options.append(BoostType);
 	BDT_options += ":AdaBoostBeta=";
 	BDT_options.append(AdaBoostBeta);
@@ -314,7 +314,7 @@ std::string BDTAnalysis::BDT_output_name_str(const char* NTrees, const char* Boo
 	out_nam.append(SeparationType);
 	out_nam += "-nCuts=";
 	out_nam.append(nCuts);
- //out_nam += "PCA";
+        out_nam += "PCA";
 	out_nam += ".root";
 
 	return out_nam;
