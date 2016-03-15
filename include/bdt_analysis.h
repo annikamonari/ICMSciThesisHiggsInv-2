@@ -32,19 +32,22 @@ class BDTAnalysis
 																																				std::string job_name, bool unique_output_files);
 
 
-	static std::string BDT_options_str(const char* NTrees,const char* BoostType,const char* AdaBoostBeta,const char* SeparationType,const char*nCuts);
+	 static std::string BDT_options_str(const char* NTrees,const char* BoostType,const char* AdaBoostBeta,const char* SeparationType,const char*nCuts);
 
-	static std::string BDT_output_name_str(const char* NTrees,const char* BoostType,const char* AdaBoostBeta,
+	 static std::string BDT_output_name_str(const char* NTrees,const char* BoostType,const char* AdaBoostBeta,
 																																								const char* SeparationType,const char*nCuts, const char* bg_chain_label, std::string job_name);
 
-	static std::string BDT_output_file_path(std::string folder_name, std::string job_name, bool is_train_file,
+	 static std::string BDT_output_file_path(std::string folder_name, std::string job_name, bool is_train_file,
 																																																		const char* NTrees, const char* BoostType,const char* AdaBoostBeta,
 																																																		const char* SeparationType, const char* nCuts, const char* bg_chain_label);
 
- static TFile* create_BDT(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,std::string folder_name, const char* NTrees,
-                        const char* BoostType,const char* AdaBoostBeta,const char* SeparationType,const char* nCuts, std::string job_name);
+	 static void add_trees_to_factory(DataChain* any_chain, bool is_bg_chain, TMVA::Factory* factory);
 
-	 static TTree* evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name, std::string job_name,
+  static const char* create_BDT(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,std::string folder_name,
+																															const char* NTrees, const char* BoostType,const char* AdaBoostBeta,const char* SeparationType,
+																															const char* nCuts, std::string job_name);
+
+	 static const char* evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name, std::string job_name,
 																													bool unique_output_files = true);
 
 };

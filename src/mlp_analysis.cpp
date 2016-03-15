@@ -1,6 +1,6 @@
 #include "../include/mlp_analysis.h"
 
-TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,
+const char* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,
 																															std::string folder_name, const char* NeuronType, const char* NCycles, const char* HiddenLayers,
 																															const char* LearningRate, std::string job_name)
 {
@@ -25,50 +25,47 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	  }
 
 	  // Background
-	    double background_weight = 1.0;
-	    factory->AddBackgroundTree(bg_chain->chain,background_weight);
-	    factory->SetBackgroundWeightExpression("total_weight_lepveto");
+	  BDTAnalysis::add_trees_to_factory(bg_chain, true, factory);
+	  factory->SetBackgroundWeightExpression("total_weight_lepveto");
 
-	    // Signal
-	    double signal_weight = 1.0;
-	    factory->AddSignalTree(signal_chain->chain, signal_weight);
-	    factory->SetSignalWeightExpression("total_weight_lepveto");
+	  // Signal
+	  BDTAnalysis::add_trees_to_factory(signal_chain, false, factory);
+	  factory->SetSignalWeightExpression("total_weight_lepveto");
 
-	    // Apply additional cuts on the signal and background samples (can be different)
-	    TCut signal_cuts = "alljetsmetnomu_mindphi>2.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && dijet_deta<8.0 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
-	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
+	  // Apply additional cuts on the signal and background samples (can be different)
+	  // TCut signal_cuts = "alljetsmetnomu_mindphi>2.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && dijet_deta<8.0 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+	  // TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
-	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
-	    				       "SplitMode=Random:NormMode=NumEvents:!V" );
+	  factory->PrepareTrainingAndTestTree("", "", "SplitMode=Random:NormMode=NumEvents:!V" );
 
-	    factory->BookMethod(TMVA::Types::kMLP, "MLP", MLP_options_str(NeuronType, NCycles, HiddenLayers, LearningRate) );
+	  factory->BookMethod(TMVA::Types::kMLP, "MLP", MLP_options_str(NeuronType, NCycles, HiddenLayers, LearningRate) );
 
-  // Train MVAs using the set of training events
-  factory->TrainAllMethods();
+			// Train MVAs using the set of training events
+			factory->TrainAllMethods();
 
-  // ---- Evaluate all MVAs using the set of test events
-  factory->TestAllMethods();
+			// ---- Evaluate all MVAs using the set of test events
+			factory->TestAllMethods();
 
-  // ----- Evaluate and compare performance of all configured MVAs
-  factory->EvaluateAllMethods();
+			// ----- Evaluate and compare performance of all configured MVAs
+			factory->EvaluateAllMethods();
 
-  // --------------------------------------------------------------
+			// --------------------------------------------------------------
 
-  // Save the output
-  output_tmva->Close();
+			// Save the output
+			output_tmva->Close();
 
-  std::cout << "==> Wrote root file: " << output_tmva->GetName() << std::endl;
-  std::cout << "==> TMVAClassification is done!" << std::endl;
-  std::cout << std::endl;
-  std::cout << "==> To view the results, launch the GUI: \"root -l ./TMVAGui.C\"" << std::endl;
-  std::cout << std::endl;
+			std::cout << "==> Wrote root file: " << output_tmva->GetName() << std::endl;
+			std::cout << "==> TMVAClassification is done!" << std::endl;
+			std::cout << std::endl;
+			std::cout << "==> To view the results, launch the GUI: \"root -l ./TMVAGui.C\"" << std::endl;
+			std::cout << std::endl;
 
-  delete factory;
+			delete factory;
 
-  return output_tmva;
+			return output_tmva->GetName();
 }
 
-TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
+const char* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
 																																	std::string job_name, bool unique_output_files)
 {
 	TMVA::Reader* reader = new TMVA::Reader( "!Color:!Silent" );
@@ -175,10 +172,18 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 	   	   data->SetBranchAddress("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
 	   	   data->SetBranchAddress("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
 
-	   	   // Efficiency calculator for cut method
-	   	   Int_t    nSelCutsGA = 0;
-	   	   Double_t effS       = 0.7;
-	   	   std::vector<Float_t> vecVar(9); // vector for EvaluateMVA tests
+	   	   std::string target_name;
+
+	   	   if (unique_output_files)
+	   	   {
+	   	   	 target_name = output_name;
+	   	   }
+	   	   else
+	   	   {
+	   	   	 target_name = "TMVApp.root";
+	   	   }
+
+	   	   TFile* target = new TFile(target_name.c_str(),"RECREATE");
 
 	   	   Float_t output;
 	   	   TTree* output_tree = new TTree("MVAtree","Tree with classifier outputs");
@@ -203,23 +208,8 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 	   	   std::cout << "--- End of event loop: "; sw.Print();
 
 	   	   // --- Write histograms
-
-	       TTree* output_tree_clone = output_tree->CloneTree();
-
-	       std::string target_name;
-
-	       if (unique_output_files)
-	       {
-	       		target_name = output_name;
-	       }
-	       else
-	       {
-	       		target_name = "TMVApp.root";
-	       }
-
-	   	   TFile* target  = new TFile(target_name.c_str(),"RECREATE" );
 	   	   target->cd();
-	   	   output_tree_clone->Write();
+	   	   output_tree->Write();
 	   	   histNn->Write();
 
 	   	   target->Close();
@@ -230,7 +220,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 
 	   	   std::cout << "==> TMVAClassificationApplication is done!" << std::endl;
 
-	   	   return output_tree_clone;
+	   	   return target->GetName();
 }
 
 
@@ -238,17 +228,20 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 DataChain* MLPAnalysis::get_MLP_results(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
 																																								std::string job_name, bool unique_output_files)
 {
-	 TTree* output_weight = MLPAnalysis::evaluate_MLP(bg_chain,variables, output_name, job_name, unique_output_files);
-	 TTree* output_weight_clone = (TTree*) output_weight->Clone();
-	 output_weight_clone->SetBranchStatus("*",1);
+	 const char* output_path = MLPAnalysis::evaluate_MLP(bg_chain,variables, output_name, job_name, unique_output_files);
+	 TFile* output_file = TFile::Open(output_path);
+	 TTree* output_weight = (TTree*) output_file->Get("MVAtree");
 	 TChain* bg_clone     = (TChain*) bg_chain->chain->Clone();
-
-	 bg_clone->AddFriend(output_weight_clone);
+	 bg_clone->SetBranchStatus("*",1);
+	 bg_clone->AddFriend(output_weight);
 
 	 std::string label(bg_chain->label);
 	 label += "_w_mva_output";
 
   DataChain* output_data = new DataChain(z_ll, bg_chain->label, bg_chain->legend, bg_chain->lep_sel, label, bg_clone);
+
+  output_file->Close();
+  std::remove(output_path);
 
 	 return output_data;
 }

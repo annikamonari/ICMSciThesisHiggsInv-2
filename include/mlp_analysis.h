@@ -3,6 +3,7 @@
 
 #include "../include/histo_plot.h"
 #include "../include/mc_weights.h"
+#include "../include/bdt_analysis.h"
 
 #include <cstdlib>
 #include "TObjString.h"
@@ -19,11 +20,11 @@ class MLPAnalysis
  public:
 	 
 
-	 static TFile* create_MLP(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,
+	 static const char* create_MLP(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,
 																																									std::string folder_name, const char* NeuronType, const char* NCycles, const char* HiddenLayers,
 																																									const char* LearningRate, std::string job_name);
 
-	 static TTree* evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
+	 static const char* evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
 																																										std::string job_name, bool unique_output_files);
 
 	 static DataChain* get_MLP_results(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,

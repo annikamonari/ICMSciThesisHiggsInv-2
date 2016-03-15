@@ -18,14 +18,15 @@ void produce_graphs(bool with_cut) {
   //const char* varying_params[] = {"NTrees", "AdaBoostBeta", "nCuts", "SeparationType"};
   const char* varying_params[] = {"HiddenLayers", "NCycles", "LearningRate"};
   // boolean is for whether or not to create separate output app files
-  bool unique_output_files = false;
+  bool unique_output_files = true;
   // boolean is for whether or not to create datacards
   bool create_cards = false;
 
-  /*MVAAnalysis::get_mva_results(bg_chains, 5, signal_chain, data_chain, super_vars, "test", "BDT",	NTrees[0], BoostType[0], AdaBoostBeta[0],
+  MVAAnalysis::get_mva_results(bg_chains, 0, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0], BoostType[0], AdaBoostBeta[0],
 																															SeparationType[0], nCuts[0], NeuronType[0], NCycles[0],
-  																													HiddenLayers[0], unique_output_files, create_cards, "1", "");*/
+  																													HiddenLayers[0], LearningRate[0], unique_output_files, create_cards, "1", "");
 
+  /*
   for (int i = 6; i < bg_chains.size(); i++)
   {
   		for (int j = 0; j < 3; j++)
@@ -43,7 +44,7 @@ void produce_graphs(bool with_cut) {
   			 																																												HiddenLayers, LearningRate, unique_output_files, create_cards, "1");
   		}
   }
-
+  */
 }
 
 int main(int argc, char** argv) {

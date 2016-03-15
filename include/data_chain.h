@@ -22,6 +22,7 @@
 class DataChain 
 {
  public:
+	 std::vector<const char*> all_file_paths;
   const char* label;
   const char* legend;
   TreeLeaves* leaves;

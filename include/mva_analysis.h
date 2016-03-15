@@ -43,7 +43,7 @@ class MVAAnalysis
 
   static std::string get_app_filename_for_chain(std::string app_output_name, const char* trained_bg_label, const char* app_label);
 
-  static TFile* get_mva_results(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
+  static const char* get_mva_results(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
 																														SuperVars* super_vars, std::string folder_name, std::string method_name, const char* NTrees = "800",
 																														const char* BoostType = "AdaBoost", const char* AdaBoostBeta = "0.2", const char* SeparationType = "GiniIndex",
 																														const char* nCuts = "30", const char* NeuronType = "sigmoid", const char* NCycles = "500",
@@ -52,7 +52,7 @@ class MVAAnalysis
 																														std::string job_name = "1", std::string mva_cut = "");
 
   static void create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
-																															Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
+																															Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, const char* trained_output,
 																															std::string method_name);
 
   static std::vector<DataChain*> get_output_bg_chains(std::vector<DataChain*> bg_chains, std::vector<Variable*> vars, std::string method_name,
@@ -63,7 +63,7 @@ class MVAAnalysis
 																																												std::string app_output_name, std::string job_name, const char* trained_bg_label,
 																																												bool unique_output_files);
 
-  static std::string build_output_graph_name(TFile* trained_output, std::string mva_cut = "");
+  static std::string build_output_graph_name(const char* trained_output, std::string mva_cut = "");
 
 };
 
