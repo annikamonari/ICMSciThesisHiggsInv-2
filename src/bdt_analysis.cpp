@@ -89,7 +89,7 @@ const char* BDTAnalysis::create_BDT(DataChain* bg_chain, DataChain* signal_chain
 			return output_tmva->GetName();
 }
 
-const char* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
+TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
 																																	std::string job_name, bool unique_output_files)
 {
 	   TMVA::Reader* reader = new TMVA::Reader( "!Color:!Silent" );
@@ -163,9 +163,7 @@ const char* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*
 
 	   // Book output histograms
 	   TH1F* histBdt     = new TH1F( "MVA_BDT", "MVA_BDT", 100, -0.8, 0.8 );
-
-	   // --- Event loop
-
+	   gROOT->cd(0);
 	   TChain* data = (TChain*) bg_chain->chain->Clone();
 
 	   data->SetBranchAddress("dijet_deta", &dijet_deta);
@@ -197,24 +195,26 @@ const char* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*
 	   data->SetBranchAddress("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
 	   data->SetBranchAddress("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
 	   data->SetBranchAddress("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
+	   // Name Target output file
+	   	   	   std::string target_name;
 
-	   std::string target_name;
+	   	   	   if (unique_output_files)
+	   	   	   {
+	   	   	   	  target_name = output_name;
+	   	   	   }
+	   	   	   else
+	   	   	   {
+	   	   	   	  target_name = "TMVApp.root";
+	   	   	   }
+	   	   // --- Write histograms
 
-	   if (unique_output_files)
-	   {
-	     target_name = output_name;
-	   }
-	   else
-	   {
-	     target_name = "TMVApp.root";
-	   }
-
-	   TFile* target = TFile::Open(target_name.c_str(),"RECREATE");
-
+	   // Create MVA output tree
 	   Float_t output;
-	   TTree* output_tree = new TTree("MVAtree","Tree with classifier outputs");
-	   output_tree->Branch("output", &output, "output");
 
+	   TTree* output_tree = new TTree("MVAtree","Tree with classifier outputs");
+	   output_tree -> Branch("output", &output, "output");
+    output_tree->SetBranchAddress("output", &output);
+	   // --- Event loop
 	   std::cout << "--- Processing: " << data->GetEntries() << " events" << std::endl;
 	   TStopwatch sw;
 	   sw.Start();
@@ -229,14 +229,15 @@ const char* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*
 	      output_tree->Fill();
 	      histBdt->Fill(output);
 	   }
-
+	   //TTree* output_tree_clone = output_tree->CloneTree();
 	   // Get elapsed time
 	   sw.Stop();
 	   std::cout << "--- End of event loop: "; sw.Print();
 
-	   // --- Write histograms
+	   TFile* target  = new TFile(target_name.c_str(),"RECREATE" );
 	   target->cd();
-	   output_tree->Write();
+	   TTree* output_tree_clone = output_tree->CloneTree();
+	   output_tree_clone->Write();
 	   histBdt->Write();
 
 	   target->Close();
@@ -247,26 +248,27 @@ const char* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*
 
 	   std::cout << "==> TMVAClassificationApplication is done!" << std::endl;
 
-	   return target->GetName();
+	   return output_tree_clone;
 }
 
 //note before calling this method you must call create_bdt to update the xml weight file:
 DataChain* BDTAnalysis::get_BDT_results(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
 																																								std::string job_name, bool unique_output_files)
 {
-	 const char* output_path = BDTAnalysis::evaluate_BDT(bg_chain, variables, output_name, job_name, unique_output_files);
-	 TFile* output_file = new TFile(output_path);
-	 TTree* output_weight = (TTree*) output_file->Get("MVAtree");
-	 TChain* bg_clone     = (TChain*) bg_chain->chain->Clone();
+	  TTree* output_weight = BDTAnalysis::evaluate_BDT(bg_chain, variables, output_name, job_name, unique_output_files);
+	  gROOT->cd(0);
+		 TTree* output_weight_clone = (TTree*) output_weight->Clone();
+		 TChain* bg_clone     = (TChain*) bg_chain->chain->Clone();
 
-	 bg_clone->AddFriend(output_weight);
+		 bg_clone->AddFriend(output_weight_clone);
+
 
 	 std::string label(bg_chain->label);
 	 label += "_w_mva_output";
 
   DataChain* output_data = new DataChain(z_ll, bg_chain->label, bg_chain->legend, bg_chain->lep_sel, label, bg_clone);
 
-  output_file->Close();
+  //output_file->Close();
   //std::remove(output_path);
 
 	 return output_data;

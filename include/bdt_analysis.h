@@ -47,7 +47,7 @@ class BDTAnalysis
 																															const char* NTrees, const char* BoostType,const char* AdaBoostBeta,const char* SeparationType,
 																															const char* nCuts, std::string job_name);
 
-	 static const char* evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name, std::string job_name,
+	 static TTree* evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name, std::string job_name,
 																													bool unique_output_files = true);
 
 };
