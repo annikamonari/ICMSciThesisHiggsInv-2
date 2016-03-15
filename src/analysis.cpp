@@ -222,7 +222,7 @@ const char* data_label  = "data_chain";
 const char* data_legend = "data";
 
 /////////////////////// MVA parameters /////////////////////////
-  const char* NTrees_arr[] = {"10", "20", "50", "80", "100"}; //, "500", "800", "1000"};
+  const char* NTrees_arr[] = {"20", "10", "50", "80", "100"}; //, "500", "800", "1000"};
   std::vector<const char*> NTrees (NTrees_arr, NTrees_arr +
                            sizeof(NTrees_arr)/sizeof(const char*));
 
@@ -234,7 +234,7 @@ const char* data_legend = "data";
   std::vector<const char*> AdaBoostBeta (AdaBoostBeta_arr, AdaBoostBeta_arr +
                                sizeof(AdaBoostBeta_arr)/sizeof(const char*));
 
-  const char* SeparationType_arr[] = {"GiniIndex", "CrossEntropy", "MisClassificationError", "SDivSqrtSPlusB"};
+  const char* SeparationType_arr[] = {"CrossEntropy", "GiniIndex", "MisClassificationError", "SDivSqrtSPlusB"};
   std::vector<const char*> SeparationType (SeparationType_arr, SeparationType_arr +
                                  sizeof(SeparationType_arr)/sizeof(const char*));
 

@@ -68,7 +68,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 																																													NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
   }
   std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
-
+/*
   std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,
 																																																																		trained_bg_label, unique_output_files);
 
@@ -107,7 +107,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
   std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
   std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
-
+*/
   return trained_output;
 }
 // creates datacards for a variety of output values
@@ -147,10 +147,11 @@ void MVAAnalysis::create_datacards(DataChain* output_data_chain, DataChain* outp
 // gets the name for the reader output Tfile
 std::string MVAAnalysis::get_app_filename_for_chain(std::string app_output_name, const char* trained_bg_label, const char* app_label)
 {
-	 std::string app_label_str = app_label;
-	 std::string trained_bg_label_str = trained_bg_label;
+		std::string app_label_str = app_label;
+		std::string trained_bg_label_str = trained_bg_label;
+		int last_trained_idx = app_output_name.rfind(trained_bg_label_str);
 
-	 return HistoPlot::replace_all(app_output_name, trained_bg_label_str, app_label_str);
+		return app_output_name.replace(last_trained_idx, trained_bg_label_str.length(), app_label_str);
 }
 
 std::vector<DataChain*> MVAAnalysis::get_output_bg_chains(std::vector<DataChain*> bg_chains, std::vector<Variable*> vars,

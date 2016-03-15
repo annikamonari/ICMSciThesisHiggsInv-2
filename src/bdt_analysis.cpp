@@ -97,7 +97,6 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 	   Float_t sumet;
 	   Float_t mht;
 	   Float_t unclustered_et;
-	   Float_t jetmet_mindphi;
 	   Float_t jetmetnomu_mindphi;
 	   Float_t jetunclet_mindphi;
 	   Float_t metnomuunclet_dphi;
@@ -129,7 +128,6 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 	   reader->AddVariable("sumet", &sumet);
 	   reader->AddVariable("mht", &mht);
 	   reader->AddVariable("unclustered_et", &unclustered_et);
-	   reader->AddVariable("jetmet_mindphi", &jetmet_mindphi);
 	   reader->AddVariable("jetmetnomu_mindphi", &jetmetnomu_mindphi);
 	   reader->AddVariable("jetunclet_mindphi", &jetunclet_mindphi);
 	   reader->AddVariable("metnomuunclet_dphi", &metnomuunclet_dphi);
@@ -151,35 +149,34 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 	   TChain* data = (TChain*) bg_chain->chain->Clone();
 
 	   data->SetBranchAddress("dijet_deta", &dijet_deta);
-	   data->SetBranchAddress("forward_tag_eta", &forward_tag_eta);
-	   data->SetBranchAddress("metnomu_significance", &metnomu_significance);
-	   data->SetBranchAddress("sqrt_ht", &sqrt_ht);
-	   data->SetBranchAddress("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
-	   data->SetBranchAddress("dijet_M", &dijet_M);
-	   data->SetBranchAddress("metnomuons", &metnomuons);
+ 	   data->SetBranchAddress("forward_tag_eta", &forward_tag_eta);
+ 	   data->SetBranchAddress("metnomu_significance", &metnomu_significance);
+ 	   data->SetBranchAddress("sqrt_ht", &sqrt_ht);
+ 	   data->SetBranchAddress("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
+ 	   data->SetBranchAddress("dijet_M", &dijet_M);
+ 	   data->SetBranchAddress("metnomuons", &metnomuons);
 
-	   data->SetBranchAddress("jet1_pt", &jet1_pt);
-	   data->SetBranchAddress("jet2_pt", &jet2_pt);
-	   data->SetBranchAddress("jet1_eta", &jet1_eta);
-	   data->SetBranchAddress("jet2_eta", &jet2_eta);
-	   data->SetBranchAddress("jet1_phi", &jet1_phi);
-	   data->SetBranchAddress("jet2_phi", &jet2_phi);
-	   data->SetBranchAddress("jet_csv1", &jet_csv1);
-	   data->SetBranchAddress("jet_csv2", &jet_csv2);
-	   data->SetBranchAddress("dijet_dphi", &dijet_dphi);
-	   data->SetBranchAddress("metnomu_x", &metnomu_x);
-	   data->SetBranchAddress("metnomu_y", &metnomu_y);
-	   data->SetBranchAddress("sumet", &sumet);
-	   data->SetBranchAddress("mht", &mht);
-	   data->SetBranchAddress("unclustered_et", &unclustered_et);
-	   data->SetBranchAddress("jetmet_mindphi", &jetmet_mindphi);
-	   data->SetBranchAddress("jetmetnomu_mindphi", &jetmetnomu_mindphi);
-	   data->SetBranchAddress("jetunclet_mindphi", &jetunclet_mindphi);
-	   data->SetBranchAddress("metnomuunclet_dphi", &metnomuunclet_dphi);
-	   data->SetBranchAddress("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
-	   data->SetBranchAddress("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
-	   data->SetBranchAddress("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
-	   data->SetBranchAddress("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
+ 	   data->SetBranchAddress("jet1_pt", &jet1_pt);
+ 	   data->SetBranchAddress("jet2_pt", &jet2_pt);
+ 	   data->SetBranchAddress("jet1_eta", &jet1_eta);
+ 	   data->SetBranchAddress("jet2_eta", &jet2_eta);
+ 	   data->SetBranchAddress("jet1_phi", &jet1_phi);
+ 	   data->SetBranchAddress("jet2_phi", &jet2_phi);
+ 	   data->SetBranchAddress("jet_csv1", &jet_csv1);
+ 	   data->SetBranchAddress("jet_csv2", &jet_csv2);
+ 	   data->SetBranchAddress("dijet_dphi", &dijet_dphi);
+ 	   data->SetBranchAddress("metnomu_x", &metnomu_x);
+ 	   data->SetBranchAddress("metnomu_y", &metnomu_y);
+ 	   data->SetBranchAddress("sumet", &sumet);
+ 	   data->SetBranchAddress("mht", &mht);
+ 	   data->SetBranchAddress("unclustered_et", &unclustered_et);
+ 	   data->SetBranchAddress("jetmetnomu_mindphi", &jetmetnomu_mindphi);
+ 	   data->SetBranchAddress("jetunclet_mindphi", &jetunclet_mindphi);
+ 	   data->SetBranchAddress("metnomuunclet_dphi", &metnomuunclet_dphi);
+ 	   data->SetBranchAddress("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
+ 	   data->SetBranchAddress("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
+ 	   data->SetBranchAddress("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
+ 	   data->SetBranchAddress("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
 
 	   // Efficiency calculator for cut method
 	   Int_t    nSelCutsGA = 0;
