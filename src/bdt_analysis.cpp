@@ -12,22 +12,14 @@ void BDTAnalysis::add_trees_to_factory(DataChain* any_chain, bool is_bg_chain, T
   		TFile* file = TFile::Open(file_paths[i]);
   		TTree* tree = (TTree*) file->Get("LightTree");
 
-  		TFile* out_file = new TFile("output.root");
-
-  		TTree* tree_copy = tree->CopyTree(selection.c_str(), "Copy");
-
 				if (is_bg_chain == true)
 				{
-						factory->AddBackgroundTree(tree_copy, 1.0);
+						factory->AddBackgroundTree(tree, 1.0);
 				}
 				else
 				{
-						factory->AddSignalTree(tree_copy, 1.0);
+						factory->AddSignalTree(tree, 1.0);
 				}
-
-				out_file->Write();
-				out_file->Close();
-				std::remove(out_file->GetName());
   }
 }
 
@@ -68,7 +60,7 @@ const char* BDTAnalysis::create_BDT(DataChain* bg_chain, DataChain* signal_chain
 	  TCut signal_cuts = "alljetsmetnomu_mindphi>2.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && dijet_deta<8.0 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
 	  TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
-	  factory->PrepareTrainingAndTestTree("", "", "SplitMode=Random:NormMode=NumEvents:!V" );
+	  factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts, "SplitMode=Random:NormMode=NumEvents:!V" );
  
    factory->BookMethod(TMVA::Types::kBDT, "BDT", BDT_options_str(NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts));
 
