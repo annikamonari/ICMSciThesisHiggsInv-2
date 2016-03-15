@@ -26,15 +26,15 @@ void produce_graphs(bool with_cut, const char* job_ptr, const char* bg_to_train,
 //             0         1             2                3           4          5           6            7
 //bg[8] = {"bg_zll","bg_wjets_ev","bg_wjets_muv","bg_wjets_tauv", "bg_top", "bg_VV", "bg_zjets_vv", "bg_qcd"};
 
-      
+      /*
 
   			 MVAAnalysis::get_plots_varying_params(bg_chains, bg_int, signal_chain, data_chain, super_vars, "BDT", varying_params[param_int],
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
-																																												HiddenLayers, unique_output_files, create_cards, job_number);
+																																												HiddenLayers, unique_output_files, create_cards, job_number);*/
 
-  /*MVAAnalysis::get_mva_results(bg_chains, 3, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
-  																													BoostType[0], AdaBoostBeta[1], SeparationType[2], nCuts[3],
-  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "");*/
+  MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[0],
+  																													BoostType[0], AdaBoostBeta[0], SeparationType[2], nCuts[0],
+  																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "");
 
 }
 
