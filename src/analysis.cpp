@@ -293,7 +293,7 @@ const char* data_label  = "data_chain";
 const char* data_legend = "data";
 
 /////////////////////// MVA parameters /////////////////////////
-  const char* NTrees_arr[] = {"1000", "20", "1000", "80", "10"}; //, "500", "800", "1000"};
+  const char* NTrees_arr[] = {"1", "20", "1000", "80", "10"}; //, "500", "800", "1000"};
   std::vector<const char*> NTrees (NTrees_arr, NTrees_arr +
                            sizeof(NTrees_arr)/sizeof(const char*));
 

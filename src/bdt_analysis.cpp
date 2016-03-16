@@ -40,7 +40,7 @@ TFile* BDTAnalysis::create_BDT(DataChain* bg_chain, DataChain* signal_chain, std
 	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
-	    				       "SplitMode=Alternate:NormMode=NumEvents:!V" );
+	    				       "SplitMode=Block:NormMode=NumEvents:!V" );
  
     factory->BookMethod(TMVA::Types::kBDT, "BDT", BDT_options_str(NTrees,BoostType,AdaBoostBeta,SeparationType,nCuts));
 

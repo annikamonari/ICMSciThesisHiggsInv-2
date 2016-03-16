@@ -34,8 +34,8 @@ void produce_graphs(bool with_cut) {/*, const char* job_ptr, const char* bg_to_t
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
 																																												HiddenLayers, unique_output_files, create_cards, job_number);*/
 
-  MVAAnalysis::get_mva_results(all_bg_chains, 0, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[2],
-  																													BoostType[0], AdaBoostBeta[0], SeparationType[2], nCuts[0],
+  MVAAnalysis::get_mva_results(bg_chains, 1, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[2],
+  																													BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0],
   																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "");
 
 }
