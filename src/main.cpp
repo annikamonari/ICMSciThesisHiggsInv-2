@@ -4,7 +4,7 @@
 
 //#include "../include/mlp_analysis.h"
 using namespace std;
-void produce_graphs(bool with_cut, const char* job_ptr, const char* bg_to_train, const char* vary_param) {
+void produce_graphs(bool with_cut) {/*, const char* job_ptr, const char* bg_to_train, const char* vary_param*/
   SuperVars* super_vars             = new SuperVars();
   std::vector<Variable*> vars       = super_vars->get_discriminating_vars();
   std::vector<Variable*> cut_vars   = super_vars->get_signal_cut_vars();
@@ -12,6 +12,8 @@ void produce_graphs(bool with_cut, const char* job_ptr, const char* bg_to_train,
   std::vector<DataChain*> bg_chains = super_chains->get_bg_chains();
   DataChain* signal_chain           = super_chains->signal_chain;
   DataChain* data_chain             = super_chains->data_chain;
+  std::vector<DataChain*> all_bg_chains = super_chains->get_all_bg_chains();
+
   const char* mva_type = "BDT";
   // the topmost folder for all root files so gitignore ignores properly
   std::string top_folder_name = "analysis";
@@ -20,19 +22,19 @@ void produce_graphs(bool with_cut, const char* job_ptr, const char* bg_to_train,
   bool unique_output_files = true;
   // boolean is for whether or not to create datacards
   bool create_cards = false;
-  std::string job_number = job_ptr;
-  int bg_int = atoi(bg_to_train);
-  int param_int = atoi(vary_param);
+  //std::string job_number = job_ptr;
+  //int bg_int = atoi(bg_to_train);
+  //int param_int = atoi(vary_param);
 //             0         1             2                3           4          5           6            7
 //bg[8] = {"bg_zll","bg_wjets_ev","bg_wjets_muv","bg_wjets_tauv", "bg_top", "bg_VV", "bg_zjets_vv", "bg_qcd"};
 
-      /*
+      
 
-  			 MVAAnalysis::get_plots_varying_params(bg_chains, bg_int, signal_chain, data_chain, super_vars, "BDT", varying_params[param_int],
+  			/* MVAAnalysis::get_plots_varying_params(bg_chains, bg_int, signal_chain, data_chain, super_vars, "BDT", varying_params[param_int],
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
 																																												HiddenLayers, unique_output_files, create_cards, job_number);*/
 
-  MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[2],
+  MVAAnalysis::get_mva_results(all_bg_chains, 0, signal_chain, data_chain, super_vars, "test", "BDT", NTrees[2],
   																													BoostType[0], AdaBoostBeta[0], SeparationType[2], nCuts[0],
   																													NeuronType[0], NCycles[0], HiddenLayers[0], unique_output_files, create_cards, "1", "");
 
@@ -40,7 +42,7 @@ void produce_graphs(bool with_cut, const char* job_ptr, const char* bg_to_train,
 
 int main(int argc, char** argv) {
   TApplication theApp("tapp", &argc, argv);
-  produce_graphs(true, argv[1], argv[2], argv[3]);
+  produce_graphs(true);/*, argv[1], argv[2], argv[3]*/
   theApp.Run();
   return 0;
 }
