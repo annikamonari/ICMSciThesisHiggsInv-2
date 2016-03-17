@@ -64,11 +64,12 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	 }
   else if (method_name == "MLP")
   {
-  		trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+  		std::cout<<"mlp input parameters________________:\n"<<"bg no: "<<bg_to_train<<"\n folder name: "<<folder_name<<"\n neuron type: "<<NeuronType<<"\n NCycles:"<<NCycles<<"\n HiddenLayers: "<<HiddenLayers<< "\n learning rate: "<<LearningRate<<"\n job name: "<<job_name;
+     trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 																																													NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
   }
   std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
-/*
+
   std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,
 																																																																		trained_bg_label, unique_output_files);
 
@@ -107,7 +108,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
   std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
   std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
-*/
+
   return trained_output;
 }
 // creates datacards for a variety of output values
