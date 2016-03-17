@@ -131,11 +131,18 @@ void MVAAnalysis::create_datacards(DataChain* output_data_chain, DataChain* outp
 	}
 	else
 	{
-			std::string cut_arr[] = {"output>-1.5", "output>-1.4", "output>-1.3", "output>-1.2", "output>-1.1", "output>-1.0", "output>-0.8",
+			std::string cut_arr[] = {"output<1.0", "output<0.99", "output<0.98", "output<0.97", "output<0.96",
+																												"output<0.95", "output<0.94", "output<0.93", "output<0.92", "output<0.91",
+                            "output<0.9", "output<0.89", "output<0.88", "output<0.87", "output<0.86",
+                            "output<0.85", "output<0.84", "output<0.83", "output<0.82", "output<0.81",
+                            "output<0.8"};
+
+
+/*{"output>-1.5", "output>-1.4", "output>-1.3", "output>-1.2", "output>-1.1", "output>-1.0", "output>-0.8",
 																												"output>-0.7", "output>-0.6", "output>-0.5", "output>-0.4", "output>-0.3", "output>-0.2",
 																												"output>-0.1", "output>0.0", "output>0.1", "output>0.2", "output>0.3", "output>0.4", "output>0.5",
 																												"output>0.6","output>0.7", "output>0.8", "output>0.9", "output>1.0", "output>1.1"};
-
+*/
 			for (int i = 0; i < sizeof(cut_arr)/sizeof(cut_arr[0]); i++)
 			{
 					std::string output_graph_name = build_output_graph_name(trained_output, cut_arr[i]);
