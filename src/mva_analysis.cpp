@@ -38,7 +38,7 @@ std::vector<TFile*> MVAAnalysis::get_files_from_paths(std::vector<const char*> f
   std::cout << "files size: " << files.size() << std::endl;
 	 return files;
 }
-
+//_________________________________________________________________________________________________________________________________________________
 TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
 																																			SuperVars* super_vars, std::string folder_name, std::string method_name, const char* NTrees,
 																																			const char* BoostType, const char* AdaBoostBeta,const char* SeparationType,const char* nCuts,
@@ -51,21 +51,24 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	 std::string selection_str = super_vars->get_final_cuts_str();
 	 TFile* trained_output;
   const char* trained_bg_label = bg_chains[bg_to_train]->label;
-
-	 std::string app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
-																																																													 NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts,
-																																																														trained_bg_label);
-
+//step 1 get out put name
+//________________________________________________________________________________________________________________________________________________
+	 std::string app_output_name; 
 
   if (method_name == "BDT")
 	 {
+    app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
+																																																													 NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts,
+																																																														trained_bg_label);
   		trained_output = BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 																																													NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
 	 }
   else if (method_name == "MLP")
   {
-  		std::cout<<"mlp input parameters________________:\n"<<"bg no: "<<bg_to_train<<"\n folder name: "<<folder_name<<"\n neuron type: "<<NeuronType<<"\n NCycles:"<<NCycles<<"\n HiddenLayers: "<<HiddenLayers<< "\n learning rate: "<<LearningRate<<"\n job name: "<<job_name;
-     trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+       app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
+																																																													 NeuronType, NCycles, HiddenLayers, LearningRate,																																																														trained_bg_label);
+		
+       trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 																																													NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
   }
   std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
@@ -91,7 +94,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	 }
 	 else if (method_name == "MLP")
 	 {
-	 		mva_output = new Variable("output","MVA Output","-1.25","1.5","-1.25","","100","1", "", false);
+	 		mva_output = new Variable("output","MVA Output","0.2","0.6","0.2","","100","1", "", false);
 	 }
 	 std::cout << "=> Declared MVA_Output Variable" << std::endl;
 

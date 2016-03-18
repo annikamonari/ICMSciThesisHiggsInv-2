@@ -293,13 +293,13 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	std::string lr = LearningRate;
 
 	MLP_options.append(nt);
-	MLP_options += ":VarTransform=P,N:NCycles=";
+	MLP_options += ":VarTransform=N:NCycles=";
 	MLP_options.append(nc);
 	MLP_options += ":HiddenLayers=";
 	MLP_options.append(hl);
 	MLP_options += ":LearningRate=";
 	MLP_options.append(lr);
-	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=MSE"; //ConvergenceTests=100:
+	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=CE"; //ConvergenceTests=100:
 
  return MLP_options;
 }
@@ -313,7 +313,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	std::string lr = LearningRate;
  std::string bg = bg_chain_label;
 
-	std::string out_nam = "MLP-" + bg + "-NeuronType=";
+	std::string out_nam = "MLP-" + bg + "-NeuronType=";//
 	out_nam.append(nt);
 	out_nam += "-NCycles=";
 	out_nam.append(nc);
@@ -321,7 +321,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=MSE";
+        out_nam += "-EstimatorType=CE";
  out_nam += ".root";
 
 	return out_nam;
