@@ -299,7 +299,7 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	MLP_options.append(hl);
 	MLP_options += ":LearningRate=";
 	MLP_options.append(lr);
-	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=CE"; //ConvergenceTests=100:
+	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=MSE"; //ConvergenceTests=100:
 
  return MLP_options;
 }
@@ -321,7 +321,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=CE";
+        out_nam += "-EstimatorType=MSE";
  out_nam += ".root";
 
 	return out_nam;
