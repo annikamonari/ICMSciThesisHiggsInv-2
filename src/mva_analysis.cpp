@@ -116,11 +116,11 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
 ///other backgrounds and data passed through tree for MC weight calculation
 
-	//std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,                                              trained_bg_label, unique_output_files);
+	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,                                              trained_bg_label, unique_output_files);
 
 	std::cout << "=> All background put through MVA" << std::endl;
 
-	//DataChain* output_data_chain = get_output_signal_chain(data_chain, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
+	DataChain* output_data_chain = get_output_signal_chain(data_chain, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
 
 	std::cout << "=> Data put through MVA" << std::endl;
 
@@ -148,7 +148,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 //step 4 draw plots
 //_________________________
 
-HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, data_chain, bg_chains, &vars, output_graph_name, mva_cut);
+HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, output_data_chain, output_bg_chains, &vars, output_graph_name, mva_cut);
 
 	//HistoPlot::draw_plot(mva_output, output_bg_chains, output_signal_chain, output_data_chain, true, &vars, false,output_graph_name, mva_cut);
 
