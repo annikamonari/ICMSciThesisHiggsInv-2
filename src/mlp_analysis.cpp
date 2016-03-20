@@ -39,7 +39,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
-	    				       "SplitMode=Random:NormMode=NumEvents:!V" );
+	    				       "SplitMode=Alternate:NormMode=NumEvents:!V" );
 
 	    factory->BookMethod(TMVA::Types::kMLP, "MLP", MLP_options_str(NeuronType, NCycles, HiddenLayers, LearningRate) );
 
@@ -154,14 +154,19 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 
 	   	   TChain* data = (TChain*) bg_chain->chain->Clone();
 
+	   	   data->SetBranchAddress("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
+	   	   data->SetBranchAddress("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
+      		   data->SetBranchAddress("jet_csv2", &jet_csv2);
+      		   data->SetBranchAddress("dijet_dphi", &metnomu_significance);
+                   data->SetBranchAddress("dijet_M", &dijet_M);
+/*
 	   	   data->SetBranchAddress("dijet_deta", &dijet_deta);
 	   	   data->SetBranchAddress("forward_tag_eta", &forward_tag_eta);
-	   	   data->SetBranchAddress("metnomu_significance", &metnomu_significance);
+	   	   
 	   	   data->SetBranchAddress("sqrt_ht", &sqrt_ht);
 	   	   data->SetBranchAddress("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
-	   	   data->SetBranchAddress("dijet_M", &dijet_M);
+	   	   
 	   	   data->SetBranchAddress("metnomuons", &metnomuons);
-
 	   	   data->SetBranchAddress("jet1_pt", &jet1_pt);
 	   	   data->SetBranchAddress("jet2_pt", &jet2_pt);
 	   	   data->SetBranchAddress("jet1_eta", &jet1_eta);
@@ -169,8 +174,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 	   	   data->SetBranchAddress("jet1_phi", &jet1_phi);
 	   	   data->SetBranchAddress("jet2_phi", &jet2_phi);
 	   	   data->SetBranchAddress("jet_csv1", &jet_csv1);
-	   	   data->SetBranchAddress("jet_csv2", &jet_csv2);
-	   	   data->SetBranchAddress("dijet_dphi", &dijet_dphi);
+	   	   
 	   	   data->SetBranchAddress("metnomu_x", &metnomu_x);
 	   	   data->SetBranchAddress("metnomu_y", &metnomu_y);
 	   	   data->SetBranchAddress("sumet", &sumet);
@@ -179,10 +183,8 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 	   	   data->SetBranchAddress("jetmetnomu_mindphi", &jetmetnomu_mindphi);
 	   	   data->SetBranchAddress("jetunclet_mindphi", &jetunclet_mindphi);
 	   	   data->SetBranchAddress("metnomuunclet_dphi", &metnomuunclet_dphi);
-	   	   data->SetBranchAddress("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
-	   	   data->SetBranchAddress("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
 	   	   data->SetBranchAddress("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
-	   	   data->SetBranchAddress("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
+	   	   data->SetBranchAddress("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);*/
 
 	   	   // Efficiency calculator for cut method
 	   	   Int_t    nSelCutsGA = 0;
@@ -299,7 +301,7 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	MLP_options.append(hl);
 	MLP_options += ":LearningRate=";
 	MLP_options.append(lr);
-	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=MSE"; //ConvergenceTests=100:
+	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=CE"; //ConvergenceTests=100:
 
  return MLP_options;
 }
@@ -321,7 +323,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=MSE";
+        out_nam += "-EstimatorType=CE";
  out_nam += ".root";
 
 	return out_nam;

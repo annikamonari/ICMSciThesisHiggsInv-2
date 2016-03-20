@@ -59,11 +59,17 @@ class MVAAnalysis
 																																																						std::string app_output_name, std::string job_name, const char* trained_bg_label,
 																																																						bool unique_output_files);
 
+  static DataChain* evaluate_test_data(DataChain* test_chain, std::vector<Variable*> vars, std::string method_name,
+		std::string app_output_name, std::string job_name, const char* trained_bg_label,
+		bool unique_output_files);
+
   static DataChain* get_output_signal_chain(DataChain* signal_chain, std::vector<Variable*> vars, std::string method_name,
 																																												std::string app_output_name, std::string job_name, const char* trained_bg_label,
 																																												bool unique_output_files);
 
   static std::string build_output_graph_name(TFile* trained_output, std::string mva_cut = "");
+
+  
 
 };
 

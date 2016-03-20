@@ -38,6 +38,7 @@ class SuperVars
 	  Variable* dijetmetnomu_ptfraction;
 	  Variable* jet1metnomu_scalarprod;
 	  Variable* jet2metnomu_scalarprod;
+	  Variable* classID;
 
   SuperVars();
 

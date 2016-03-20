@@ -317,7 +317,7 @@ const char* data_legend = "data";
   std::vector<const char*> NeuronType (NeuronType_arr, NeuronType_arr +
                                      sizeof(NeuronType_arr)/sizeof(const char*));
 
-  const char* NCycles_arr[] = {"2000", "3000", "4000", "5000", "10000"};
+  const char* NCycles_arr[] = {"20", "3000", "4000", "5000", "10000"};
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
@@ -329,5 +329,16 @@ const char* data_legend = "data";
   const char* LearningRate_arr[] = {"0.000002", "0.003", "0.0001", "0.0005", "0.08", "0.2", "0.5"};
   std::vector<const char*> LearningRate (LearningRate_arr, LearningRate_arr +
                                            sizeof(LearningRate_arr)/sizeof(const char*));
+
+///////////////////////////test tree/////////////////////////////////////////////
+const char* test_arr[] = {
+				"zjets_vv_test_tree.root"
+                         };
+
+std::vector<const char*> test_vector (test_arr, test_arr + 
+                         sizeof(test_arr)/sizeof(const char*));
+
+const char* test_label  = "test_chain";
+const char* test_legend = "test tree";
 
 

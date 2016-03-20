@@ -13,6 +13,7 @@ SuperChains::SuperChains()
   signal_chain  = new DataChain(mc_signal_data, mc_signal_label, mc_signal_legend, "");
   data_chain    = new DataChain(data, data_label, data_legend, "");
   all_bg        = new DataChain(allbg, all_label, all_legend, "");
+//  test_chain     = new DataChain(test_vector,test_label,test_legend,"");
 }
 
 std::vector<DataChain*> SuperChains::get_bg_chains()
@@ -35,3 +36,4 @@ std::vector<DataChain*> SuperChains::get_all_bg_chains()
   return all_bg_chains;
 
 }
+

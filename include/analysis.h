@@ -126,4 +126,11 @@ extern std::vector<const char*> HiddenLayers;
 extern const char* LearningRate_arr[];
 extern std::vector<const char*> LearningRate;
 
+///////////////////////////test tree/////////////////////////////////////////////
+
+extern const char* test_arr[];
+extern std::vector<const char*> test_vector;
+extern const char* test_label;
+extern const char* test_legend;
+
 #endif

@@ -51,7 +51,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	std::string selection_str = super_vars->get_final_cuts_str();
 	TFile* trained_output;
 	const char* trained_bg_label = bg_chains[bg_to_train]->label;
-//step 1 get out put name
+//step 1 get output name and train MVa
 //________________________________________________________________________________________________________________________________________________
 	std::string app_output_name; 
 
@@ -66,25 +66,69 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	else if (method_name == "MLP")
 	{
 		app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
-			NeuronType, NCycles, HiddenLayers, LearningRate,																																																														trained_bg_label);
+			NeuronType, NCycles, HiddenLayers, LearningRate,trained_bg_label);
 		
 		trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 			NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
 	}
 	std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
-
-	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,
-		trained_bg_label, unique_output_files);
-
 	std::cout << "=> All background put through BDT" << std::endl;
 
+
+	//step 2 evaluate MVA's
+//________________________________________________________________________________________________________________________________________________	
+
+//step 2.1 get test tree
+//_______________________   as pointer has been declraed file is already open so get your tree and close it.
+//
+//	SuperChains* super_chains         = new SuperChains();
+//superchains contains a pointer to a TFile containing a copy of a previously a test dataset of a previously trained MLP on the zjets to vv background
+        //step 2.1.1 get trained output file name
+        const char* t_arr[] = {trained_output->GetName()};
+	//step 2.1.2 intialise DataChain paramters for test set
+        const char* t_label ="test_set";
+        const char* t_legend ="test set";
+        std::vector<const char*> t_vector (t_arr, t_arr + 
+                         sizeof(t_arr)/sizeof(const char*));
+        //step 2.1.3 open trained_output TFile
+        TFile* f = new TFile(trained_output->GetName(),"update");
+        //step 2.1.4 copy test tree(called lighttree) from trained_output tFile
+        TTree* tree = (TTree*)f->Get("TestTree");
+	tree->SetName("LightTree"); //renames tree for reader input
+	tree->Write();
+
+        //step 2.1.5 create DataChain of the test set tree
+        DataChain* test_chain     = new DataChain(t_vector,t_label,t_legend,"");
+	f->Close();
+ /*
 	DataChain* output_signal_chain = get_output_signal_chain(signal_chain, vars, method_name, app_output_name, job_name,
 		trained_bg_label, unique_output_files);
 	std::cout << "=> Signal put through BDT" << std::endl;
+*/
 
-	DataChain* output_data_chain = get_output_signal_chain(data_chain, vars, method_name, app_output_name, job_name,
-		trained_bg_label, unique_output_files);
-	std::cout << "=> Data put through BDT" << std::endl;
+//step 2.2 get output chains for test,data and other BGs
+//_________________________
+
+        DataChain* mva_output_test_chain = evaluate_test_data(test_chain,  vars,  method_name,
+		app_output_name, job_name, trained_bg_label, unique_output_files);
+
+	std::cout << "=> test_tree put through MVA" << std::endl;
+
+///other backgrounds and data passed through tree for MC weight calculation
+
+	//std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,                                              trained_bg_label, unique_output_files);
+
+	std::cout << "=> All background put through MVA" << std::endl;
+
+	//DataChain* output_data_chain = get_output_signal_chain(data_chain, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
+
+	std::cout << "=> Data put through MVA" << std::endl;
+
+
+
+
+//step 3 initalise output variable
+//________________________________________________________________________________________________________________
 
 	Variable* mva_output;
 
@@ -101,19 +145,23 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	std::string output_graph_name = build_output_graph_name(trained_output, mva_cut);
 
 	std::cout << "mva output graph name: " << output_graph_name << std::endl;
+//step 4 draw plots
+//_________________________
 
-	HistoPlot::draw_plot(mva_output, output_bg_chains, output_signal_chain, output_data_chain, true, &vars, false,
-		output_graph_name, mva_cut);
+HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, data_chain, bg_chains, &vars, output_graph_name, mva_cut);
+
+	//HistoPlot::draw_plot(mva_output, output_bg_chains, output_signal_chain, output_data_chain, true, &vars, false,output_graph_name, mva_cut);
 
 
-	if (create_cards) {create_datacards(output_data_chain, output_signal_chain, output_bg_chains,
-		mva_output, true, &vars, trained_output, method_name);}
+	/*if (create_cards) {create_datacards(output_data_chain, output_signal_chain, output_bg_chains,
+		mva_output, true, &vars, trained_output, method_name);}*/
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
 		std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
 
 		return trained_output;
 	}
+//________________________________________________________________________________________________________________________________________________
 // creates datacards for a variety of output values
 	void MVAAnalysis::create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
 		Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
@@ -134,22 +182,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 		}
 		else
 		{
-			int cut_min = 0;
-			int cut_max = 5;
-			std::string g_or_l = ">";
-			int length = cut_max - cut_min;
-
-			std::string* cut_arr = new std::string[length];
-
-			for (int cut = cut_min; cut < cut_max; cut++)
-			{
-				double cut_val = cut;
-				std::string cut_str = DataCard::double_to_str(cut_val / 100);
-				std::string full_str = "output" + g_or_l + cut_str;
-
-				cut_arr[cut] = full_str;
-			}
-			std::cout << cut_arr << std::endl;
+			std::string cut_arr[] = {"output<0.29", "output<0.3", "output<0.31", "output<0.32", "output<0.33","output<0.34","output<0.35", "output<0.36", "output<0.37","output<0.38","output<0.39"};
 
 			for (int i = 0; i < sizeof(cut_arr)/sizeof(cut_arr[0]); i++)
 			{
@@ -158,10 +191,10 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 					mva_output, true, variables, output_graph_name, cut_arr[i]);
 			}
 
-			delete [] cut_arr;
+		//	delete [] cut_arr;
 		}
 	}
-
+//________________________________________________________________________________________________________________________________________________
 // gets the name for the reader output Tfile
 	std::string MVAAnalysis::get_app_filename_for_chain(std::string app_output_name, const char* trained_bg_label, const char* app_label)
 	{
@@ -171,6 +204,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
 		return app_output_name.replace(last_trained_idx, trained_bg_label_str.length(), app_label_str);
 	}
+//________________________________________________________________________________________________________________________________________________
 
 	std::vector<DataChain*> MVAAnalysis::get_output_bg_chains(std::vector<DataChain*> bg_chains, std::vector<Variable*> vars,
 		std::string method_name, std::string app_output_name, std::string job_name,
@@ -199,7 +233,26 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
 		return output_bg_chains;
 	}
+//________________________________________________________________________________________________________________________________________________
 
+  DataChain* MVAAnalysis::evaluate_test_data(DataChain* test_chain, std::vector<Variable*> vars, std::string method_name,
+		std::string app_output_name, std::string job_name, const char* trained_bg_label,
+		bool unique_output_files)
+	{
+		std::string real_app_output_name = get_app_filename_for_chain(app_output_name, trained_bg_label, test_chain->label);
+
+		if (method_name == "BDT")
+		{
+			return BDTAnalysis::get_BDT_results(test_chain, &vars, real_app_output_name, job_name, unique_output_files);
+		}
+		else
+		{
+			return MLPAnalysis::get_MLP_results(test_chain, &vars, real_app_output_name, job_name, unique_output_files);
+		}
+	}
+
+
+//________________________________________________________________________________________________________________________________________________
 	DataChain* MVAAnalysis::get_output_signal_chain(DataChain* signal_chain, std::vector<Variable*> vars, std::string method_name,
 		std::string app_output_name, std::string job_name, const char* trained_bg_label,
 		bool unique_output_files)
@@ -215,6 +268,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 			return MLPAnalysis::get_MLP_results(signal_chain, &vars, real_app_output_name, job_name, unique_output_files);
 		}
 	}
+//________________________________________________________________________________________________________________________________________________
 
 	std::string MVAAnalysis::build_output_graph_name(TFile* trained_output, std::string mva_cut)
 	{
@@ -230,7 +284,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 		}
 	}
 
-
+//________________________________________________________________________________________________________________________________________________
 	std::vector<const char*> MVAAnalysis::vary_parameters(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain,
 		DataChain* data_chain, SuperVars* super_vars, std::string method_name,
 		std::string dir_name, std::vector<const char*> NTrees, std::vector<const char*> BoostType,

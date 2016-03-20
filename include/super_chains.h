@@ -18,12 +18,12 @@ class SuperChains
   DataChain* signal_chain;
   DataChain* data_chain;
   DataChain* all_bg;
+  DataChain* test_chain;
 
   SuperChains();
 
   std::vector<DataChain*> get_bg_chains();
   std::vector<DataChain*> get_all_bg_chains();
-
 
 };
 

@@ -35,6 +35,7 @@ SuperVars::SuperVars()
   dijetmetnomu_ptfraction = new Variable("dijetmetnomu_ptfraction","dijetmetnomu_ptfraction", "0.0", "1.0", "0.0", "1.0","50","1","");
   jet1metnomu_scalarprod = new Variable("jet1metnomu_scalarprod","jet1metnomu_scalarprod", "-2000.0", "2000.0", "-2000.0", "2000.0","50","1","");
   jet2metnomu_scalarprod = new Variable("jet2metnomu_scalarprod","jet2metnomu_scalarprod", "-2000.0", "2000.0", "-2000.0", "2000.0","50","1","");
+  classID = new Variable("classID","signal_binary", "-1", "2", "-1", "2","2","1","");//0 for background 1 for signal
 }
 
 std::vector<Variable*> SuperVars::get_discriminating_vars()

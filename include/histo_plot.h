@@ -30,6 +30,12 @@ class HistoPlot
                         std::vector<Variable*>* variables = NULL, bool plot_data = true, std::string file_name = "",
 																								std::string mva_cut = "");
 
+  static void plot_evaluated_zjets_vv_testTree(Variable* mva_output, DataChain* testTree_chain, 
+                                                          DataChain* data, std::vector<DataChain*> bg_chains,
+                                                          std::vector<Variable*>* variables, std::string file_name, std::string mva_cut);
+
+  static std::string add_classID_to_selection(std::string selection, bool is_signal);
+
   static void draw_yline_on_plot(Variable* var, bool with_cut, double y);
 
   static TH1F* data_to_bg_ratio_histo(TH1F* data_histo, TH1F* bg_histo);

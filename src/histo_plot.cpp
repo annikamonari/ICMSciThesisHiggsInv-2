@@ -1,6 +1,6 @@
 #include "../include/histo_plot.h"
 #include <algorithm>
-
+using namespace std;
 void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
                           DataChain* signal_chain, DataChain* data, bool with_cut,
                           std::vector<Variable*>* variables, bool plot_data, std::string file_name,
@@ -84,6 +84,207 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   c1->SaveAs(img_name.c_str());
   c1->Close();
 }
+//////////////////////////////////////////////////////////////////////
+////////////Plots a histogram of the evaluated test data for zjets vv with signal 
+/////////// in red overlaid on top of grey background, als includes additional signal/nbackground plot below
+///////////
+void HistoPlot::plot_evaluated_zjets_vv_testTree(Variable* mva_output, DataChain* testTree_chain, DataChain* data, std::vector<DataChain*> bg_chains, std::vector<Variable*>* variables, std::string file_name, std::string mva_cut)
+{
+  //////////////////////////////////////////////////////////////////
+  //step 1: initialise TCanvas
+  TCanvas* c1     = new TCanvas("c1", mva_output->name_styled, 800, 800);
+  TPad* p1        = new TPad("p1", "p1", 0.0, 0.95, 1.0, 1.0);
+  TPad* p2        = new TPad("p2", "p2", 0.0, 0.2, 1.0, 0.95);
+  TPad* p3        = new TPad("p3", "p3", 0.0, 0.0, 1.0, 0.2);
+  TLegend* legend = new TLegend(0.0, 0.5, 0.0, 0.88);
+
+  p1->SetLeftMargin(0.102);
+  p2->SetBottomMargin(0.012);
+  p2->SetLeftMargin(0.105);
+  p3->SetBottomMargin(0.3);
+  p3->SetLeftMargin(0.102);
+
+  p1->Draw();
+  p2->Draw();
+  p3->Draw();
+  p2->cd();
+  std::cout << "mva cut: " << mva_cut << std::endl;
+  std::cout << "step 1 done" << std::endl;
+  //step 1.2 clone data chain
+	 TChain* test_clone     = (TChain*) testTree_chain->chain->Clone();
+ DataChain* clone_chain  = new DataChain(mc_signal_data, mc_signal_label, mc_signal_legend, "","",test_clone);
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //step 2: create background histo
+  //step 2.1: get mc weight
+  double mc_weight=1.93;
+  
+  /*for(int i=0; i<8;i++)
+  {
+    if (!strcmp(bg_chains[i]->label, "bg_zll"))
+    {
+      double zll_weight = MCWeights::calc_mc_weight(data, bg_chains, bg_chains[i],(*variables)[0], true, variables, mva_cut);
+    	 if (zll_weight != 1)
+    	 {// multiply z_ll weight to get z_>nunu weight
+    	 		mc_weight = zll_weight*5.651*1.513;
+    	 }
+	 else if(zll_weight = 1)
+	 {
+	    mc_weight=1;
+	 }
+
+    }
+  }*/
+
+  //step 2.2 create output selection string
+  std::string selection = "";
+  selection = add_classID_to_selection(selection, false);
+
+  //step 2.3 add mva cut to selection string
+  //step 2.3.1 reformat mva_cut string for MLPs
+ /* string mlp_cut = "MLP";
+  mlp_cut += mva_cut.substr(mva_cut.find("output")+6);*/
+
+  selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+ 
+  //step 2.4 add mc weight to selection
+  /*std::string mc_weight_str = get_string_from_double(mc_weight);
+  selection = selection + "*" + mc_weight_str; */
+  std::cout<<"final selection: "<<selection<<"\n";
+
+  //step 2.5: get background histo  problem area caused by signal using the same chain, try cloning the tree and running agsain
+  testTree_chain->chain->SetLineColor(1);
+  testTree_chain->chain->SetFillColor(40);
+  TH1F* bg_histo = build_1d_histo(testTree_chain, mva_output, true, true, "goff", NULL, selection, mc_weight, mva_cut);  
+
+  //step 2.6 add legend entry
+ /* std::string legend_str("Zjets->vv");
+  legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weight) + ")}");// get string from double fails
+  legend->AddEntry(bg_histo, legend_str.c_str(), "f");
+cout<<"legend str: "<<legend_str<<"\n";*/
+  std::string bg_leg_str = "Zjets->vv";
+  bg_leg_str += " (x";
+  bg_leg_str.append("1.93");
+  bg_leg_str += ")";
+
+  legend->AddEntry(bg_histo, (bg_leg_str).c_str(), "f");
+
+    std::cout << "step 2 done" << std::endl;
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //step 3: create signal histo 
+  //step 3.1 get regular selection string
+  string sig_selection = "";
+  sig_selection = add_classID_to_selection(sig_selection, true);
+
+  //step 3.2: add class ID to selection
+  sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
+
+std::cout<<"final sig_selection: "<<sig_selection<<"\n";
+
+  //step 3.3 get signal histo 
+  test_clone->SetLineColor(2);
+  test_clone->SetLineWidth(3);
+  test_clone->SetFillColor(0);
+  TH1F* signal_histo = build_1d_histo(clone_chain, mva_output, true, true, "goff", NULL , sig_selection, 1, mva_cut);
+
+  //step 3.4 add legend entry for signal
+  std::string signal_leg_str = "Signal";
+  signal_leg_str += " (x";
+  signal_leg_str.append(mva_output->signal_multiplier);
+  signal_leg_str += ")";
+
+  legend->AddEntry(signal_histo, (signal_leg_str).c_str(), "l");
+  std::cout << "step 3 done" << std::endl;
+  
+
+  /////////////////////////////////////////////////////////
+  //step 4: draw and style primary histogram
+  //step 4.1 draw background histogram
+  bg_histo->Draw();
+  std::cout << "step 4.1 done" << std::endl;
+
+  //step 4.2 draw signal histogram
+  signal_histo->Draw("SAME");
+
+  std::cout << "drew all" << std::endl;
+  std::cout << "step 4.2 done" << std::endl;
+
+  //step 4.3 style histogram
+  bg_histo->GetYaxis()->SetTitle("Events");
+  bg_histo->GetYaxis()->SetLabelSize(0.035);
+  bg_histo->GetYaxis()->SetTitleOffset(1.55);
+  bg_histo->GetXaxis()->SetLabelSize(0);
+  std::cout << "step 4 done" << std::endl;
+
+
+
+  ////////////////////////////////////////////////////////////
+  //step 5: build legend and draw substitle
+  //step 5.1 build legend
+  build_legend(legend, signal_histo, mva_output, true);
+
+  //step 5.2 draw subtitles
+  //draw_subtitle(mva_output, variables, true, data, "", mva_cut);
+  std::cout << "step 5 done" << std::endl;
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  //step 6: draw signal/background secondary histogram
+  //step 6.1 change pad then create signal/background histogram
+  p3->cd();
+  //TH1F* data_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo, bg_histo);
+
+  //step 6.2 draw signal/background histo
+  //data_bg_ratio_histo->Draw("e1");
+
+  //step 6.3 style signal/background histo
+  //style_ratio_histo(data_bg_ratio_histo, mva_output->name_styled);
+  std::cout << "ratio histo done" << std::endl;
+  //step 6.4 draw line, y=1 on signal/background histogram
+  //draw_yline_on_plot(mva_output, true, 1.0);
+  std::cout << "step 6 done" << std::endl;
+
+  ////////////////////////////////////////////////
+  //step 7: add title and save histogram to file
+  //step 7.1 create file name
+  std::string img_name = file_name;
+  std::cout << "file name" << std::endl;
+  
+  //step 7.2 change pad and add title
+  p1->cd();
+  draw_title(mva_output->name_styled);
+cout<<"title drawn\n";
+  //step 7.3 close and save the file
+  c1->SaveAs(img_name.c_str());
+cout<<"file saved\n";
+  c1->Close();
+  std::cout << "step 7 done" << std::endl;
+
+}
+
+
+//_______________________________________________________________________________________________________________________
+
+std::string HistoPlot::add_classID_to_selection(std::string selection, bool is_signal)
+{
+  std::string classID;
+  if (is_signal)
+  {
+    classID = "((classID==1))";
+  }
+  else
+  {
+    classID = "((classID==0))";
+  }
+  selection.insert(selection.find("(") + 1, classID);
+  
+  return selection;
+}
+
+
+//_______________________________________________________________________________________________________________________
 
 void HistoPlot::draw_yline_on_plot(Variable* var, bool with_cut, double y)
 {
@@ -134,7 +335,7 @@ std::string HistoPlot::get_selection(Variable* variable, std::vector<Variable*>*
 
   selection.insert(selection.find("(") + 1, lep_sel_default());
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
-  std::cout << selection << std::endl;
+  //std::cout << selection << std::endl;
 
   return add_mc_to_selection(bg_chain, variable, selection, mc_weight);
 }
@@ -452,7 +653,7 @@ void HistoPlot::style_legend(TLegend* legend)
 
 TH1F* HistoPlot::build_1d_histo(DataChain* data_chain, Variable* variable, bool with_cut, bool is_signal,
                                 const char* option, std::vector<Variable*>* variables, std::string selection,
-																																double mc_weight, std::string mva_cut)
+				double mc_weight, std::string mva_cut)
 {
   std::string var_arg = variable->build_var_string(data_chain->label, with_cut);
 
@@ -466,7 +667,7 @@ TH1F* HistoPlot::build_1d_histo(DataChain* data_chain, Variable* variable, bool 
   {
     selection_str = selection;
   }
-
+//cout<<"selection string in build 1d histo: "<<selection_str<<"\n";
   data_chain->chain->Draw(var_arg.c_str(), selection_str.c_str(), option);
 
   TH1F* histo = (TH1F*)gDirectory->Get(data_chain->label);
