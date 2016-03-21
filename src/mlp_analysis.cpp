@@ -39,7 +39,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
-	    				       "SplitMode=Random:NormMode=NumEvents:!V" );
+	    				       "SplitMode=Random:NormMode=EqualNumEvents:!V" );
 
 	    factory->BookMethod(TMVA::Types::kMLP, "MLP", MLP_options_str(NeuronType, NCycles, HiddenLayers, LearningRate) );
 
@@ -107,7 +107,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
      reader->AddVariable("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
      reader->AddVariable("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
      reader->AddVariable("jet_csv2", &jet_csv2);
-     reader->AddVariable("dijet_dphi", &metnomu_significance);
+     reader->AddVariable("dijet_dphi", &dijet_dphi);
      reader->AddVariable("dijet_M", &dijet_M);
 
 /*
@@ -299,7 +299,7 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	MLP_options.append(hl);
 	MLP_options += ":LearningRate=";
 	MLP_options.append(lr);
-	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=CE"; //ConvergenceTests=100:
+	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=CE";//:ConvergenceTests=10"; ConvergenceTests=100:
 
  return MLP_options;
 }

@@ -1,5 +1,19 @@
 #include "../include/roc_curves.h"
 
+double RocCurves::get_auc(std::string method_name, const char* training_output_path)
+{
+	  TFile* training_output = TFile::Open(training_output_path);
+	  TH1D* roc = plot_rejBvsS(training_output, method_name);
+   double auc = 0;
+
+   if (roc != 0x0)
+   {
+     auc = roc->Integral();
+   }
+
+   return auc;
+}
+
 void RocCurves::get_rocs(std::vector<TFile*> training_outputs, DataChain* signal,
 																									DataChain* bg, SuperVars* super_vars, std::string method_name, std::string dir)
 {

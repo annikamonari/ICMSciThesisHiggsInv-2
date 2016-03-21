@@ -3,7 +3,8 @@ build/*
 weights/*
 # Ignore the data dir
 data/*
-
+cards/*
+test/*
 # Ignore Dan's swp files
 *.swp
 *.swo

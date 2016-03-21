@@ -12,6 +12,8 @@
 class RocCurves
 {
  public:
+	 static double get_auc(std::string method_name, const char* training_output_path);
+
   static TH1D* plot_rejBvsS(TFile* training_output, std::string method_name);
 
   static void get_rocs(std::vector<TFile*> training_outputs, DataChain* signal,
