@@ -1,10 +1,11 @@
-# Ignore the build dir
+
 build/*
 weights/*
 # Ignore the data dir
 data/*
 cards/*
 test/*
+
 # Ignore Dan's swp files
 *.swp
 *.swo
@@ -43,3 +44,4 @@ BDT_*/*
 MLP_*/*
 analysis
 Debug/
+plots/*
