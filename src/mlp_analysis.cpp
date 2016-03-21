@@ -78,7 +78,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 		   Float_t metnomu_significance;
 		   Float_t sqrt_ht;
 		   Float_t alljetsmetnomu_mindphi;
-					Float_t dijet_M;
+		   Float_t dijet_M;
 		   Float_t metnomuons;
 
 		   Float_t jet1_pt;
@@ -107,7 +107,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
      reader->AddVariable("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
      reader->AddVariable("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
      reader->AddVariable("jet_csv2", &jet_csv2);
-     reader->AddVariable("dijet_dphi", &metnomu_significance);
+     reader->AddVariable("dijet_dphi", &dijet_dphi);
      reader->AddVariable("dijet_M", &dijet_M);
 
 /*
@@ -157,7 +157,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 	   	   data->SetBranchAddress("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
 	   	   data->SetBranchAddress("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
       		   data->SetBranchAddress("jet_csv2", &jet_csv2);
-      		   data->SetBranchAddress("dijet_dphi", &metnomu_significance);
+      		   data->SetBranchAddress("dijet_dphi", &dijet_dphi);
                    data->SetBranchAddress("dijet_M", &dijet_M);
 /*
 	   	   data->SetBranchAddress("dijet_deta", &dijet_deta);

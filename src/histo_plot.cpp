@@ -120,7 +120,8 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(Variable* mva_output, DataChain
   //step 2: create background histo
   //step 2.1: get mc weight
   double mc_weight=1.93;
-  
+  string problem_string = get_string_from_double(mc_weight);
+  cout<<"the result of the said oproblem string: "<<problem_string<<endl;
   for(int i=0; i<8;i++)
   {
     if (!strcmp(bg_chains[i]->label, "bg_zll"))
@@ -138,6 +139,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(Variable* mva_output, DataChain
     }
   }
 cout<<"mc_weight = "<<mc_weight<<endl;
+//mc weights have been tested and work, now need to edit the draw stack function to not stack the zjets in the datachain vector and instead add the test_set th1
   //step 2.2 create output selection string
   std::string selection = "";
   selection = add_classID_to_selection(selection, false);
@@ -158,16 +160,11 @@ cout<<"mc_weight = "<<mc_weight<<endl;
   TH1F* bg_histo = build_1d_histo(testTree_chain, mva_output, true, true, "goff", NULL, selection, mc_weight, mva_cut);  
   TH1F bg_histo_inTheStack = *bg_histo;
   //step 2.6 add legend entry
- /* std::string legend_str("Zjets->vv");
+  std::string legend_str("Zjets->vv");
   legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weight) + ")}");// get string from double fails so mc weight is added manually
   legend->AddEntry(bg_histo, legend_str.c_str(), "f");
-cout<<"legend str: "<<legend_str<<"\n";*/
-  std::string bg_leg_str = "Zjets->vv";
-  bg_leg_str += " (x";
-  bg_leg_str.append("1.93");
-  bg_leg_str += ")";
+   //cout<<"legend str: "<<legend_str<<"\n";
 
-  legend->AddEntry(bg_histo, (bg_leg_str).c_str(), "f");
 
     std::cout << "step 2 done" << std::endl;
 
@@ -255,7 +252,7 @@ std::cout<<"final sig_selection: "<<sig_selection<<"\n";
   //step 7.2 change pad and add title
   p1->cd();
   draw_title(mva_output->name_styled);
-cout<<"title drawn\n";
+  //
   //step 7.3 close and save the file
   c1->SaveAs(img_name.c_str());
 cout<<"file saved\n";

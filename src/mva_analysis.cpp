@@ -138,7 +138,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","0.2","0.6","0.2","","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","0.0","1.0","0.0","","100","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 

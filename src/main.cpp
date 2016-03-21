@@ -23,7 +23,7 @@ void produce_graphs(bool with_cut) {
   bool unique_output_files = true;
   // boolean is for whether or not to create datacards
   bool create_cards = true;
-  std::string job_name = "3";
+  std::string job_name = "8";
   std::string mva_cut = "output>0.0";
   std::string method_name = "MLP";
 
@@ -39,7 +39,7 @@ void produce_graphs(bool with_cut) {
   }
 
 
-MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], NCycles[0], HiddenLayers[2], LearningRate[0],unique_output_files, create_cards, job_name, mva_cut);
+MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], NCycles[1], HiddenLayers[0], LearningRate[4],unique_output_files, create_cards, job_name, mva_cut);
 
 }
 
