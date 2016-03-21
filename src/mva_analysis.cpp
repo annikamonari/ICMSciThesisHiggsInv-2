@@ -10,12 +10,19 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	std::vector<const char*> HiddenLayers, std::vector<const char*> LearningRate,
 	bool unique_output_files, bool create_cards, std::string job_name)
 {
-	std::vector<const char*> file_paths = vary_parameters(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, method_name, dir_name,
+	/*std::vector<const char*> file_paths = vary_parameters(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, method_name, dir_name,
 		NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles, HiddenLayers,
-		LearningRate, unique_output_files, create_cards, job_name);
+		LearningRate, unique_output_files, create_cards, job_name);*/
 
+        const char* file_arr[] ={
+
+ 	"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.0000001-EstimatorType=CE.root",
+ 	"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.0000002-EstimatorType=CE.root",
+ 	"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.00000007-EstimatorType=CE.root",
+ 	"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.00000008-EstimatorType=CE.root"
+                     };
+        std::vector<const char*> file_paths (file_arr, file_arr +sizeof(file_arr)/sizeof(const char*));
 	std::vector<TFile*> files = get_files_from_paths(file_paths);
-
 	std::string bg_label = bg_chains[bg_to_train]->label;
 	std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name + "/" + bg_label + "/";
 	std::cout << "=> Set Folder Name: " << folder_name << std::endl;
@@ -24,6 +31,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
   //ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[bg_to_train]->label);
 	RocCurves::get_rocs(files, signal_chain, bg_chains[bg_to_train], super_vars, method_name, folder_name);
 }
+//_________________________________________________________________________________________________________________________________________________
 
 std::vector<TFile*> MVAAnalysis::get_files_from_paths(std::vector<const char*> file_paths)
 {
@@ -79,10 +87,6 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 //________________________________________________________________________________________________________________________________________________	
 
 //step 2.1 get test tree
-//_______________________   as pointer has been declraed file is already open so get your tree and close it.
-//
-//	SuperChains* super_chains         = new SuperChains();
-//superchains contains a pointer to a TFile containing a copy of a previously a test dataset of a previously trained MLP on the zjets to vv background
         //step 2.1.1 get trained output file name
         const char* t_arr[] = {trained_output->GetName()};
 	//step 2.1.2 intialise DataChain paramters for test set
@@ -145,7 +149,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	std::string output_graph_name = build_output_graph_name(trained_output, mva_cut);
 
 	std::cout << "mva output graph name: " << output_graph_name << std::endl;
-//step 4 draw plots
+//step 4 draw plot
 //_________________________
 
 HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, output_data_chain, output_bg_chains, &vars, output_graph_name, mva_cut);

@@ -118,27 +118,12 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(Variable* mva_output, DataChain
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 2: create background histo
-  //step 2.1: get mc weight
-  double mc_weight=1.93;
-  string problem_string = get_string_from_double(mc_weight);
-  cout<<"the result of the said oproblem string: "<<problem_string<<endl;
-  for(int i=0; i<8;i++)
-  {
-    if (!strcmp(bg_chains[i]->label, "bg_zll"))
-    {
-      double zll_weight = MCWeights::calc_mc_weight(data, bg_chains, bg_chains[i],(*variables)[0], true, variables, mva_cut);
-    	 if (zll_weight != 1)
-    	 {// multiply z_ll weight to get z_>nunu weight
-    	 		mc_weight = zll_weight*5.651*1.513;
-    	 }
-	 else if(zll_weight = 1)
-	 {
-	    mc_weight=1;
-	 }
+  //step 2.1: get zjets mc weight
+  std::vector<double> mc_weights_vector = mc_weights(data, bg_chains, mva_output, true, variables, mva_cut);
 
-    }
-  }
-cout<<"mc_weight = "<<mc_weight<<endl;
+  double zjets_weight = mc_weights_vector[6];
+
+  cout<<"mc_weight = "<<zjets_weight<<endl;
 //mc weights have been tested and work, now need to edit the draw stack function to not stack the zjets in the datachain vector and instead add the test_set th1
   //step 2.2 create output selection string
   std::string selection = "";
@@ -156,17 +141,22 @@ cout<<"mc_weight = "<<mc_weight<<endl;
 
   //step 2.5: get background histo  problem area caused by signal using the same chain, try cloning the tree and running agsain
   testTree_chain->chain->SetLineColor(1);
-  testTree_chain->chain->SetFillColor(40);
-  TH1F* bg_histo = build_1d_histo(testTree_chain, mva_output, true, true, "goff", NULL, selection, mc_weight, mva_cut);  
-  TH1F bg_histo_inTheStack = *bg_histo;
+  testTree_chain->chain->SetFillColor(15);
+  TH1F* zjets_histo = build_1d_histo(testTree_chain, mva_output, true, true, "goff", NULL, selection, zjets_weight, mva_cut);  
+  TH1F bg_histo_inThe_memory_Stack = *zjets_histo;// save to stack emory fromn the heap
+
   //step 2.6 add legend entry
   std::string legend_str("Zjets->vv");
-  legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weight) + ")}");// get string from double fails so mc weight is added manually
-  legend->AddEntry(bg_histo, legend_str.c_str(), "f");
+  legend_str += (" #font[12]{(MC weight: " + get_string_from_double(zjets_weight) + ")}");// get string from double fails so mc weight is added manually
+  legend->AddEntry(zjets_histo, legend_str.c_str(), "f");
+
    //cout<<"legend str: "<<legend_str<<"\n";
+   //step 2.7 get stack for all non zjets_vv backgrounds here
+   THStack stack = draw_stacked_histo_no_zjets(legend, mva_output, bg_chains, true, variables, data, mc_weights_vector, mva_cut);
 
-
-    std::cout << "step 2 done" << std::endl;
+   //step 2.8 add zjets_vv to stack
+   stack.Add(zjets_histo);
+   std::cout << "step 2 done" << std::endl;
 
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,12 +184,11 @@ std::cout<<"final sig_selection: "<<sig_selection<<"\n";
 
   legend->AddEntry(signal_histo, (signal_leg_str).c_str(), "l");
   std::cout << "step 3 done" << std::endl;
-  
 
   /////////////////////////////////////////////////////////
   //step 4: draw and style primary histogram
   //step 4.1 draw background histogram
-  bg_histo->Draw();
+  stack.Draw();
   std::cout << "step 4.1 done" << std::endl;
 
   //step 4.2 draw signal histogram
@@ -209,13 +198,12 @@ std::cout<<"final sig_selection: "<<sig_selection<<"\n";
   std::cout << "step 4.2 done" << std::endl;
 
   //step 4.3 style histogram
-  bg_histo->GetYaxis()->SetTitle("Events");
-  bg_histo->GetYaxis()->SetLabelSize(0.035);
-  bg_histo->GetYaxis()->SetTitleOffset(1.55);
-  bg_histo->GetXaxis()->SetLabelSize(0);
+  style_stacked_histo(&stack, mva_output->name_styled);
+  /*zjets_histo->GetYaxis()->SetTitle("Events");
+  zjets_histo->GetYaxis()->SetLabelSize(0.035);
+  zjets_histo->GetYaxis()->SetTitleOffset(1.55);
+  zjets_histo->GetXaxis()->SetLabelSize(0);*/
   std::cout << "step 4 done" << std::endl;
-
-
 
   ////////////////////////////////////////////////////////////
   //step 5: build legend and draw substitle
@@ -231,13 +219,13 @@ std::cout<<"final sig_selection: "<<sig_selection<<"\n";
   //step 6: draw signal/background secondary histogram
   //step 6.1 change pad then create signal/background histogram
   p3->cd();
-  TH1F* data_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo, bg_histo);
+  TH1F* signal_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo, (TH1F*)(stack.GetStack()->Last()));
 
   //step 6.2 draw signal/background histo
-  data_bg_ratio_histo->Draw("e1");
+  signal_bg_ratio_histo->Draw("e1");
 
   //step 6.3 style signal/background histo
-  style_ratio_histo(data_bg_ratio_histo, mva_output->name_styled);
+  style_ratio_histo(signal_bg_ratio_histo, mva_output->name_styled);
   std::cout << "ratio histo done" << std::endl;
   //step 6.4 draw line, y=1 on signal/background histogram
   draw_yline_on_plot(mva_output, true, 1.0);
@@ -282,6 +270,27 @@ std::string HistoPlot::add_classID_to_selection(std::string selection, bool is_s
 
 
 //_______________________________________________________________________________________________________________________
+
+THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
+                                      bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::vector<double> mc_weights_vector, std::string mva_cut)
+{
+  THStack stack(var->name_styled, "");
+
+  for(int i = 0; i < bg_chains.size(); i++) {
+    if(strcmp(bg_chains[i]->label, "bg_zjets_vv")){
+      TH1F* single_bg_histo = draw_background(bg_chains[i], var, colours()[i], with_cut, variables, mc_weights_vector[i],
+				mva_cut);
+      stack.Add(single_bg_histo);
+      std::string legend_str(bg_chains[i]->legend);
+      legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weights_vector[i]) + ")}");
+      legend->AddEntry(single_bg_histo, legend_str.c_str(), "f");
+      cout<<"drew background: "<<bg_chains[i]->label<<endl;
+    }
+  }
+  return stack;
+}
+//_______________________________________________________________________________________________________________________
+
 
 void HistoPlot::draw_yline_on_plot(Variable* var, bool with_cut, double y)
 {
@@ -796,3 +805,5 @@ std::string HistoPlot::build_signal_leg_entry(Variable* var, DataChain* signal_c
 
   return signal_leg_str;
 }
+
+

@@ -22,8 +22,8 @@ void produce_graphs(bool with_cut) {
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = true;
   // boolean is for whether or not to create datacards
-  bool create_cards = true;
-  std::string job_name = "8";
+  bool create_cards = false;
+  std::string job_name = "1";
   std::string mva_cut = "output>0.0";
   std::string method_name = "MLP";
 
@@ -32,14 +32,14 @@ void produce_graphs(bool with_cut) {
   {
   		for (int j = 0; j < 1/*3*/; j++)
   		{
-  			/* MVAAnalysis::get_plots_varying_params(bg_chains, 6, signal_chain, data_chain, super_vars, "MLP", varying_params[0],
+  			 /*MVAAnalysis::get_plots_varying_params(bg_chains, 6, signal_chain, data_chain, super_vars, "MLP", varying_params[0],
 																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
 																																												HiddenLayers, LearningRate, unique_output_files, create_cards, "1");*/
 		}
   }
 
 
-MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], NCycles[1], HiddenLayers[0], LearningRate[4],unique_output_files, create_cards, job_name, mva_cut);
+MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], NCycles[0], HiddenLayers[3], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut);
 
 }
 

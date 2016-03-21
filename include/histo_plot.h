@@ -36,6 +36,9 @@ class HistoPlot
 
   static std::string add_classID_to_selection(std::string selection, bool is_signal);
 
+  static THStack draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
+                                      bool with_cut, std::vector<Variable*>* variables, DataChain* data,std::vector<double> mc_weights_vector, std::string mva_cut);
+
   static void draw_yline_on_plot(Variable* var, bool with_cut, double y);
 
   static TH1F* data_to_bg_ratio_histo(TH1F* data_histo, TH1F* bg_histo);
