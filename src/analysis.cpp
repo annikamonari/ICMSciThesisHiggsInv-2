@@ -327,7 +327,7 @@ const char* data_legend = "data";
   std::vector<const char*> HiddenLayers (HiddenLayers_arr, HiddenLayers_arr +
                                          sizeof(HiddenLayers_arr)/sizeof(const char*));
 
-  const char* LearningRate_arr[] = {"0.02","0.002","0.0002", "0.00002", "0.02","0.000002", "0.0000002"};
+  const char* LearningRate_arr[] = {"0.02","0.0002","0.002","0.0002", "0.00002", "0.02","0.000002", "0.0000002"};
   std::vector<const char*> LearningRate (LearningRate_arr, LearningRate_arr +
                                            sizeof(LearningRate_arr)/sizeof(const char*));
 
