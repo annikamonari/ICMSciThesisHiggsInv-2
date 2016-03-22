@@ -37,11 +37,13 @@ double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable
 
   for (int i = 0; i < bg_chains.size(); i++)
   {
-    total_integral += get_nevents(bg_chains[i], var, with_cut, variables, selection);
+    double integral = get_nevents(bg_chains[i], var, with_cut, variables, selection);
+    
     if(!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
       {
-        if(double_zjets){total_integral*2;}
+        if(double_zjets){integral = integral*2;}
       }
+      total_integral += integral;
   }
 
   return total_integral;
