@@ -67,8 +67,16 @@ cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
   double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, double_zjets) - ctrl_mc_in_ctrl;
 cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
-
-  return (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
+  double weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
+  
+  if (other_bg_in_ctrl > ctrl_mc_in_ctrl)
+  {
+    return 1.0;
+  }
+  else
+  {
+    return weight;
+  }
 }
 
 double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
