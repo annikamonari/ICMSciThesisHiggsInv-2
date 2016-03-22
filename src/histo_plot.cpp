@@ -275,9 +275,9 @@ THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, s
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
 
   for(int i = 0; i < bg_chains.size(); i++) {
-    if(strcmp(bg_chains[i]->label, "bg_zjets_vv")){
-       //cout<<bg_chains[i]->label<<" background, mc weight: "<<mc_weights_vector[i]<<endl;
-      TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, 0.5*mc_weights_vector[i], mva_cut);
+   if(strcmp(bg_chains[i]->label, "bg_zjets_vv")) {
+       cout<<bg_chains[i]->label<<" background, mc weight: "<<mc_weights_vector[i]<<endl;
+      TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, mc_weights_vector[i], mva_cut);
       stack.Add(single_bg_histo);
       std::string legend_str(bg_chains[i]->legend);
       legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weights_vector[i]) + ")}");
@@ -423,20 +423,27 @@ string selection;
     			selection = HistoPlot::add_classID_to_selection(selection, false);
     			selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+//std::cout << "in histoplot mc weight errors" << selection << std::endl;
 		}
-
+//cout<<"selection :"<<selection<<"\n";
 	   TH1F* histo = build_1d_histo(bg_chains[i], var,with_cut, false, "goff", variables, selection, 1, mva_cut);
+//cout<<"got histo\n";
 	   double integral = get_histo_integral(histo, with_cut, var);
 	 		mc_weight_errors[i] = std::pow(integral, 0.5);
+//cout<<"got integral: "<<integral<<"\n";
 
-	   if (bg_mc_weights[i] != 1)
+	   if (bg_mc_weights[i] != 1) 
 	   {
+		if(strcmp(bg_chains[i]->label, "bg_zjets_vv")){
+		//cout<<"mc wiehgt in if loop: "<<bg_mc_weights[i]<<endl;
 	     mc_weight_errors[i] = single_bg_error(data, bg_chains, bg_chains[i], var, with_cut, variables, bg_mc_weights[i], mva_cut,selection);
+//cout<<"got bg error\n";
 		    if(!strcmp(bg_chains[i]->label, "bg_zll"))
 		    {
 		     	zll_weight_error = mc_weight_errors[i];
 		    }
-	   }
+	         }
+           }
 
 	   if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 	   {
@@ -444,6 +451,7 @@ string selection;
              if(variables==NULL){mc_weight_errors[i] = mc_weight_errors[i]*2;}//*2 for tes/training split
 
 	   }
+ cout << bg_chains[i]->label << endl;
 	 }
 	 std::vector<double> mc_weights_vector (mc_weight_errors, mc_weight_errors + sizeof(mc_weight_errors) / sizeof(mc_weight_errors[0]));
 
@@ -455,11 +463,15 @@ string selection;
 double HistoPlot::single_bg_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
 std::string mva_cut, std::string selection)
-{
+{//cout<<"selection: "<<selection<<"\n";
   TH1F* bg = build_1d_histo(bg_chain, var, with_cut, false, "goff", variables, selection, 1, mva_cut);
+  //cout << "histo" << bg << endl;
   double MC_N_S = get_histo_integral(bg, with_cut, var);
+//cout << MC_N_S << endl;
   double sigma_N = std::pow(MC_N_S, 0.5);
+//cout << "got sigma_N" << endl;
   double sigma_w = MCWeights::calc_weight_error(data, bg_chains, bg_chain, var, with_cut, variables, mva_cut);
+//cout << "got weight error" << endl;
   double sigma_total_sq = std::pow(sigma_w*MC_N_S,2)+std::pow(sigma_N*weight,2);
   double sigma_total = std::pow(sigma_total_sq,0.5);
   //std::cout << bg_chain->label << " - single bg error: " << sigma_total << std::endl;

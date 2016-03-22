@@ -6,7 +6,7 @@ SuperVars::SuperVars()
                                         "5.0","60","5", "", true);
   dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","3.5","8.0","4.2","8.0","25","10", "");
   metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)",
-                                        "3.0","12.0","3.5","","50","10", "");
+                                        "3.0","","3.5","","50","10", "");
   sqrt_ht                = new Variable("sqrt_ht","Square Root HCAL Scalar Sum of Energy","0.0","35.0","9.0",
                                         "18.0","75","10", "GeV^{0.5}");
   alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",

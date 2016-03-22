@@ -94,7 +94,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
         //step 2.1.1 get trained output file name
         const char* t_arr[] = {trained_output->GetName()};
 	//step 2.1.2 intialise DataChain paramters for test set
-        const char* t_label ="test_set";
+        const char* t_label ="bg_zjets_vv";
         const char* t_legend ="test set";
         std::vector<const char*> t_vector (t_arr, t_arr + 
                          sizeof(t_arr)/sizeof(const char*));
@@ -211,7 +211,7 @@ std::vector<DataChain*> bg_chs (bg_ch_arr, bg_ch_arr + sizeof(bg_ch_arr) / sizeo
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","0.0","1.0","0.0","","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","-1.25","1.5","-1.25","1.5","100","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 
@@ -234,9 +234,13 @@ for(int i=0; i<8;i++)
 }
 std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
 //turn array into vector for datacard input
+   
+	DataCard::create_datacard(output_data_chain, card_input_vector[6], card_input_vector,
+			          mva_output, true, NULL, "", "");
 
-	if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
-		mva_output, true, NULL, trained_output, method_name);}
+
+	/*if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
+		mva_output, true, NULL, trained_output, method_name);}*/
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
 		std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
@@ -264,7 +268,8 @@ std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + size
 		}
 		else
 		{
-			std::string cut_arr[] = {"output>0.0","output>0.35","output>0.45","output>0.6","output>0.61","output>0.62","output>0.63",					"output>0.64","output>0.65","output>0.66","output>0.67","output>0.68","output>0.69","output>0.7","output>0.71",					"output>0.72","output>0.73","output>0.74","output>0.75","output>0.76","output>0.77","output>0.78"
+			std::string cut_arr[] = {"output>0.0","output>0.35","output>0.352","output>0.354","output>0.356","output>0.358","output>0.36","output>0.362","output>0.364","output>0.366","output>0.368","output>0.37","output>0.372","output>0.374","output>0.376","output>0.378","output>0.38","output>0.382","output>0.384","output>0.386","output>0.388","output>0.39","output>0.392","output>0.394","output>0.396","output>0.398","output>0.4","output>0.402","output>0.404","output>0.406","output>0.408","output>0.41","output>0.412","output>0.414","output>0.416","output>0.418","output>0.42","output>0.422","output>0.424","output>0.426","output>0.428","output>0.43","output>0.432","output>0.434","output>0.436","output>0.438","output>0.44","output>0.442","output>0.444","output>0.446","output>0.448","output>0.45"
+
 				};
 
 			for (int i = 0; i < sizeof(cut_arr)/sizeof(cut_arr[0]); i++)
