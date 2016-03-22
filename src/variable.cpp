@@ -111,7 +111,7 @@ std::string Variable::build_selection_string(bool with_cut, bool is_signal)
 
   if (with_cut)
   {
-    sel_string += "(";
+    sel_string += "(&&(jet1_eta*jet2_eta<0)";
     //sel_string += build_selection(name, x_min_cut, x_max_nocut, abs_for_cut);
     sel_string += ")*";
   }

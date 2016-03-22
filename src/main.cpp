@@ -22,8 +22,8 @@ void produce_graphs(bool with_cut) {
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
-  bool create_cards = true;
-  std::string job_name = "1";
+  bool create_cards = false;
+  std::string job_name = "5";//job_ptr;
   std::string mva_cut = "";
   std::string method_name = "MLP";
   int relevant_bgs[] = {6,1,2,3};
@@ -46,13 +46,19 @@ void produce_graphs(bool with_cut) {
   			 /*const char* NeuronType2_arr[] = {"tanh","sigmoid"};
   			 std::vector<const char*> NeuronType2 (NeuronType2_arr, NeuronType2_arr +
   			                                  sizeof(NeuronType2_arr)/sizeof(const char*));*/
+  std::vector<Variable*> parked = super_vars->get_parked_vars();
 
-						MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "cards",
-																																			method_name, NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0],
-																																			nCuts[0], NeuronType[0], NCycles[0], HiddenLayers[0], LearningRate[0],
-																																			unique_output_files, create_cards, job_name, mva_cut, sign, min, max);
+  DataCard::create_parked_datacard(data_chain, signal_chain, bg_chains, &parked);
 
-     DataCard::create_datacard(data_chain, signal_chain, bg_chains, cut_vars[0], with_cut, &cut_vars, "", "");
+  /*
+  		MVAAnalysis::get_mva_results(bg_chains, 1, signal_chain, data_chain, super_vars, "test",
+  																																					method_name, NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0],
+  																																					nCuts[0], NeuronType[0], NCycles[0], HiddenLayers[0], LearningRate[0],
+  																																					unique_output_files, create_cards, job_name, mva_cut, sign, min, max);
+
+*/
+
+     //DataCard::create_datacard(data_chain, signal_chain, bg_chains, cut_vars[0], with_cut, &cut_vars, "", "");
   }
 
 int main(int argc, char** argv) {

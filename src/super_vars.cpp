@@ -35,6 +35,28 @@ SuperVars::SuperVars()
   dijetmetnomu_ptfraction = new Variable("dijetmetnomu_ptfraction","dijetmetnomu_ptfraction", "0.0", "1.0", "0.0", "1.0","50","1","");
   jet1metnomu_scalarprod = new Variable("jet1metnomu_scalarprod","jet1metnomu_scalarprod", "-2000.0", "2000.0", "-2000.0", "2000.0","50","1","");
   jet2metnomu_scalarprod = new Variable("jet2metnomu_scalarprod","jet2metnomu_scalarprod", "-2000.0", "2000.0", "-2000.0", "2000.0","50","1","");
+
+  // parked variables
+  jet1_eta_parked = new Variable("jet1_eta","jet1_eta", "-20.0", "5.0", "-10.0", "4.7","133","1","");
+  jet2_eta_parked = new Variable("jet2_eta","jet2_eta", "-20.0", "5.0", "-10.0", "4.7","133","1","");
+  jet1_pt_parked  = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","30","", "GeV");
+  jet2_pt_parked  = new Variable("jet2_pt","Jet2pt","0.0","","45.0","","30","", "GeV");
+  dijet_M_parked  = new Variable("dijet_M","Dijet Mass","0.0","","1200","","50","10", "GeV");
+  metnomuons_parked = new Variable("metnomuons","MET (No Muons)","0.0","","90.0","", "50","5", "GeV");
+  metnomu_significance_parked = new Variable("metnomu_significance","MET Significance (No Muons)",
+                                          "3.0","","4.0","","50","10", "");
+  alljetsmetnomu_mindphi_parked = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
+                                          "0.0","","2.3","","60","5", "");
+}
+
+std::vector<Variable*> SuperVars::get_parked_vars()
+{
+		Variable* var_arr[] = {jet1_eta_parked, jet2_eta_parked, jet1_pt_parked, jet2_pt_parked, dijet_M_parked, metnomuons_parked,
+																									metnomu_significance_parked, alljetsmetnomu_mindphi_parked};
+
+	  std::vector<Variable*> vars (var_arr, var_arr + sizeof(var_arr) / sizeof(var_arr[0]));
+
+	  return vars;
 }
 
 std::vector<Variable*> SuperVars::get_discriminating_vars()
@@ -86,4 +108,21 @@ std::string SuperVars::get_cuts_str_for_tmva()
 																																														")", " ");
 
   return cut_str;
+}
+
+std::string SuperVars::parked_data_cuts_no_nsel()
+{
+	 std::string line_1 = "(((jet1_eta*jet2_eta)<0)&&(jet1_eta<4.7)&&(jet2_eta<4.7)";
+	 std::string line_2 = "&&(jet1_pt>50)&&(jet2_pt>45)&&(dijet_M>1200)&&(metnomuons>90)";
+	 std::string line_3 = "&&(metnomu_significance>4.0)&&(alljetsmetnomu_mindphi>2.3))*total_weight_lepveto";
+
+	 return line_1 + line_2 + line_3;
+}
+
+std::string SuperVars::parked_data_cuts_wsel()
+{
+  std::string parked_sel = parked_data_cuts_no_nsel();
+  parked_sel.insert(parked_sel.find("(") + 1, HistoPlot::lep_sel_default());
+
+  return parked_sel;
 }

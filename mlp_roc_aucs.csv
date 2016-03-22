@@ -1,56 +1,279 @@
-bg_zjets_vv,radial,400,2 2 2 2,0.000002,55.8772
-bg_zjets_vv,radial,400,2 4 8,0.000002,53.5879
-bg_zjets_vv,radial,400,2 4 4 8,0.000002,50.9925
-bg_zjets_vv,radial,400,2 4 8 16,0.000002,61.0125
-bg_zjets_vv,radial,400,2 4 8 8,0.000002,56.5559
-bg_zjets_vv,radial,400,5 5 5,0.000002,54.3256
-bg_zjets_vv,radial,400,5 5 5 5,0.000002,55.4938
-bg_zjets_vv,radial,400,5 5 5 5 5,0.000002,57.1985
-bg_zjets_vv,radial,400,10 10 10,0.000002,55.5992
-bg_zjets_vv,radial,400,10 10 10 10 10,0.000002,52.3973
-bg_zjets_vv,radial,400,10 10 10 10,0.000002,51.0694
-bg_zjets_vv,radial,400,2 2 2 2,0.00002,54.02
-bg_zjets_vv,radial,400,2 4 8,0.00002,61.204
-bg_zjets_vv,radial,400,2 4 4 8,0.00002,59.0486
-bg_zjets_vv,radial,400,2 4 8 16,0.00002,66.3168
-bg_zjets_vv,radial,400,2 4 8 8,0.00002,62.7471
-bg_zjets_vv,radial,400,5 5 5,0.00002,61.5336
-bg_zjets_vv,radial,400,5 5 5 5,0.00002,61.7106
-bg_zjets_vv,radial,400,5 5 5 5 5,0.00002,60.1448
-bg_zjets_vv,radial,400,10 10 10,0.00002,66.7881
-bg_zjets_vv,radial,400,10 10 10 10 10,0.00002,63.4743
-bg_zjets_vv,radial,400,10 10 10 10,0.00002,65.9243
-bg_zjets_vv,radial,400,2 2 2 2,0.002,69.725
-bg_zjets_vv,radial,400,2 4 8,0.002,70.2953
-bg_zjets_vv,radial,400,2 4 4 8,0.002,69.8682
-bg_zjets_vv,radial,400,2 4 8 16,0.002,70.0822
-bg_zjets_vv,radial,400,2 4 8 8,0.002,69.6691
-bg_zjets_vv,radial,400,5 5 5,0.002,69.7928
-bg_zjets_vv,radial,400,5 5 5 5,0.002,69.6288
-bg_zjets_vv,radial,400,5 5 5 5 5,0.002,69.4444
-bg_zjets_vv,radial,400,10 10 10,0.002,68.874
-bg_zjets_vv,radial,400,10 10 10 10 10,0.002,68.3246
-bg_zjets_vv,radial,400,10 10 10 10,0.002,68.0388
-bg_zjets_vv,radial,400,2 2 2 2,0.0002,66.8771
-bg_zjets_vv,radial,400,2 4 8,0.0002,69.9955
-bg_zjets_vv,radial,400,2 4 4 8,0.0002,69.7238
-bg_zjets_vv,radial,400,2 4 8 16,0.0002,70.1958
-bg_zjets_vv,radial,400,2 4 8 8,0.0002,70.0571
-bg_zjets_vv,radial,400,5 5 5,0.0002,69.9201
-bg_zjets_vv,radial,400,5 5 5 5,0.0002,70.146
-bg_zjets_vv,radial,400,5 5 5 5 5,0.0002,69.4551
-bg_zjets_vv,radial,400,10 10 10,0.0002,69.8534
-bg_zjets_vv,radial,400,10 10 10 10 10,0.0002,68.3269
-bg_zjets_vv,radial,400,10 10 10 10,0.0002,69.3499
-bg_zjets_vv,radial,400,2 2 2 2,0.02,70.2422
-bg_zjets_vv,radial,400,2 4 8,0.02,70.1134
-bg_zjets_vv,radial,400,2 4 4 8,0.02,70.3811
-bg_zjets_vv,radial,400,2 4 8 16,0.02,69.6099
-bg_zjets_vv,radial,400,2 4 8 8,0.02,70.066
-bg_zjets_vv,radial,400,2 4 8,0.002,70.2953
-bg_zjets_vv,radial,400,2 4 8,0.002,70.2953
-bg_zjets_vv,radial,400,2 4 8,0.002,70.2953
-bg_zjets_vv,radial,400,2 4 8,0.002,70.2953
-bg_zjets_vv,radial,2000,2 4 8,0.002,70.2859
 bg_zjets_vv,radial,600,2 4 8,0.002,70.2838
-bg_zjets_vv,radial,600,2 4 8,0.002,70.2838
+bg_wjets_ev,radial,600,2 4 8,0.002,71.2174
+bg_wjets_muv,radial,600,2 4 8,0.002,70.769
+bg_wjets_tauv,radial,600,2 4 8,0.002,69.419
+bg_zjets_vv,radial,600,2 2 2 2,0.002,69.7483
+bg_wjets_muv,radial,600,2 2 2 2,0.002,70.9201
+bg_wjets_ev,radial,600,2 2 2 2,0.002,71.3388
+bg_wjets_tauv,radial,600,2 2 2 2,0.002,69.1388
+bg_zjets_vv,radial,600,2 4 4 8,0.002,69.868
+bg_wjets_muv,radial,600,2 4 4 8,0.002,69.9261
+bg_wjets_ev,radial,600,2 4 4 8,0.002,71.575
+bg_wjets_tauv,radial,600,2 4 4 8,0.002,69.0353
+bg_wjets_muv,radial,600,2 4 8 16,0.002,70.1294
+bg_zjets_vv,radial,600,2 4 8 16,0.002,70.0608
+bg_wjets_tauv,radial,600,2 4 8 16,0.002,69.1995
+bg_wjets_ev,radial,600,2 4 8 16,0.002,71.3271
+bg_wjets_muv,radial,600,2 4 8 8,0.002,70.7068
+bg_zjets_vv,radial,600,2 4 8 8,0.002,69.6377
+bg_wjets_tauv,radial,600,2 4 8 8,0.002,69.3084
+bg_wjets_muv,radial,600,5 5 5,0.002,69.8472
+bg_wjets_ev,radial,600,2 4 8 8,0.002,71.4668
+bg_zjets_vv,radial,600,5 5 5,0.002,69.7847
+bg_wjets_tauv,radial,600,5 5 5,0.002,68.7721
+bg_wjets_muv,radial,600,5 5 5 5,0.002,69.1441
+bg_wjets_ev,radial,600,5 5 5,0.002,71.026
+bg_zjets_vv,radial,600,5 5 5 5,0.002,69.59
+bg_wjets_tauv,radial,600,5 5 5 5,0.002,66.8857
+bg_wjets_muv,radial,600,5 5 5 5 5,0.002,68.6661
+bg_wjets_ev,radial,600,5 5 5 5,0.002,70.4551
+bg_zjets_vv,radial,600,5 5 5 5 5,0.002,69.4345
+bg_wjets_tauv,radial,600,5 5 5 5 5,0.002,65.7616
+bg_wjets_muv,radial,600,10 10 10,0.002,67.9049
+bg_wjets_ev,radial,600,5 5 5 5 5,0.002,69.5603
+bg_zjets_vv,radial,600,10 10 10,0.002,68.8354
+bg_wjets_tauv,radial,600,10 10 10,0.002,66.5669
+bg_wjets_ev,radial,600,10 10 10,0.002,68.5278
+bg_wjets_muv,radial,600,10 10 10 10 10,0.002,67.4356
+bg_wjets_tauv,radial,600,10 10 10 10 10,0.002,66.3665
+bg_zjets_vv,radial,600,10 10 10 10 10,0.002,68.2908
+bg_wjets_muv,radial,600,10 10 10 10,0.002,66.8334
+bg_wjets_ev,radial,600,10 10 10 10 10,0.002,63.8386
+bg_wjets_tauv,radial,600,10 10 10 10,0.002,66.8306
+bg_zjets_vv,radial,600,10 10 10 10,0.002,67.9849
+bg_wjets_ev,radial,600,10 10 10 10,0.002,68.2615
+bg_wjets_muv,radial,600,2 4 8 16 32,0.002,69.6556
+bg_wjets_tauv,radial,600,2 4 8 16 32,0.002,68.2462
+bg_wjets_muv,radial,600,2 4 8,0.0002,70.6534
+bg_zjets_vv,radial,600,2 4 8 16 32,0.002,69.9697
+bg_wjets_tauv,radial,600,2 4 8,0.0002,68.97
+bg_wjets_muv,radial,600,2 2 2 2,0.0002,59.6702
+bg_zjets_vv,radial,600,2 4 8,0.0002,70.0287
+bg_wjets_tauv,radial,600,2 2 2 2,0.0002,67.0157
+bg_wjets_muv,radial,600,2 4 4 8,0.0002,70.3645
+bg_zjets_vv,radial,600,2 2 2 2,0.0002,67.0621
+bg_wjets_ev,radial,600,2 4 8 16 32,0.002,70.6729
+bg_wjets_tauv,radial,600,2 4 4 8,0.0002,68.4377
+bg_zjets_vv,radial,600,2 4 4 8,0.0002,69.7506
+bg_wjets_muv,radial,600,2 4 8 16,0.0002,70.257
+bg_wjets_ev,radial,600,2 4 8,0.0002,71.1933
+bg_wjets_tauv,radial,600,2 4 8 16,0.0002,68.8635
+bg_wjets_muv,radial,600,2 4 8 8,0.0002,70.7578
+bg_wjets_ev,radial,600,2 2 2 2,0.0002,56.1389
+bg_zjets_vv,radial,600,2 4 8 16,0.0002,70.2053
+bg_wjets_muv,radial,600,5 5 5,0.0002,69.7982
+bg_wjets_tauv,radial,600,2 4 8 8,0.0002,69.209
+bg_wjets_ev,radial,600,2 4 4 8,0.0002,71.5631
+bg_zjets_vv,radial,600,2 4 8 8,0.0002,70.0627
+bg_wjets_tauv,radial,600,5 5 5,0.0002,69.4078
+bg_wjets_muv,radial,600,5 5 5 5,0.0002,70.638
+bg_zjets_vv,radial,600,5 5 5,0.0002,69.9289
+bg_wjets_ev,radial,600,2 4 8 16,0.0002,71.2388
+bg_wjets_tauv,radial,600,5 5 5 5,0.0002,69.5655
+bg_wjets_muv,radial,600,5 5 5 5 5,0.0002,70.5883
+bg_zjets_vv,radial,600,5 5 5 5,0.0002,70.1652
+bg_wjets_ev,radial,600,2 4 8 8,0.0002,71.264
+bg_wjets_tauv,radial,600,5 5 5 5 5,0.0002,69.5162
+bg_wjets_muv,radial,600,10 10 10,0.0002,70.8876
+bg_zjets_vv,radial,600,5 5 5 5 5,0.0002,69.4518
+bg_wjets_ev,radial,600,5 5 5,0.0002,69.6394
+bg_wjets_tauv,radial,600,10 10 10,0.0002,66.9361
+bg_zjets_vv,radial,600,10 10 10,0.0002,69.8473
+bg_wjets_ev,radial,600,5 5 5 5,0.0002,69.687
+bg_wjets_muv,radial,600,10 10 10 10 10,0.0002,68.2745
+bg_wjets_ev,radial,600,5 5 5 5 5,0.0002,69.8602
+bg_wjets_tauv,radial,600,10 10 10 10 10,0.0002,66.7096
+bg_zjets_vv,radial,600,10 10 10 10 10,0.0002,68.3367
+bg_wjets_muv,radial,600,10 10 10 10,0.0002,70.3222
+bg_wjets_ev,radial,600,10 10 10,0.0002,69.9595
+bg_wjets_tauv,radial,600,10 10 10 10,0.0002,69.1119
+bg_zjets_vv,radial,600,10 10 10 10,0.0002,69.3498
+bg_wjets_muv,radial,600,2 4 8 16 32,0.0002,64.6707
+bg_wjets_ev,radial,600,10 10 10 10 10,0.0002,66.3663
+bg_wjets_muv,radial,600,2 4 8,0.00002,63.8344
+bg_wjets_tauv,radial,600,2 4 8 16 32,0.0002,68.9009
+bg_zjets_vv,radial,600,2 4 8 16 32,0.0002,69.9804
+bg_wjets_muv,radial,600,2 2 2 2,0.00002,50.3408
+bg_wjets_tauv,radial,600,2 4 8,0.00002,61.131
+bg_wjets_ev,radial,600,10 10 10 10,0.0002,70.1414
+bg_zjets_vv,radial,600,2 4 8,0.00002,61.2584
+bg_wjets_muv,radial,600,2 4 4 8,0.00002,65.1981
+bg_wjets_tauv,radial,600,2 2 2 2,0.00002,49.5287
+bg_zjets_vv,radial,600,2 2 2 2,0.00002,53.9833
+bg_wjets_tauv,radial,600,2 4 4 8,0.00002,62.3847
+bg_wjets_muv,radial,600,2 4 8 16,0.00002,61.2353
+bg_zjets_vv,radial,600,2 4 4 8,0.00002,59.2351
+bg_wjets_muv,radial,600,2 4 8 8,0.00002,66.8934
+bg_wjets_tauv,radial,600,2 4 8 16,0.00002,65.9787
+bg_wjets_ev,radial,600,2 4 8 16 32,0.0002,69.9796
+bg_zjets_vv,radial,600,2 4 8 16,0.00002,66.3947
+bg_wjets_muv,radial,600,5 5 5,0.00002,62.1639
+bg_wjets_tauv,radial,600,2 4 8 8,0.00002,64.0032
+bg_wjets_ev,radial,600,2 4 8,0.00002,62.8153
+bg_zjets_vv,radial,600,2 4 8 8,0.00002,62.756
+bg_wjets_muv,radial,600,5 5 5 5,0.00002,60.1945
+bg_wjets_ev,radial,600,2 2 2 2,0.00002,52.1003
+bg_wjets_tauv,radial,600,5 5 5,0.00002,61.7908
+bg_zjets_vv,radial,600,5 5 5,0.00002,61.5729
+bg_wjets_muv,radial,600,5 5 5 5 5,0.00002,60.355
+bg_wjets_ev,radial,600,2 4 4 8,0.00002,53.1014
+bg_wjets_tauv,radial,600,5 5 5 5,0.00002,60.6572
+bg_zjets_vv,radial,600,5 5 5 5,0.00002,61.7298
+bg_wjets_tauv,radial,600,5 5 5 5 5,0.00002,59.6481
+bg_wjets_muv,radial,600,10 10 10,0.00002,66.9291
+bg_wjets_ev,radial,600,2 4 8 16,0.00002,67.6268
+bg_zjets_vv,radial,600,5 5 5 5 5,0.00002,60.1993
+bg_wjets_tauv,radial,600,10 10 10,0.00002,62.234
+bg_wjets_ev,radial,600,2 4 8 8,0.00002,65.3189
+bg_wjets_muv,radial,600,10 10 10 10 10,0.00002,66.3825
+bg_zjets_vv,radial,600,10 10 10,0.00002,66.8331
+bg_wjets_ev,radial,600,5 5 5,0.00002,65.1686
+bg_wjets_tauv,radial,600,10 10 10 10 10,0.00002,64.9682
+bg_wjets_ev,radial,600,5 5 5 5,0.00002,64.1034
+bg_wjets_muv,radial,600,10 10 10 10,0.00002,67.5426
+bg_zjets_vv,radial,600,10 10 10 10 10,0.00002,63.5586
+bg_wjets_ev,radial,600,5 5 5 5 5,0.00002,63.3982
+bg_wjets_tauv,radial,600,10 10 10 10,0.00002,65.9709
+bg_zjets_vv,radial,600,10 10 10 10,0.00002,65.96
+bg_wjets_ev,radial,600,10 10 10,0.00002,67.3492
+bg_wjets_muv,radial,600,2 4 8 16 32,0.00002,62.0921
+bg_wjets_muv,radial,600,2 4 8,0.02,71.3082
+bg_wjets_tauv,radial,600,2 4 8 16 32,0.00002,67.3601
+bg_wjets_muv,radial,600,2 2 2 2,0.02,65.6648
+bg_wjets_ev,radial,600,10 10 10 10 10,0.00002,66.4655
+bg_wjets_tauv,radial,600,2 4 8,0.02,68.359
+bg_zjets_vv,radial,600,2 4 8 16 32,0.00002,68.1037
+bg_wjets_muv,radial,600,2 4 4 8,0.02,71.4072
+bg_wjets_tauv,radial,600,2 2 2 2,0.02,50.8545
+bg_zjets_vv,radial,600,2 4 8,0.02,70.1362
+bg_wjets_ev,radial,600,10 10 10 10,0.00002,66.8842
+bg_wjets_tauv,radial,600,2 4 4 8,0.02,66.4312
+bg_wjets_muv,radial,600,2 4 8 16,0.02,70.9789
+bg_zjets_vv,radial,600,2 2 2 2,0.02,70.2365
+bg_zjets_vv,radial,600,2 4 4 8,0.02,70.3635
+bg_wjets_muv,radial,600,2 4 8 8,0.02,71.2513
+bg_wjets_tauv,radial,600,2 4 8 16,0.02,68.8373
+bg_wjets_muv,radial,600,5 5 5,0.02,68.4312
+bg_zjets_vv,radial,600,2 4 8 16,0.02,69.5943
+bg_wjets_tauv,radial,600,2 4 8 8,0.02,67.8911
+bg_wjets_ev,radial,600,2 4 8 16 32,0.00002,63.078
+bg_wjets_muv,radial,600,5 5 5 5,0.02,69.7509
+bg_wjets_tauv,radial,600,5 5 5,0.02,67.8842
+bg_zjets_vv,radial,600,2 4 8 8,0.02,70.0488
+bg_wjets_ev,radial,600,2 4 8,0.02,66.0652
+bg_wjets_muv,radial,600,5 5 5 5 5,0.02,71.2383
+bg_wjets_tauv,radial,600,5 5 5 5,0.02,68.1309
+bg_zjets_vv,radial,600,5 5 5,0.02,69.6624
+bg_wjets_ev,radial,600,2 2 2 2,0.02,70.7149
+bg_wjets_muv,radial,600,10 10 10,0.02,68.7681
+bg_zjets_vv,radial,600,5 5 5 5,0.02,67.8393
+bg_wjets_tauv,radial,600,5 5 5 5 5,0.02,68.6831
+bg_wjets_ev,radial,600,2 4 4 8,0.02,71.1703
+bg_zjets_vv,radial,600,5 5 5 5 5,0.02,68.881
+bg_wjets_tauv,radial,600,10 10 10,0.02,67.2922
+bg_wjets_ev,radial,600,2 4 8 16,0.02,71.8916
+bg_wjets_muv,radial,600,10 10 10 10 10,0.02,67.4273
+bg_zjets_vv,radial,600,10 10 10,0.02,68.6496
+bg_wjets_ev,radial,600,2 4 8 8,0.02,17.2817
+bg_wjets_tauv,radial,600,10 10 10 10 10,0.02,68.0947
+bg_wjets_muv,radial,600,10 10 10 10,0.02,67.4748
+bg_wjets_ev,radial,600,5 5 5,0.02,71.1141
+bg_zjets_vv,radial,600,10 10 10 10 10,0.02,67.7806
+bg_wjets_tauv,radial,600,10 10 10 10,0.02,67.8855
+bg_wjets_ev,radial,600,5 5 5 5,0.02,48.1517
+bg_wjets_muv,radial,600,2 4 8 16 32,0.02,3.55334
+bg_wjets_ev,radial,600,5 5 5 5 5,0.02,70.7971
+bg_zjets_vv,radial,600,10 10 10 10,0.02,68.6427
+bg_wjets_muv,radial,600,2 4 8,0.000002,54.2419
+bg_wjets_ev,radial,600,10 10 10,0.02,69.5541
+bg_wjets_tauv,radial,600,2 4 8 16 32,0.02,54.5602
+bg_wjets_muv,radial,600,2 2 2 2,0.000002,51.5366
+bg_wjets_tauv,radial,600,2 4 8,0.000002,54.6341
+bg_wjets_muv,radial,600,2 4 4 8,0.000002,49.5628
+bg_zjets_vv,radial,600,2 4 8 16 32,0.02,70.3735
+bg_wjets_tauv,radial,600,2 2 2 2,0.000002,52.8421
+bg_wjets_ev,radial,600,10 10 10 10 10,0.02,70.1321
+bg_zjets_vv,radial,600,2 4 8,0.000002,53.6188
+bg_wjets_muv,radial,600,2 4 8 16,0.000002,55.472
+bg_wjets_tauv,radial,600,2 4 4 8,0.000002,50.8048
+bg_zjets_vv,radial,600,2 2 2 2,0.000002,55.8698
+bg_wjets_muv,radial,600,2 4 8 8,0.000002,52.9445
+bg_wjets_ev,radial,600,10 10 10 10,0.02,69.6108
+bg_wjets_tauv,radial,600,2 4 8 16,0.000002,60.9676
+bg_zjets_vv,radial,600,2 4 4 8,0.000002,51.0177
+bg_wjets_muv,radial,600,5 5 5,0.000002,58.5727
+bg_wjets_tauv,radial,600,2 4 8 8,0.000002,59.369
+bg_wjets_muv,radial,600,5 5 5 5,0.000002,53.9966
+bg_zjets_vv,radial,600,2 4 8 16,0.000002,61.0589
+bg_wjets_tauv,radial,600,5 5 5,0.000002,56.1934
+bg_wjets_muv,radial,600,5 5 5 5 5,0.000002,57.2672
+bg_zjets_vv,radial,600,2 4 8 8,0.000002,56.6238
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
+bg_wjets_tauv,radial,600,5 5 5 5,0.000002,54.1597
+bg_zjets_vv,radial,600,5 5 5,0.000002,54.3428
+bg_wjets_muv,radial,600,10 10 10,0.000002,51.1924
+bg_wjets_ev,radial,600,2 4 8,0.000002,53.4755
+bg_wjets_tauv,radial,600,5 5 5 5 5,0.000002,56.4639
+bg_zjets_vv,radial,600,5 5 5 5,0.000002,55.5553
+bg_wjets_ev,radial,600,2 2 2 2,0.000002,50.3527
+bg_wjets_muv,radial,600,10 10 10 10 10,0.000002,51.171
+bg_zjets_vv,radial,600,5 5 5 5 5,0.000002,57.2005
+bg_wjets_tauv,radial,600,10 10 10,0.000002,53.2102
+bg_wjets_ev,radial,600,2 4 4 8,0.000002,50.3975
+bg_zjets_vv,radial,600,10 10 10,0.000002,55.6211
+bg_wjets_ev,radial,600,2 4 8 16,0.000002,62.3243
+bg_wjets_muv,radial,600,10 10 10 10,0.000002,49.5532
+bg_wjets_tauv,radial,600,10 10 10 10 10,0.000002,55.2318
+bg_wjets_ev,radial,600,2 4 8 8,0.000002,55.6364
+bg_zjets_vv,radial,600,10 10 10 10 10,0.000002,52.454
+bg_wjets_tauv,radial,600,10 10 10 10,0.000002,48.2346
+bg_wjets_ev,radial,600,5 5 5,0.000002,57.7287
+bg_wjets_muv,radial,600,2 4 8 16 32,0.000002,56.9406
+bg_wjets_ev,radial,600,5 5 5 5,0.000002,58.2594
+bg_wjets_muv,radial,400,2 4 8,0.0000002,52.1955
+bg_zjets_vv,radial,600,10 10 10 10,0.000002,51.3
+bg_wjets_muv,radial,400,2 2 2 2,0.0000002,51.9763
+bg_wjets_ev,radial,600,5 5 5 5 5,0.000002,62.9366
+bg_wjets_tauv,radial,600,2 4 8 16 32,0.000002,63.9487
+bg_wjets_muv,radial,400,2 4 4 8,0.0000002,50.2774
+bg_wjets_tauv,radial,400,2 4 8,0.0000002,50.7634
+bg_wjets_muv,radial,400,2 4 8 16,0.0000002,52.6004
+bg_wjets_ev,radial,600,10 10 10,0.000002,54.7306
+bg_zjets_vv,radial,600,2 4 8 16 32,0.000002,62.5174
+bg_wjets_tauv,radial,400,2 2 2 2,0.0000002,53.994
+bg_zjets_vv,radial,400,2 4 8,0.0000002,51.9805
+bg_wjets_muv,radial,400,2 4 8 8,0.0000002,51.1747
+bg_wjets_tauv,radial,400,2 4 4 8,0.0000002,51.3377
+bg_zjets_vv,radial,400,2 2 2 2,0.0000002,56.5047
+bg_wjets_muv,radial,400,5 5 5,0.0000002,57.5659
+bg_wjets_tauv,radial,400,2 4 8 16,0.0000002,55.7714
+bg_wjets_ev,radial,600,10 10 10 10 10,0.000002,57.5453
+bg_zjets_vv,radial,400,2 4 4 8,0.0000002,50.3669
+bg_wjets_muv,radial,400,5 5 5 5,0.0000002,54.4705
+bg_wjets_tauv,radial,400,2 4 8 8,0.0000002,50.9124
+bg_wjets_muv,radial,400,5 5 5 5 5,0.0000002,57.6043
+bg_zjets_vv,radial,400,2 4 8 16,0.0000002,54.1081
+bg_wjets_tauv,radial,400,5 5 5,0.0000002,53.4721
+bg_wjets_ev,radial,600,10 10 10 10,0.000002,54.3836
+bg_wjets_muv,radial,400,10 10 10,0.0000002,50.5466
+bg_zjets_vv,radial,400,2 4 8 8,0.0000002,52.9991
+bg_wjets_tauv,radial,400,5 5 5 5,0.0000002,47.8433
+bg_zjets_vv,radial,400,5 5 5,0.0000002,53.7638
+bg_wjets_tauv,radial,400,5 5 5 5 5,0.0000002,56.7515
+bg_wjets_muv,radial,400,10 10 10 10 10,0.0000002,50.7302
+bg_zjets_vv,radial,400,5 5 5 5,0.0000002,49.6891
+bg_wjets_tauv,radial,400,10 10 10,0.0000002,50.7447
+bg_wjets_ev,radial,600,2 4 8 16 32,0.000002,60.5304
+bg_wjets_muv,radial,400,10 10 10 10,0.0000002,54.319
+bg_zjets_vv,radial,400,5 5 5 5 5,0.0000002,56.7573
+bg_wjets_ev,radial,400,2 4 8,0.0000002,51.175
+bg_wjets_tauv,radial,400,10 10 10 10 10,0.0000002,51.6848
+bg_zjets_vv,radial,400,10 10 10,0.0000002,53.4533
+bg_wjets_ev,radial,400,2 2 2 2,0.0000002,51.7031
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
+bg_wjets_ev,radial,600,2 4 8 16 32,0.02,72.112
