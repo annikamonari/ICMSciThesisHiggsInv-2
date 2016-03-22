@@ -69,11 +69,11 @@ class HistoPlot
   static std::string add_mva_cut_to_selection(std::string selection, std::string mva_cut_str);
 
   static std::vector<double> mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut = "");
+                                 Variable* var, bool with_cut, std::vector<Variable*>* variables = NULL, std::string mva_cut = "");
 
   static double single_bg_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
-																																	std::string mva_cut = "");
+																																	std::string mva_cut = "", std::string selection="");
 
   static std::vector<double> get_mc_weight_errors(DataChain* data, std::vector<DataChain*> bg_chains,
 																	                                 Variable* var, bool with_cut, std::vector<Variable*>* variables,
@@ -116,6 +116,9 @@ class HistoPlot
 
   static TH1F* draw_background(DataChain* data_chain, Variable* variable, int fill_colour, bool with_cut,
                                std::vector<Variable*>* variables = NULL, double mc_weight = 1, std::string mva_cut = "");
+
+  static TH1F* draw_background_from_trees(DataChain* data_chain, Variable* variable, int fill_colour, std::string selection,
+		 double mc_weight, std::string mva_cut);
 
   static void set_histo_style(bool is_signal, int fill_colour = 0);
   

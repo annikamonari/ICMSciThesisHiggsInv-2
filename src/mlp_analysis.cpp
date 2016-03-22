@@ -22,7 +22,14 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	  for (int i = 0; i < variables->size(); i++)
 	  {
 	    factory->AddVariable((*variables)[i]->name, (*variables)[i]->name_styled, (*variables)[i]->units, 'F');
-	  }
+	  }// add weighting variables as spectators
+	factory->AddSpectator("total_weight_lepveto",  "total_weight_lepveto", "", 'F' );
+	factory->AddSpectator("nselmuons",  "nselmuons", "", 'F' );
+	factory->AddSpectator("m_mumu",  "m_mumu", "", 'F' );
+	factory->AddSpectator("ntaus",  "ntaus", "", 'F' );
+	factory->AddSpectator("nselelectrons",  "nselelectrons", "", 'F' );
+	factory->AddSpectator("nvetoelectrons",  "nvetoelectrons", "", 'F' );
+	factory->AddSpectator("nvetomuons",  "nvetomuons", "", 'F' );
 
 	  // Background
 	    double background_weight = 1.0;
@@ -103,12 +110,27 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 		   Float_t dijetmetnomu_ptfraction;
 		   Float_t jet1metnomu_scalarprod;
 		   Float_t jet2metnomu_scalarprod;
+                   Float_t total_weight_lepveto;
+                   Float_t nselmuons;
+                   Float_t m_mumu;
+                   Float_t ntaus;
+                   Float_t nselelectrons;
+		   Float_t nvetoelectrons;
+		   Float_t nvetomuons;
 
      reader->AddVariable("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
      reader->AddVariable("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
      reader->AddVariable("jet_csv2", &jet_csv2);
      reader->AddVariable("dijet_dphi", &dijet_dphi);
      reader->AddVariable("dijet_M", &dijet_M);
+
+     reader->AddSpectator("total_weight_lepveto", &total_weight_lepveto);
+     reader->AddSpectator("nselmuons", &nselmuons);
+     reader->AddSpectator("m_mumu", &m_mumu);
+     reader->AddSpectator("ntaus", &ntaus);
+     reader->AddSpectator("nselelectrons", &nselelectrons );
+	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
+	reader->AddSpectator("nvetomuons",  &nvetomuons);
 
 /*
 

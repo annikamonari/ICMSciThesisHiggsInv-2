@@ -69,7 +69,6 @@ class MVAAnalysis
 
   static std::string build_output_graph_name(TFile* trained_output, std::string mva_cut = "");
 
-  
 
 };
 

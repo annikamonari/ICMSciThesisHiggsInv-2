@@ -42,3 +42,8 @@ BDT_*/*
 MLP_*/*
 analysis
 Debug/
+cards
+cards/*
+dataTrees
+dataTrees/*
+

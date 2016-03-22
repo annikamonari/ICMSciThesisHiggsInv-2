@@ -1,7 +1,7 @@
 #include "../include/mva_analysis.h"
 #include "../include/bdt_analysis.h"
 #include "../include/mlp_analysis.h"
-
+using namespace std;
 void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
 	SuperVars* super_vars, std::string method_name, std::string dir_name,
 	std::vector<const char*> NTrees, std::vector<const char*> BoostType,
@@ -58,6 +58,7 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 	std::vector<Variable*> vars2 = super_vars->get_discriminating_vars();
 	std::string selection_str = super_vars->get_final_cuts_str();
 	TFile* trained_output;
+//for(int i=0; i<8;i++){
 	const char* trained_bg_label = bg_chains[bg_to_train]->label;
 //step 1 get output name and train MVa
 //________________________________________________________________________________________________________________________________________________
@@ -79,14 +80,17 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 		trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 			NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
 	}
+//trained_output = MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,  NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
+//}
+
+
 	std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
 	std::cout << "=> All background put through BDT" << std::endl;
-
 
 	//step 2 evaluate MVA's
 //________________________________________________________________________________________________________________________________________________	
 
-//step 2.1 get test tree
+//step 2.1 get test tree 
         //step 2.1.1 get trained output file name
         const char* t_arr[] = {trained_output->GetName()};
 	//step 2.1.2 intialise DataChain paramters for test set
@@ -104,13 +108,76 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
         //step 2.1.5 create DataChain of the test set tree
         DataChain* test_chain     = new DataChain(t_vector,t_label,t_legend,"");
 	f->Close();
- /*
-	DataChain* output_signal_chain = get_output_signal_chain(signal_chain, vars, method_name, app_output_name, job_name,
-		trained_bg_label, unique_output_files);
-	std::cout << "=> Signal put through BDT" << std::endl;
-*/
+
+//step 2.2 get data tree
+   const char* d_arr[] = {"dataTrees/data_chain.root"};
+	//step 2.2.2 intialise DataChain paramters for test set
+        std::vector<const char*> data_vector (d_arr, d_arr + sizeof(d_arr)/sizeof(const char*));
+
+        //step 2.2.5 create DataChain of the test set tree
+        DataChain* data_ch = new DataChain(data_vector,data_label,data_legend,"");
 
 //step 2.2 get output chains for test,data and other BGs
+//////////qcd
+   const char* qcd_arr[] = {"dataTrees/bg_qcd.root"};
+
+   std::vector<const char*> qcd_vector (qcd_arr, qcd_arr + sizeof(qcd_arr)/sizeof(const char*));
+
+   DataChain* qcd_ch = new DataChain(qcd_vector,qcd_label,qcd_legend,"");
+//////////VV
+   const char* VV_arr[] = {"dataTrees/bg_vv.root"};
+
+   std::vector<const char*> VV_vector (VV_arr, VV_arr + sizeof(VV_arr)/sizeof(const char*));
+
+   DataChain* VV_ch = new DataChain(VV_vector,vv_label,vv_legend,"");
+
+//////////wjets->enu
+   const char* ev_arr[] = {"dataTrees/bg_wjets_ev.root"};
+
+   std::vector<const char*> ev_vector (ev_arr, ev_arr + sizeof(ev_arr)/sizeof(const char*));
+
+   DataChain* wjets_ev_ch = new DataChain(ev_vector,wjets_ev_label,wjets_ev_legend,"(nselelectrons == 1)");
+
+//////////wjets->munu
+   const char* muv_arr[] = {"dataTrees/bg_wjets_muv.root"};
+
+   std::vector<const char*> muv_vector (muv_arr, muv_arr + sizeof(muv_arr)/sizeof(const char*));
+
+   DataChain* wjets_muv_ch = new DataChain(muv_vector,wjets_muv_label,wjets_muv_legend,"(nselmuons == 1)");
+
+//////////wjets->taunu
+   const char* tauv_arr[] = {"dataTrees/bg_wjets_tauv.root"};
+
+   std::vector<const char*> tauv_vector (tauv_arr, tauv_arr + sizeof(tauv_arr)/sizeof(const char*));
+
+   DataChain* wjets_tauv_ch = new DataChain(tauv_vector,wjets_tauv_label,wjets_tauv_legend,"(ntaus == 1)");
+
+//////////zjets->nunu
+   const char* zjets_vv_arr[] = {"dataTrees/bg_zjets_vv.root"};
+
+   std::vector<const char*> zjets_vv_vector (zjets_vv_arr, zjets_vv_arr + sizeof(zjets_vv_arr)/sizeof(const char*));
+
+   DataChain* zjets_vv_ch = new DataChain(zjets_vv_vector,zjets_vv_label,zjets_vv_legend,"");
+
+//////////top
+   const char* top_arr[] = {"dataTrees/bg_top.root"};
+
+   std::vector<const char*> top_vector (top_arr, top_arr + sizeof(top_arr)/sizeof(const char*));
+
+   DataChain* top_ch = new DataChain(top_vector,top_label,top_legend,"");
+
+//////////Z->ll
+   const char* zll_arr[] = {"dataTrees/bg_zll.root"};
+
+   std::vector<const char*> zll_vector (zll_arr, zll_arr + sizeof(zll_arr)/sizeof(const char*));
+
+   DataChain* zll_ch = new DataChain(zll_vector,z_ll_label,z_ll_legend,"(nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120)");
+
+ DataChain* bg_ch_arr[] = {zll_ch, wjets_ev_ch, wjets_muv_ch, wjets_tauv_ch, top_ch,VV_ch, zjets_vv_ch, qcd_ch };
+
+std::vector<DataChain*> bg_chs (bg_ch_arr, bg_ch_arr + sizeof(bg_ch_arr) / sizeof(bg_ch_arr[0]));
+
+
 //_________________________
 
         DataChain* mva_output_test_chain = evaluate_test_data(test_chain,  vars,  method_name,
@@ -120,11 +187,13 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
 ///other backgrounds and data passed through tree for MC weight calculation
 
-	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chains, vars, method_name, app_output_name, job_name,                                              trained_bg_label, unique_output_files);
+	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chs, vars, method_name, app_output_name, job_name,                                              trained_bg_label, unique_output_files);
 
 	std::cout << "=> All background put through MVA" << std::endl;
 
-	DataChain* output_data_chain = get_output_signal_chain(data_chain, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
+
+
+	DataChain* output_data_chain = get_output_signal_chain(data_ch, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
 
 	std::cout << "=> Data put through MVA" << std::endl;
 
@@ -154,11 +223,20 @@ TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to
 
 HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, output_data_chain, output_bg_chains, &vars, output_graph_name, mva_cut);
 
-	//HistoPlot::draw_plot(mva_output, output_bg_chains, output_signal_chain, output_data_chain, true, &vars, false,output_graph_name, mva_cut);
+//step 5 create datacards
+//create array of test file bg and all other bgs remebering to halve the other mc weights later...
 
+DataChain* card_input_arr[8];
+for(int i=0; i<8;i++)
+{
+  if(i!=6){ card_input_arr[i] = output_bg_chains[i];}
+  else if(i=6){card_input_arr[i] = mva_output_test_chain;}
+}
+std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
+//turn array into vector for datacard input
 
-	/*if (create_cards) {create_datacards(output_data_chain, output_signal_chain, output_bg_chains,
-		mva_output, true, &vars, trained_output, method_name);}*/
+	if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
+		mva_output, true, NULL, trained_output, method_name);}
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
 		std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
@@ -186,7 +264,8 @@ HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, o
 		}
 		else
 		{
-			std::string cut_arr[] = {"output<0.29", "output<0.3", "output<0.31", "output<0.32", "output<0.33","output<0.34","output<0.35", "output<0.36", "output<0.37","output<0.38","output<0.39"};
+			std::string cut_arr[] = {"output>0.0","output>0.35","output>0.45","output>0.6","output>0.61","output>0.62","output>0.63",					"output>0.64","output>0.65","output>0.66","output>0.67","output>0.68","output>0.69","output>0.7","output>0.71",					"output>0.72","output>0.73","output>0.74","output>0.75","output>0.76","output>0.77","output>0.78"
+				};
 
 			for (int i = 0; i < sizeof(cut_arr)/sizeof(cut_arr[0]); i++)
 			{
@@ -463,6 +542,10 @@ HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, o
 			}
 		}
 	}
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+
+
 
 //_________________________________________________________________________________________________________
 //__________________ Unused methods from old TMVA classification attempt with categories __________________

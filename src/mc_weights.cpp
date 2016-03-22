@@ -18,7 +18,7 @@ std::string MCWeights::get_mc_selection_str(DataChain* bg_chain, Variable* varia
   }
   // This function below checks to see if mva_cut != ""
   selection_str = HistoPlot::add_mva_cut_to_selection(selection_str, mva_cut);
-  std::cout << "Selection str in get_mc_select_str: " << selection_str << std::endl;
+  //std::cout << "Selection str in get_mc_select_str: " << selection_str << std::endl;
   return selection_str;
 }
 
@@ -46,15 +46,20 @@ double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable
 double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut)
 {
-cout<<"bg to be calculated"<<bg_chain->label<<"\n";
-  std::string selection   = get_mc_selection_str(bg_chain, var, variables, mva_cut);
+//cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
+  std::string selection;
+  if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
+  else{ selection = "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+  selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+   }
+  //cout<<"mc weight selection: "<<selection<<"\n";
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection);
-cout<<"data in control region: "<<data_in_ctrl<<"\n";
+//cout<<"data in control region: "<<data_in_ctrl<<"\n";
   double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection);
-cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
+//cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 
   double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection) - ctrl_mc_in_ctrl;
-cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
+//cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
 
   return (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
@@ -62,8 +67,9 @@ cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
 double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut)
-{
-  std::string selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);
+{std::string selection;
+  if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
+  else{ selection = "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";}
   double data_N_C       = get_nevents(data, var, with_cut, variables, selection);
   double MC_N_C         = get_nevents(bg_chain, var, with_cut, variables, selection);
   double bg_N_C         = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection) - MC_N_C;
