@@ -60,7 +60,8 @@ class HistoPlot
   static std::string add_mva_cut_to_selection(std::string selection, std::string mva_cut_str);
 
   static std::vector<double> mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut = "");
+                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut = "",
+                                 bool double_zjets);
 
   static double single_bg_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
