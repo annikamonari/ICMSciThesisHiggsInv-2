@@ -367,7 +367,7 @@ std::string HistoPlot::add_mva_cut_to_selection(std::string selection, std::stri
 
 std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
                                           Variable* var, bool with_cut, std::vector<Variable*>* variables,
-					std::string mva_cut)
+					std::string mva_cut, bool double_zjets)
 {//cout<<"in HistoPlot::mc_weights\n";
   double mc_weight[bg_chains.size()];
   double zll_weight;
@@ -379,7 +379,7 @@ std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain
     if (bg_chains[i]->lep_sel != "")
     {
     		double mc_weight_val = MCWeights::calc_mc_weight(data, bg_chains, bg_chains[i], var, with_cut,
-																																																			    variables, mva_cut);
+																																																			    variables, mva_cut, double_zjets);
       if (mc_weight_val > 0)
     		{
       		mc_weight[i] = mc_weight_val;

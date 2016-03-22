@@ -31,20 +31,24 @@ double MCWeights::get_nevents(DataChain* data_chain, Variable* var, bool with_cu
 }
 
 double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable* var, bool with_cut,
-                                     std::vector<Variable*>* variables, std::string selection)
+                                     std::vector<Variable*>* variables, std::string selection,bool double_zjets)
 {
   double total_integral = 0.0;
 
   for (int i = 0; i < bg_chains.size(); i++)
   {
     total_integral += get_nevents(bg_chains[i], var, with_cut, variables, selection);
+    if(!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
+      {
+        if(double_zjets){total_integral*2;}
+      }
   }
 
   return total_integral;
 }
 
 double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut)
+                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut, bool double_zjets)
 {
 cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   std::string selection;
@@ -58,7 +62,7 @@ cout<<"data in control region: "<<data_in_ctrl<<"\n";
   double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection);
 cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 
-  double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection) - ctrl_mc_in_ctrl;
+  double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, double_zjets) - ctrl_mc_in_ctrl;
 cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
 
