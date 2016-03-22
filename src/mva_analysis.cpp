@@ -239,14 +239,36 @@ std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + size
 			          mva_output, true, NULL, "", "");
 
 
-	/*if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
-		mva_output, true, NULL, trained_output, method_name);}*/
+	if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
+		mva_output, true, NULL, trained_output, method_name);}
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
 		std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
 
 		return trained_output;
 	}
+
+std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* NeuronType,
+		const char* NCycles, const char* HiddenLayers,
+		const char* LearningRate, double auc)
+	{
+		std::string line = bg_label;
+		line += ",";
+		line.append(NeuronType);
+		line += ",";
+		line.append(NCycles);
+		line += ",";
+		std::string hidden_layers = HiddenLayers;
+		std::string hidden_layers_str = HistoPlot::replace_all(hidden_layers, ",", " ");
+		line.append(hidden_layers_str);
+		line += ",";
+		line.append(LearningRate);
+		line += ",";
+		line.append(DataCard::double_to_str(auc));
+
+		return line;
+	}
+
 //________________________________________________________________________________________________________________________________________________
 // creates datacards for a variety of output values
 	void MVAAnalysis::create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,

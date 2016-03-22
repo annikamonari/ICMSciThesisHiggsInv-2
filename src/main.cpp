@@ -39,7 +39,9 @@ void produce_graphs(bool with_cut) {
   }
 
 
-MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], NCycles[1], HiddenLayers[0], LearningRate[0],unique_output_files, create_cards, job_name, mva_cut);
+MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, 
+  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
+  NCycles[0], HiddenLayers[0], LearningRate[0],unique_output_files, create_cards, job_name, mva_cut);
 
 }
 

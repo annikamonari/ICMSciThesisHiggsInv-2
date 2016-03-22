@@ -51,6 +51,11 @@ class MVAAnalysis
 																														bool unique_output_files = true, bool create_cards = true,
 																														std::string job_name = "1", std::string mva_cut = "");
 
+  
+  static std::string create_auc_line_MLP(const char* bg_label, const char* NeuronType,
+											const char* NCycles, const char* HiddenLayers,
+											const char* LearningRate, double auc);
+
   static void create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
 																															Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
 																															std::string method_name);
