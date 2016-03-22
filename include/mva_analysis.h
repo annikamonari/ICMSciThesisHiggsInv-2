@@ -25,6 +25,8 @@ class MVAAnalysis
 
   static void draw_histo(DataChain* combined_output, std::string final_cuts, Variable* variable);
 
+  static std::vector<std::string> get_mva_cut_range(std::string sign, int min, int max, double digits);
+
   static std::vector<const char*> vary_parameters(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain, SuperVars* super_vars,
 																														std::string method_name, std::string dir_name, std::vector<const char*> NTrees, std::vector<const char*> BoostType,
 																														std::vector<const char*> AdaBoostBeta, std::vector<const char*> SeparationType, std::vector<const char*> nCuts,
@@ -44,21 +46,20 @@ class MVAAnalysis
   static std::string get_app_filename_for_chain(std::string app_output_name, const char* trained_bg_label, const char* app_label);
 
   static TFile* get_mva_results(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
-																														SuperVars* super_vars, std::string folder_name, std::string method_name, const char* NTrees = "800",
-																														const char* BoostType = "AdaBoost", const char* AdaBoostBeta = "0.2", const char* SeparationType = "GiniIndex",
-																														const char* nCuts = "30", const char* NeuronType = "sigmoid", const char* NCycles = "500",
-																														const char* HiddenLayers = "5,5,5,5", const char* LearningRate = "0.02",
-																														bool unique_output_files = true, bool create_cards = true,
-																														std::string job_name = "1", std::string mva_cut = "");
+		SuperVars* super_vars, std::string folder_name, std::string method_name, const char* NTrees,
+		const char* BoostType, const char* AdaBoostBeta,const char* SeparationType,const char* nCuts,
+		const char* NeuronType, const char* NCycles, const char* HiddenLayers, const char* LearningRate,
+		bool unique_output_files,
+		bool create_cards, std::string job_name, std::string mva_cut, std::string sign = ">", 
+		int min = 10, int max = 50, double digits = 100);
 
-  
   static std::string create_auc_line_MLP(const char* bg_label, const char* NeuronType,
 											const char* NCycles, const char* HiddenLayers,
 											const char* LearningRate, double auc);
 
   static void create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
 																															Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
-																															std::string method_name);
+																															std::string method_name, std::string sign, int min, int max, double digits);
 
   static std::vector<DataChain*> get_output_bg_chains(std::vector<DataChain*> bg_chains, std::vector<Variable*> vars, std::string method_name,
 																																																						std::string app_output_name, std::string job_name, const char* trained_bg_label,
