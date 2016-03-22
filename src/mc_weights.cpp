@@ -69,14 +69,7 @@ cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
   double weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
   
-  if (other_bg_in_ctrl > ctrl_mc_in_ctrl)
-  {
-    return 1.0;
-  }
-  else
-  {
-    return weight;
-  }
+  return weight;
 }
 
 double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
