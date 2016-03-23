@@ -27,8 +27,8 @@ void produce_graphs(bool with_cut) {
   std::string mva_cut = "";
   std::string method_name = "MLP";
   std::string sign = ">"; // direction of cut
-  int min = 40; // the minimum value you want cuts to be from
-  int max = 75; // max value you want cuts to be to
+  int min = 0; // the minimum value you want cuts to be from
+  int max = 70; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
 
