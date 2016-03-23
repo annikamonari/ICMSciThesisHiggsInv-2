@@ -8,18 +8,18 @@
 class DataCard
 {
  public:
-  static void create_datacard(DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
+  static void create_datacard(int bg_to_train, DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
 																													Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name = "",
 																													std::string mva_cut = "");
 
   static double get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																 std::string mva_cut = "");
 
-  static std::vector<double> get_bg_errors(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
+  static std::vector<double> get_bg_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
                                Variable* var, bool with_cut, std::vector<Variable*>* variables, std::vector<double> bg_mc_weights,
 																														 std::string mva_cut);
 
-  static std::vector<double> get_rates(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
+  static std::vector<double> get_rates(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
   							                              Variable* var, bool with_cut, std::vector<Variable*>* variables, std::vector<double> bg_mc_weights,
 																																							std::string mva_cut = "");
 
@@ -57,10 +57,10 @@ class DataCard
 
   static std::string get_uncertainties_string(std::vector<std::vector<double> > uncertainty_vectors);
 
-  static double get_total_nevents(std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, std::vector<Variable*>* variables,
+  static double get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																		std::vector<double> bg_mc_weights, std::string mva_cut = "");
 
-  static std::string get_systematic_string(DataChain* data, std::vector<DataChain*> bg_chains,
+  static std::string get_systematic_string(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
 																																											DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																											std::vector<double> bg_mc_weights, std::string mva_cut = "");
 

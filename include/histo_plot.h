@@ -30,14 +30,15 @@ class HistoPlot
                         std::vector<Variable*>* variables = NULL, bool plot_data = true, std::string file_name = "",
 																								std::string mva_cut = "");
 
-  static void plot_evaluated_zjets_vv_testTree(Variable* mva_output, DataChain* testTree_chain, 
+  static void plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_output, DataChain* testTree_chain,
                                                           DataChain* data, std::vector<DataChain*> bg_chains,
                                                           std::vector<Variable*>* variables, std::string file_name, std::string mva_cut);
 
   static std::string add_classID_to_selection(std::string selection, bool is_signal);
 
   static THStack draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
-                                      bool with_cut, std::vector<Variable*>* variables, DataChain* data,std::vector<double> mc_weights_vector, std::string mva_cut);
+                                      bool with_cut, std::vector<Variable*>* variables, DataChain* data,std::vector<double> mc_weights_vector,
+																																						DataChain* testTree_chain, std::string mva_cut);
 
   static void draw_yline_on_plot(Variable* var, bool with_cut, double y);
 
@@ -70,13 +71,13 @@ class HistoPlot
 
   static std::vector<double> mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables = NULL, std::string mva_cut = "",
-                                 bool double_zjets = false);
+                                 bool double_test_bg = false);
 
-  static double single_bg_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
+  static double single_bg_error(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
 																																	std::string mva_cut = "", std::string selection="");
 
-  static std::vector<double> get_mc_weight_errors(DataChain* data, std::vector<DataChain*> bg_chains,
+  static std::vector<double> get_mc_weight_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
 																	                                 Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																																		std::vector<double> bg_mc_weights, std::string mva_cut = "");
 

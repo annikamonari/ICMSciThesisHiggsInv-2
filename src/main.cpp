@@ -22,10 +22,11 @@ void produce_graphs(bool with_cut) {
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
-  bool create_cards = true;
+  bool create_cards = false;
   std::string job_name = "1";
   std::string mva_cut = "";
   std::string method_name = "MLP";
+  
   std::string sign = ">"; // direction of cut
   int min = 0; // the minimum value you want cuts to be from
   int max = 70; // max value you want cuts to be to
@@ -43,7 +44,7 @@ void produce_graphs(bool with_cut) {
   }
 
 
-MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, 
+MVAAnalysis::get_mva_results(bg_chains, 1, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
   NCycles[0], HiddenLayers[0], LearningRate[0],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
 

@@ -57,7 +57,7 @@ class MVAAnalysis
 											const char* NCycles, const char* HiddenLayers,
 											const char* LearningRate, double auc);
 
-  static void create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
+  static void create_datacards(int bg_to_train, DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
 																															Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
 																															std::string method_name, std::string sign, int min, int max, double digits);
 

@@ -23,34 +23,38 @@ std::string MCWeights::get_mc_selection_str(DataChain* bg_chain, Variable* varia
 }
 
 double MCWeights::get_nevents(DataChain* data_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables, 
-                              std::string selection)
+                              std::string selection, const char* trained_bg_label, bool double_test_bg)
 {
 
-  return HistoPlot::get_histo_integral(HistoPlot::build_1d_histo(data_chain, var, with_cut, false, "goff", variables, 
+  double integral = HistoPlot::get_histo_integral(HistoPlot::build_1d_histo(data_chain, var, with_cut, false, "goff", variables,
                                                                  selection), with_cut, var);
+
+  if(!strcmp(data_chain->label, trained_bg_label))
+  {
+    if(double_test_bg){integral = integral*2;}
+  }
+
+  return integral;
 }
 
 double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable* var, bool with_cut,
-                                     std::vector<Variable*>* variables, std::string selection,bool double_zjets)
+                                     std::vector<Variable*>* variables, std::string selection, int trained_bg, bool double_test_bg)
 {
   double total_integral = 0.0;
 
   for (int i = 0; i < bg_chains.size(); i++)
   {
-    double integral = get_nevents(bg_chains[i], var, with_cut, variables, selection);
-    
-    if(!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
-      {
-        if(double_zjets){integral = integral*2;}
-      }
-      total_integral += integral;
+    double integral = get_nevents(bg_chains[i], var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
+
+    total_integral += integral;
   }
 
   return total_integral;
 }
 
 double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut, bool double_zjets)
+                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,
+																																	int trained_bg, bool double_test_bg)
 {
 cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   std::string selection;
@@ -59,12 +63,12 @@ cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
    }
   cout<<"mc weight selection: "<<selection<<"\n";
-  double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection);
+  double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
 cout<<"data in control region: "<<data_in_ctrl<<"\n";
-  double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection);
+  double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
 cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 
-  double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, double_zjets) - ctrl_mc_in_ctrl;
+  double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - ctrl_mc_in_ctrl;
 cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
   double weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
@@ -73,13 +77,14 @@ cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 }
 
 double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut)
+                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, int trained_bg,
+																																	bool double_test_bg, std::string mva_cut)
 {std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
   else{ selection = "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";}
-  double data_N_C       = get_nevents(data, var, with_cut, variables, selection);
-  double MC_N_C         = get_nevents(bg_chain, var, with_cut, variables, selection);
-  double bg_N_C         = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection) - MC_N_C;
+  double data_N_C       = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
+  double MC_N_C         = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
+  double bg_N_C         = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - MC_N_C;
   double sigma_data_N_C = std::pow(data_N_C, 0.5);
   double sigma_MC_N_C   = std::pow(MC_N_C, 0.5);
   double sigma_bg_N_C   = std::pow(bg_N_C, 0.5);

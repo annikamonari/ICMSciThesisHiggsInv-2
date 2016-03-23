@@ -80,9 +80,6 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
 		}
-//trained_output = MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,  NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
-//}
-
 
 		std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
 		std::cout << "=> All background put through BDT" << std::endl;
@@ -94,8 +91,9 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
         //step 2.1.1 get trained output file name
 		const char* t_arr[] = {trained_output->GetName()};
 	//step 2.1.2 intialise DataChain paramters for test set
-		const char* t_label ="bg_zjets_vv";
-		const char* t_legend ="test set";
+		const char* t_label = bg_chains[bg_to_train]->label;
+		const char* t_legend ="test_set";
+		std::string lep_sel = bg_chains[bg_to_train]->lep_sel;
 		std::vector<const char*> t_vector (t_arr, t_arr + 
 			sizeof(t_arr)/sizeof(const char*));
         //step 2.1.3 open trained_output TFile
@@ -106,7 +104,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	tree->Write();
 
         //step 2.1.5 create DataChain of the test set tree
-	DataChain* test_chain     = new DataChain(t_vector,t_label,t_legend,"");
+	DataChain* test_chain     = new DataChain(t_vector,t_label,t_legend, lep_sel, "");
 	f->Close();
 
 //step 2.2 get data tree
@@ -187,7 +185,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 ///other backgrounds and data passed through tree for MC weight calculation
 
-	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chs, vars, method_name, app_output_name, job_name,                                              trained_bg_label, unique_output_files);
+	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chs, vars, method_name, app_output_name, job_name, trained_bg_label, unique_output_files);
 
 	std::cout << "=> All background put through MVA" << std::endl;
 
@@ -221,7 +219,8 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 4 draw plot
 //_________________________
 
-	HistoPlot::plot_evaluated_zjets_vv_testTree(mva_output, mva_output_test_chain, output_data_chain, output_bg_chains, &vars, output_graph_name, mva_cut);
+	HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain, output_data_chain, output_bg_chains,
+																																													&vars, output_graph_name, mva_cut);
 
 //step 5 create datacards
 //create array of test file bg and all other bgs remebering to halve the other mc weights later...
@@ -229,13 +228,13 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	DataChain* card_input_arr[8];
 	for(int i=0; i<8;i++)
 	{
-		if(i!=6){ card_input_arr[i] = output_bg_chains[i];}
-		else if(i=6){card_input_arr[i] = mva_output_test_chain;}
+		if(i != bg_to_train){card_input_arr[i] = output_bg_chains[i];}
+		else if(i == bg_to_train){card_input_arr[i] = mva_output_test_chain;}
 	}
 	std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
 //turn array into vector for datacard input
 
-	if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
+	if (create_cards) {create_datacards(bg_to_train, output_data_chain, card_input_vector[6], card_input_vector,
 		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
@@ -289,7 +288,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 //________________________________________________________________________________________________________________________________________________
 // creates datacards for a variety of output values
-	void MVAAnalysis::create_datacards(DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
+	void MVAAnalysis::create_datacards(int bg_to_train, DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
 		Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
 		std::string method_name, std::string sign, int min, int max, double digits)
 	{
@@ -298,7 +297,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		for (int i = 0; i < cut_arr.size(); i++)
 		{
 			std::string output_graph_name = build_output_graph_name(trained_output, cut_arr[i]);
-			DataCard::create_datacard(output_data_chain, output_signal_chain, output_bg_chains,
+			DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
 				mva_output, true, variables, output_graph_name, cut_arr[i]);
 		}
 
