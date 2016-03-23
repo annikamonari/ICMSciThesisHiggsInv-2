@@ -185,7 +185,8 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 ///other backgrounds and data passed through tree for MC weight calculation
 
-	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chs, vars, method_name, app_output_name, job_name, trained_bg_label, unique_output_files);
+	std::vector<DataChain*> output_bg_chains = get_output_bg_chains(bg_chs, vars, method_name, app_output_name, job_name, trained_bg_label,
+																																																																	unique_output_files);
 
 	std::cout << "=> All background put through MVA" << std::endl;
 
@@ -194,9 +195,6 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	DataChain* output_data_chain = get_output_signal_chain(data_ch, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
 
 	std::cout << "=> Data put through MVA" << std::endl;
-
-
-
 
 //step 3 initalise output variable
 //________________________________________________________________________________________________________________

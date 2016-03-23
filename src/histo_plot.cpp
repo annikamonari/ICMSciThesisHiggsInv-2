@@ -121,14 +121,15 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 2: create background histo
   //step 2.1: get zjets mc weight
+   // don't need to double the trained bg in mc weights becauase this takes in test + train trees
   std::vector<double> mc_weights_vector = mc_weights(data, bg_chains, mva_output, true, NULL, mva_cut);
 
   double trained_mc_weight = mc_weights_vector[bg_trained];
 
-  cout<<"mc_weight of trained bg= "<<trained_mc_weight<<endl;
+  cout<<"mc_weight of trained bg= "<< trained_mc_weight <<endl;
 //mc weights have been tested and work, now need to edit the draw stack function to not stack the zjets in the datachain vector and instead add the test_set th1
   //step 2.2 create output selection string
-  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   //selection  += "*total_weight_lepveto";
   //step 2.3 add mva cut to selection string
@@ -140,7 +141,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   //step 2.4 add mc weight to selection  
   /*std::string mc_weight_str = get_string_from_double(mc_weight);
   selection = selection + "*" + mc_weight_str; */
-  std::cout<<"final selection: "<<selection<<"\n";
+  std::cout<<"final selection: "<< selection <<"\n";
 
   //step 2.5: get background histo  problem area caused by signal using the same chain, try cloning the tree and running agsain
   testTree_chain->chain->SetLineColor(1);
@@ -165,12 +166,12 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 3: create signal histo 
   //step 3.1 get regular selection string
-  string sig_selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  string sig_selection = "((nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
   sig_selection = add_classID_to_selection(sig_selection, true);
   //step 3.2: add class ID to selection
   sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
 
-std::cout<<"final sig_selection: "<<sig_selection<<"\n";
+  std::cout<<"final sig_selection: "<< sig_selection<<"\n";
 
   //step 3.3 get signal histo 
   test_clone->SetLineColor(2);
@@ -276,10 +277,10 @@ THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, s
   std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
-
+  std::cout << "selection in draw stacked histo " << selection << std::endl;
   for(int i = 0; i < bg_chains.size(); i++) {
    if(strcmp(bg_chains[i]->label, testTree_chain->label)) {
-       cout<<bg_chains[i]->label<<" background, mc weight: "<<mc_weights_vector[i]<<endl;
+       cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
       TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, mc_weights_vector[i], mva_cut);
       stack.Add(single_bg_histo);
       std::string legend_str(bg_chains[i]->legend);
@@ -748,6 +749,8 @@ TH1F* HistoPlot::draw_background_from_trees(DataChain* data_chain, Variable* var
   data_chain->chain->SetFillColor(fill_colour);
   //std::cout << "in draw background: " << mva_cut << std::endl;
   selection = add_mc_to_selection(data_chain, variable, selection, mc_weight);
+  std::cout << "final selection in draw background from trees " << selection << std::endl;
+
   return build_1d_histo(data_chain, variable, true, false, "goff", NULL,selection, mc_weight, mva_cut);
 }
 
