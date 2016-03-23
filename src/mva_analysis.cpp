@@ -217,8 +217,8 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 4 draw plot
 //_________________________
 
-	HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain, output_data_chain, output_bg_chains,
-																																													&vars, output_graph_name, mva_cut);
+HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain, output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+
 
 //step 5 create datacards
 //create array of test file bg and all other bgs remebering to halve the other mc weights later...
@@ -231,8 +231,10 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
 //turn array into vector for datacard input
+DataCard::create_datacard(bg_to_train, output_data_chain, card_input_vector[bg_to_train], card_input_vector,
+		mva_output, true, NULL, "", "");
 
-	if (create_cards) {create_datacards(bg_to_train, output_data_chain, card_input_vector[6], card_input_vector,
+	if (create_cards) {create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], card_input_vector,
 		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;

@@ -141,14 +141,15 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   //step 2.4 add mc weight to selection  
   /*std::string mc_weight_str = get_string_from_double(mc_weight);
   selection = selection + "*" + mc_weight_str; */
+  std::cout << "selection for test tree background =============" << std::endl;
   std::cout<<"final selection: "<< selection <<"\n";
 
   //step 2.5: get background histo  problem area caused by signal using the same chain, try cloning the tree and running agsain
   testTree_chain->chain->SetLineColor(1);
-  testTree_chain->chain->SetFillColor(15);
+  testTree_chain->chain->SetFillColor(41);
   TH1F* trained_histo = build_1d_histo(testTree_chain, mva_output, true, true, "goff", NULL, selection, trained_mc_weight, mva_cut);
   TH1F bg_histo_inThe_memory_Stack = *trained_histo;// save to stack emory fromn the heap
-
+  std::cout << "events in wjets ev: ==========" << trained_histo->Integral() << std::endl;
   //step 2.6 add legend entry
   std::string legend_str(testTree_chain->label);
   legend_str += (" #font[12]{(MC weight: " + get_string_from_double(trained_mc_weight) + ")}");// get string from double fails so mc weight is added manually
@@ -156,6 +157,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
 
    //cout<<"legend str: "<<legend_str<<"\n";
    //step 2.7 get stack for all non zjets_vv backgrounds here
+
    THStack stack = draw_stacked_histo_no_zjets(legend, mva_output, bg_chains, true, variables, data, mc_weights_vector, testTree_chain, mva_cut);
 
    //step 2.8 add zjets_vv to stack
@@ -226,6 +228,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   style_ratio_histo(signal_bg_ratio_histo, mva_output->name_styled);
   std::cout << "ratio histo done" << std::endl;
   //step 6.4 draw line, y=1 on signal/background histogram
+  draw_yline_on_plot(mva_output, true, 1.0);
   draw_yline_on_plot(mva_output, true, 1.0);
   std::cout << "step 6 done" << std::endl;
 
