@@ -80,8 +80,10 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
 		}
-//trained_output = MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,  NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
 //}
+//			trained_output = BDTAnalysis::create_BDT(data_chain, signal_chain, &vars2, folder_name,
+//				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
+
 
 
 		std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
@@ -110,7 +112,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	f->Close();
 
 //step 2.2 get data tree
-	const char* d_arr[] = {"dataTrees/data_chain.root"};
+	const char* d_arr[] = {"bdtTrees/data_chain.root"};
 	//step 2.2.2 intialise DataChain paramters for test set
 	std::vector<const char*> data_vector (d_arr, d_arr + sizeof(d_arr)/sizeof(const char*));
 
@@ -119,55 +121,55 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 //step 2.2 get output chains for test,data and other BGs
 //////////qcd
-	const char* qcd_arr[] = {"dataTrees/bg_qcd.root"};
+	const char* qcd_arr[] = {"bdtTrees/bg_qcd.root"};
 
 	std::vector<const char*> qcd_vector (qcd_arr, qcd_arr + sizeof(qcd_arr)/sizeof(const char*));
 
 	DataChain* qcd_ch = new DataChain(qcd_vector,qcd_label,qcd_legend,"");
 //////////VV
-	const char* VV_arr[] = {"dataTrees/bg_vv.root"};
+	const char* VV_arr[] = {"bdtTrees/bg_vv.root"};
 
 	std::vector<const char*> VV_vector (VV_arr, VV_arr + sizeof(VV_arr)/sizeof(const char*));
 
 	DataChain* VV_ch = new DataChain(VV_vector,vv_label,vv_legend,"");
 
 //////////wjets->enu
-	const char* ev_arr[] = {"dataTrees/bg_wjets_ev.root"};
+	const char* ev_arr[] = {"bdtTrees/bg_wjets_ev.root"};
 
 	std::vector<const char*> ev_vector (ev_arr, ev_arr + sizeof(ev_arr)/sizeof(const char*));
 
 	DataChain* wjets_ev_ch = new DataChain(ev_vector,wjets_ev_label,wjets_ev_legend,"(nselelectrons == 1)");
 
 //////////wjets->munu
-	const char* muv_arr[] = {"dataTrees/bg_wjets_muv.root"};
+	const char* muv_arr[] = {"bdtTrees/bg_wjets_muv.root"};
 
 	std::vector<const char*> muv_vector (muv_arr, muv_arr + sizeof(muv_arr)/sizeof(const char*));
 
 	DataChain* wjets_muv_ch = new DataChain(muv_vector,wjets_muv_label,wjets_muv_legend,"(nselmuons == 1)");
 
 //////////wjets->taunu
-	const char* tauv_arr[] = {"dataTrees/bg_wjets_tauv.root"};
+	const char* tauv_arr[] = {"bdtTrees/bg_wjets_tauv.root"};
 
 	std::vector<const char*> tauv_vector (tauv_arr, tauv_arr + sizeof(tauv_arr)/sizeof(const char*));
 
 	DataChain* wjets_tauv_ch = new DataChain(tauv_vector,wjets_tauv_label,wjets_tauv_legend,"(ntaus == 1)");
 
 //////////zjets->nunu
-	const char* zjets_vv_arr[] = {"dataTrees/bg_zjets_vv.root"};
+	const char* zjets_vv_arr[] = {"bdtTrees/bg_zjets_vv.root"};
 
 	std::vector<const char*> zjets_vv_vector (zjets_vv_arr, zjets_vv_arr + sizeof(zjets_vv_arr)/sizeof(const char*));
 
 	DataChain* zjets_vv_ch = new DataChain(zjets_vv_vector,zjets_vv_label,zjets_vv_legend,"");
 
 //////////top
-	const char* top_arr[] = {"dataTrees/bg_top.root"};
+	const char* top_arr[] = {"bdtTrees/bg_top.root"};
 
 	std::vector<const char*> top_vector (top_arr, top_arr + sizeof(top_arr)/sizeof(const char*));
 
 	DataChain* top_ch = new DataChain(top_vector,top_label,top_legend,"");
 
 //////////Z->ll
-	const char* zll_arr[] = {"dataTrees/bg_zll.root"};
+	const char* zll_arr[] = {"bdtTrees/bg_zll.root"};
 
 	std::vector<const char*> zll_vector (zll_arr, zll_arr + sizeof(zll_arr)/sizeof(const char*));
 
@@ -234,9 +236,10 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
 //turn array into vector for datacard input
-
-	if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
-		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}
+	DataCard::create_datacard(output_data_chain,card_input_vector[6], output_bg_chains,
+				mva_output, true, &vars);
+	/*if (create_cards) {create_datacards(output_data_chain, card_input_vector[6], card_input_vector,
+		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}*/
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
 		std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;

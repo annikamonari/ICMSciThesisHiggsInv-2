@@ -293,7 +293,7 @@ const char* data_label  = "data_chain";
 const char* data_legend = "data";
 
 /////////////////////// MVA parameters /////////////////////////
-  const char* NTrees_arr[] = {"20", "10", "50", "80", "100"}; //, "500", "800", "1000"};
+  const char* NTrees_arr[] = {"300", "10", "50", "80", "100"}; //, "500", "800", "1000"};
   std::vector<const char*> NTrees (NTrees_arr, NTrees_arr +
                            sizeof(NTrees_arr)/sizeof(const char*));
 
@@ -317,7 +317,7 @@ const char* data_legend = "data";
   std::vector<const char*> NeuronType (NeuronType_arr, NeuronType_arr +
                                      sizeof(NeuronType_arr)/sizeof(const char*));
 
-  const char* NCycles_arr[] = {"400", "20", "4000", "5000", "10000"};
+  const char* NCycles_arr[] = {"400", "800", "4000", "5000", "10000"};
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
@@ -326,7 +326,7 @@ const char* data_legend = "data";
   std::vector<const char*> HiddenLayers (HiddenLayers_arr, HiddenLayers_arr +
                                          sizeof(HiddenLayers_arr)/sizeof(const char*));
 
-  const char* LearningRate_arr[] = {"0.00000003","0.00000002", "0.000002", "0.0000000002", "0.0000002", "0.0000001", "0.00000004", "0.00000008",
+  const char* LearningRate_arr[] = {"0.00000003","0.02", "0.000002", "0.0000000002", "0.0000002", "0.0000001", "0.00000004", "0.00000008",
                                      "0.00000003","0.00000005","0.00000006","0.00000007","0.00000009","0.00000015"};
   std::vector<const char*> LearningRate (LearningRate_arr, LearningRate_arr +
                                            sizeof(LearningRate_arr)/sizeof(const char*));

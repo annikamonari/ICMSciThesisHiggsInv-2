@@ -25,10 +25,10 @@ void produce_graphs(bool with_cut) {
   bool create_cards = true;
   std::string job_name = "1";
   std::string mva_cut = "";
-  std::string method_name = "MLP";
+  std::string method_name = "BDT";
   std::string sign = ">"; // direction of cut
-  int min = 40; // the minimum value you want cuts to be from
-  int max = 75; // max value you want cuts to be to
+  int min = -20; // the minimum value you want cuts to be from
+  int max = 40; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
 
@@ -44,8 +44,8 @@ void produce_graphs(bool with_cut) {
 
 
 MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name, 
-  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  NCycles[0], HiddenLayers[0], LearningRate[0],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+  NTrees[0],BoostType[0], AdaBoostBeta[1], SeparationType[0], nCuts[2], NeuronType[0], 
+  NCycles[1], HiddenLayers[2], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
 
 }
 

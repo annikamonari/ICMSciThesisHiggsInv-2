@@ -447,7 +447,7 @@ string selection;
 
 	   if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 	   {
-	     mc_weight_errors[i] = zll_weight_error * 5.651 * 1.513*2;
+	     mc_weight_errors[i] = zll_weight_error * 5.651 * 1.513;
              if(variables==NULL){mc_weight_errors[i] = mc_weight_errors[i]*2;}//*2 for tes/training split
 
 	   }
