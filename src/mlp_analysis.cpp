@@ -30,7 +30,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	factory->AddSpectator("nselelectrons",  "nselelectrons", "", 'F' );
 	factory->AddSpectator("nvetoelectrons",  "nvetoelectrons", "", 'F' );
 	factory->AddSpectator("nvetomuons",  "nvetomuons", "", 'F' );
-
+	factory->AddSpectator("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)","",'F');
 	  // Background
 	    double background_weight = 1.0;
 	    factory->AddBackgroundTree(bg_chain->chain,background_weight);
@@ -42,7 +42,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	    factory->SetSignalWeightExpression("total_weight_lepveto");
 
 	    // Apply additional cuts on the signal and background samples (can be different)
-	    TCut signal_cuts = "alljetsmetnomu_mindphi>2.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && dijet_deta<8.0 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+	    TCut signal_cuts = "alljetsmetnomu_mindphi>1.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && dijet_deta<8.0 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
 	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
@@ -129,8 +129,10 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
      reader->AddSpectator("m_mumu", &m_mumu);
      reader->AddSpectator("ntaus", &ntaus);
      reader->AddSpectator("nselelectrons", &nselelectrons );
+
 	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
 	reader->AddSpectator("nvetomuons",  &nvetomuons);
+	reader->AddSpectator("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
 
 /*
 

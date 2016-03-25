@@ -129,7 +129,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   cout<<"mc_weight of trained bg= "<< trained_mc_weight <<endl;
 //mc weights have been tested and work, now need to edit the draw stack function to not stack the zjets in the datachain vector and instead add the test_set th1
   //step 2.2 create output selection string
-  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
+  std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   //selection  += "*total_weight_lepveto";
   //step 2.3 add mva cut to selection string
@@ -166,7 +166,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 3: create signal histo 
   //step 3.1 get regular selection string
-  string sig_selection = "((nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
+  string sig_selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
   sig_selection = add_classID_to_selection(sig_selection, true);
   //step 3.2: add class ID to selection
   sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
@@ -212,7 +212,6 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   //step 5.2 draw subtitles
   draw_subtitle(mva_output, variables, true, data, "", mva_cut);
   std::cout << "step 5 done" << std::endl;
-
 
   /////////////////////////////////////////////////////////////////////////////
   //step 6: draw signal/background secondary histogram
@@ -275,7 +274,7 @@ THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, s
 																																						DataChain* testTree_chain, std::string mva_cut)
 {
   THStack stack(var->name_styled, "");
-  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   std::cout << "selection in draw stacked histo " << selection << std::endl;

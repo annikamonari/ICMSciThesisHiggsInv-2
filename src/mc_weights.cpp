@@ -59,9 +59,23 @@ double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_cha
 cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
-  else{ selection = "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
-  selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
-   }
+  else
+  {
+//loosen the cuts for control region due to absence of events
+    if(!strcmp(bg_chain->label, "bg_zll"))
+    {
+      selection =  "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+    }
+    else if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    {
+      selection = "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+    }
+    else
+    { 
+      selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+    }
+    selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+  }
   cout<<"mc weight selection: "<<selection<<"\n";
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
 cout<<"data in control region: "<<data_in_ctrl<<"\n";
@@ -81,7 +95,23 @@ double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_
 																																	bool double_test_bg, std::string mva_cut)
 {std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
-  else{ selection = "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";}
+  else
+  { 
+//loosen the cuts for control region due to absence of events
+    if(!strcmp(bg_chain->label, "bg_zll"))
+    {
+      selection =  "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+    }
+    else if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    {
+      selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+    }
+    else
+    { 
+      selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+    }
+    selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+  }
   double data_N_C       = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
   double MC_N_C         = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
   double bg_N_C         = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - MC_N_C;
@@ -93,7 +123,7 @@ double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_
   double err3           = (data_N_C- bg_N_C)/(pow(MC_N_C,1.5));
   double error_sq       = std::pow(err1,2) + std::pow(err2,2) + std::pow(err3,2);
   double weight_error   = std::pow(error_sq, 0.5);
-
+cout<<"mc weight error: "<<weight_error<<"\n";
   return weight_error;
 
 }

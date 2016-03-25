@@ -40,7 +40,7 @@ cout<<"got dashed line\n";
 double DataCard::get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																	 std::string mva_cut)
 {
-  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection = HistoPlot::add_classID_to_selection(selection, true);
 
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -64,6 +64,7 @@ std::vector<double> DataCard::get_bg_errors(int bg_to_train, DataChain* data, st
   for(int i = 0; i < bg_chains.size(); i++)
   {
     bg_errors_parsed[i] = 1 + (bg_errors[i] / rates[i+1]);
+cout<<"parsed bg error in data: "<<bg_errors_parsed[i]<<endl;
   }
   std::vector<double> bg_error_vector (bg_errors_parsed, bg_errors_parsed + sizeof(bg_errors_parsed) / sizeof(bg_errors_parsed[0]));
 
@@ -75,19 +76,19 @@ std::vector<double> DataCard::get_rates(int bg_to_train, DataChain* data, std::v
 																																	std::string mva_cut)
 {
   double rates[bg_chains.size() + 1];
-  std::string selection1 = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  std::string selection1 = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection1 = HistoPlot::add_classID_to_selection(selection1, true);
 
   selection1 = HistoPlot::add_mva_cut_to_selection(selection1, mva_cut);
   std::cout << "===signal" << std::endl;
-  std::cout << selection1 << std::endl;
+  //std::cout << selection1 << std::endl;
   TH1F* signal_histo = HistoPlot::build_1d_histo(signal_chain, var, with_cut, false, "goff", variables, selection1, 1, mva_cut);
   rates[0] = 2*HistoPlot::get_histo_integral(signal_histo, with_cut, var);// taking into account test/train data split
 
     for(int i = 0; i < bg_chains.size();i++)
   {
     std::cout << "=====" << bg_chains[i]->label << std::endl;
-    std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     selection = HistoPlot::add_classID_to_selection(selection, false);
     selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -309,7 +310,7 @@ double DataCard::get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_c
 	 double total = 0;
 	 for (int i = 0; i < bg_chains.size(); i++)
 	 	{
-    selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     selection = HistoPlot::add_classID_to_selection(selection, false);
     selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);

@@ -25,7 +25,7 @@ void produce_graphs(bool with_cut) {
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
   bool create_cards = true;
-  std::string job_name = "5";
+  std::string job_name = "0";
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
   std::string mva_cut = "";
@@ -33,7 +33,7 @@ void produce_graphs(bool with_cut) {
   
   std::string sign = ">"; // direction of cut
   int min = 0; // the minimum value you want cuts to be from
-  int max = 70; // max value you want cuts to be to
+  int max = 1; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
 
@@ -47,10 +47,12 @@ void produce_graphs(bool with_cut) {
 		}
   }
 //TFile* trained_output;
+
 //for(int i =0; i<7;i++){
   MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  NCycles[0], HiddenLayers[counter], LearningRate[counter],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+  NCycles[1], HiddenLayers[counter], LearningRate[counter],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+
    /*const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/

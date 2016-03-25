@@ -79,12 +79,12 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
 				NeuronType, NCycles, HiddenLayers, LearningRate,trained_bg_label);
 
-			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
-
-
-                    
+			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name, NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
+//		trained_output = TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE//-PCA.root");
 		}
+//}
+//trained_output = MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,
+//				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
 
 		std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
 
@@ -210,7 +210,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 	if (method_name == "BDT")
 	{
-		mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
+ 		mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
 	}
 	else if (method_name == "MLP")
 	{
