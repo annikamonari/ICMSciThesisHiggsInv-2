@@ -35,7 +35,7 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   cout<<"got rates string\n";
   fs << dashed_line();
   cout<<"got dashed line\n";
-  fs << get_systematic_string(bg_to_train, data_chain, bg_chs, signal_chain, var, with_cut, NULL, mc_weights, mva_cut);
+  fs << get_systematic_string(bg_to_train, data_chain, bg_chains, signal_chain, var, with_cut, NULL, mc_weights, mva_cut);
   std::cout << "Data card created" << std::endl;
   fs.close();
 }

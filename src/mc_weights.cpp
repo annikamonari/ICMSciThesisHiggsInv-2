@@ -99,4 +99,3 @@ double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_
   return weight_error;
 
 }
-

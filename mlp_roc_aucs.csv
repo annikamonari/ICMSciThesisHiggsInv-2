@@ -21,3 +21,16 @@ bg_wjets_ev,radial,20,5 10 15 20,0.02,61.451
 
 bg_wjets_ev,radial,20,5 10 15 20,0.02,61.451
 bg_wjets_ev,radial,20,5 10 15 20,0.02,61.451
+bg_wjets_ev,radial,800,2 4 8 16,0.02,70.6707
+bg_wjets_ev,radial,800,2 4 8 16,0.02,70.6707
+bg_wjets_ev,radial,800,2 4 8 16,0.02,70.6707
+bg_wjets_ev,radial,800,2 4 8 16,0.02,70.6707
+bg_wjets_ev,radial,800,2 4 4 8,0.02,69.4634
+bg_wjets_ev,radial,800,2 4 4 8,0.02,69.4634
+bg_wjets_muv,radial,800,5 5 5 5 5,0.02,66.7598
+bg_wjets_muv,radial,800,2 4 8 16 32,0.02,69.1632
+bg_wjets_muv,radial,800,2 4 8 16 32,0.02,69.1632
+bg_wjets_ev,radial,800,2 4 8 16 32,0.02,69.3684
+bg_wjets_ev,radial,800,2 4 8 16 32,0.02,69.3684
+bg_wjets_ev,radial,800,2 4 4 8,0.002,71.37
+bg_wjets_muv,radial,800,10 10 10,0.0002,68.0285

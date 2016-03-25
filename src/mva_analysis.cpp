@@ -207,7 +207,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","-0.05","1.0","-0.05","1.0","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","-1.25","1.5","-1.25","1.5","100","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 
@@ -310,7 +310,8 @@ test->SaveAs("test.png");
 		Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
 		std::string method_name, std::string sign, int min, int max, double digits)
 	{
-		std::string folder_name = trained_output->GetName();
+		std::string trained_output_str = trained_output->GetName();
+		std::string folder_name = trained_output_str;
 
 		if (sign == ">") {folder_name += "greater_than";}
 		else {folder_name += "less_than";}
@@ -322,6 +323,9 @@ test->SaveAs("test.png");
 			    mkdir(folder_name.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 			  }
 
+		//folder_name += "/" + trained_output_str;
+		//folder_name = HistoPlot::replace_all(folder_name, ".root", ".png");
+		
 		std::vector<std::string> cut_arr = get_mva_cut_range(sign, min, max, digits);
 
 		for (int i = 0; i < cut_arr.size(); i++)
