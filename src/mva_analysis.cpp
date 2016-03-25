@@ -75,7 +75,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		else if (method_name == "MLP")
 		{
 			app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
-				NeuronType, NCycles, HiddenLayers, LearningRate,trained_bg_label);
+				NeuronType, NCycles, HiddenLayers, LearningRate, trained_bg_label);
 
 			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
@@ -217,7 +217,8 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 4 draw plot
 //_________________________
 
-HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain, output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain, 
+	output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
 
 //step 5 create datacards
@@ -230,12 +231,24 @@ HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_
 		else if(i == bg_to_train){card_input_arr[i] = mva_output_test_chain;}
 	}
 	std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
-//turn array into vector for datacard input
-DataCard::create_datacard(bg_to_train, output_data_chain, card_input_vector[bg_to_train], card_input_vector,
-		mva_output, true, NULL, "", "");
+	//turn array into vector for datacard input
 
-	if (create_cards) {create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], card_input_vector,
-		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}
+	std::fstream fs;
+	fs.open ("mlp_roc_aucs.csv", std::fstream::out | std::ofstream::app);
+	double auc = RocCurves::get_auc(method_name, trained_output->GetName());
+	std::string auc_line = create_auc_line_MLP(output_bg_chains[bg_to_train]->label, NeuronType, NCycles, HiddenLayers,
+		LearningRate, auc);
+	fs << auc_line;
+	fs << "\n";
+	fs.flush();
+	fs.close();
+
+	if (create_cards)
+		{
+			create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], card_input_vector,
+																				mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);
+			
+		}
 
 		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
 		std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
@@ -292,6 +305,18 @@ DataCard::create_datacard(bg_to_train, output_data_chain, card_input_vector[bg_t
 		Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
 		std::string method_name, std::string sign, int min, int max, double digits)
 	{
+		std::string folder_name = trained_output->GetName();
+
+		if (sign == ">") {folder_name += "greater_than";}
+		else {folder_name += "less_than";}
+
+		folder_name = HistoPlot::replace_all(folder_name, ".root", "");
+
+		if (!opendir(folder_name.c_str()))
+			  {
+			    mkdir(folder_name.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			  }
+
 		std::vector<std::string> cut_arr = get_mva_cut_range(sign, min, max, digits);
 
 		for (int i = 0; i < cut_arr.size(); i++)

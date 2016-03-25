@@ -1,0 +1,10 @@
+bg_zjets_vv,radial,800,5 10 15 20,0.000002,60.1818
+bg_wjets_tauv,radial,800,5 10 15 20,0.000002,54.5675
+bg_zjets_vv,radial,800,5 10 15 20,0.000002,60.1818
+bg_wjets_tauv,radial,800,5 10 15 20,0.000002,54.5675
+bg_zjets_vv,radial,800,50 50 50,0.000002,54.8949
+bg_wjets_tauv,radial,800,50 50 50,0.000002,55.0097
+bg_wjets_ev,radial,800,5 10 15 20,0.02,69.9504
+bg_wjets_ev,radial,800,50 50 50,0.02,64.7892
+bg_wjets_ev,radial,800,5 10 15 20,0.02,69.9504
+bg_wjets_ev,radial,800,100,0.02,67.0847

@@ -247,7 +247,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
 	       }
 	       else
 	       {
-	       		target_name = "TMVApp.root";
+	       		target_name = job_name + "TMVApp.root";
 	       }
 
 	   	   TFile* target  = new TFile(target_name.c_str(),"RECREATE" );

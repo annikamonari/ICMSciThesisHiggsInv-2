@@ -1,3 +1,4 @@
+*.root
 # Ignore the build dir
 build/*
 weights/*
