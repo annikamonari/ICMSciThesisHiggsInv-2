@@ -68,7 +68,7 @@ cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
     }
     else if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
-      selection = "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+      selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
     else
     { 
@@ -76,7 +76,7 @@ cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
     }
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   }
-  cout<<"mc weight selection: "<<selection<<"\n";
+  //cout<<"mc weight selection: "<<selection<<"\n";
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
 cout<<"data in control region: "<<data_in_ctrl<<"\n";
   double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
@@ -86,7 +86,7 @@ cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
   double weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
-  
+  cout<<"mc weight: "<<weight<<endl;
   return weight;
 }
 
@@ -123,6 +123,7 @@ double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_
   double err3           = (data_N_C- bg_N_C)/(pow(MC_N_C,1.5));
   double error_sq       = std::pow(err1,2) + std::pow(err2,2) + std::pow(err3,2);
   double weight_error   = std::pow(error_sq, 0.5);
+cout<<"====="<<bg_chain->label<<endl;
 cout<<"mc weight error: "<<weight_error<<"\n";
   return weight_error;
 

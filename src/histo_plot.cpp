@@ -413,9 +413,8 @@ std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain
 // region (its just sqrt(unweighted mc events in signal) / unweighted mc events in signal)
 // note:: changed so that if mc weight is 1 then dont calculate the mc weight error
 // TODO make error use sumw2 and integralanderror
-std::vector<double> HistoPlot::get_mc_weight_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
-																																																				Variable* var, bool with_cut, std::vector<Variable*>* variables,
-																																																				std::vector<double> bg_mc_weights, std::string mva_cut)
+std::vector<double> HistoPlot::get_mc_weight_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,Variable* var, bool with_cut, std::vector<Variable*>* variables,
+std::vector<double> bg_mc_weights, std::string mva_cut)
 {
 string selection;
 	 double mc_weight_errors[bg_chains.size()];
@@ -425,7 +424,7 @@ string selection;
 	 {
 		if(variables==NULL)
 		{
-    			selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    			selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     			selection = HistoPlot::add_classID_to_selection(selection, false);
     			selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -440,7 +439,7 @@ string selection;
 
 	   if (bg_mc_weights[i] != 1) 
 	   {
-					if(strcmp(bg_chains[i]->label, "bg_zjets_vv"))
+		if(strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 					{
 			//cout<<"mc wiehgt in if loop: "<<bg_mc_weights[i]<<endl;
 							mc_weight_errors[i] = single_bg_error(bg_to_train, data, bg_chains, bg_chains[i], var,
@@ -458,7 +457,7 @@ string selection;
 	     mc_weight_errors[i] = zll_weight_error * 5.651 * 1.513;
 
 	   }
- cout << bg_chains[i]->label << endl;
+ cout << bg_chains[i]->label <<" total error: "<<mc_weight_errors[i]<< endl;
 	 }
 	 std::vector<double> mc_weights_vector (mc_weight_errors, mc_weight_errors + sizeof(mc_weight_errors) / sizeof(mc_weight_errors[0]));
 
