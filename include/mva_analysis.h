@@ -27,12 +27,13 @@ class MVAAnalysis
 
   static std::vector<std::string> get_mva_cut_range(std::string sign, int min, int max, double digits);
 
-  static std::vector<const char*> vary_parameters(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain, SuperVars* super_vars,
-																														std::string method_name, std::string dir_name, std::vector<const char*> NTrees, std::vector<const char*> BoostType,
-																														std::vector<const char*> AdaBoostBeta, std::vector<const char*> SeparationType, std::vector<const char*> nCuts,
-																														std::vector<const char*> NeuronType, std::vector<const char*> NCycles, std::vector<const char*> HiddenLayers,
-																														std::vector<const char*> LearningRate, bool unique_output_files = false,
-																														bool create_cards = false, std::string job_name = "1");
+  static std::vector<const char*> vary_parameters(std::vector<DataChain*> bg_chains, int bg_to_train,                                     DataChain* signal_chain, DataChain* data_chain, SuperVars* super_vars,
+			std::string method_name, std::string dir_name, std::vector<const char*> NTrees, 
+                        std::vector<const char*> BoostType,std::vector<const char*> AdaBoostBeta, 
+                        std::vector<const char*> SeparationType, std::vector<const char*> nCuts,
+                        std::vector<const char*> NeuronType, std::vector<const char*> NCycles, 
+                        std::vector<const char*> HiddenLayers,std::vector<const char*> LearningRate, 
+                        bool unique_output_files = false,bool create_cards = false, std::string job_name = "1");
 
   static void get_plots_varying_params(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain, SuperVars* super_vars,
 																																							std::string method_name, std::string dir_name, std::vector<const char*> NTrees, std::vector<const char*> BoostType,
@@ -52,6 +53,8 @@ class MVAAnalysis
 		bool unique_output_files,
 		bool create_cards, std::string job_name, std::string mva_cut, std::string sign = ">", 
 		int min = 10, int max = 50, double digits = 100);
+
+  static void get_estimators(std::vector<const char*> training_file_paths);
 
   static std::string create_auc_line_MLP(const char* bg_label, const char* NeuronType,
 											const char* NCycles, const char* HiddenLayers,

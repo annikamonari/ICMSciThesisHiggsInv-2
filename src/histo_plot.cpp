@@ -173,7 +173,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
 
   std::cout<<"final sig_selection: "<< sig_selection<<"\n";
 
-  //step 3.3 get signal histo 
+  //step 3.3 get signal his0-HiddenLayers=2,2,2,2-LearningRate=0.02-EstimatorType=CEoutput_nocuts.pngto 
   test_clone->SetLineColor(2);
   test_clone->SetLineWidth(3);
   test_clone->SetFillColor(0);
@@ -192,6 +192,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   //step 4: draw and style primary histogram
   //step 4.1 draw background histogram
   stack.Draw();
+//trained_histo->Draw();
   std::cout << "step 4.1 done" << std::endl;
 
   //step 4.2 draw signal histogram
@@ -217,7 +218,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   //step 6: draw signal/background secondary histogram
   //step 6.1 change pad then create signal/background histogram
   p3->cd();
-  TH1F* signal_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo, (TH1F*)(stack.GetStack()->Last()));
+  TH1F* signal_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo,/*trained_histo */(TH1F*)(stack.GetStack()->Last()));
 
   //step 6.2 draw signal/background histo
   signal_bg_ratio_histo->Draw("e1");

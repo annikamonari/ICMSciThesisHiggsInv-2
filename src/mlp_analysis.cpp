@@ -317,7 +317,7 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	std::string lr = LearningRate;
 
 	MLP_options.append(nt);
-	MLP_options += ":VarTransform=N:NCycles=";
+	MLP_options += ":VarTransform=G,P,N:NCycles=";
 	MLP_options.append(nc);
 	MLP_options += ":HiddenLayers=";
 	MLP_options.append(hl);
@@ -345,7 +345,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=CE";
+        out_nam += "-EstimatorType=CE-PCA";
  out_nam += ".root";
 
 	return out_nam;

@@ -4,12 +4,14 @@ double RocCurves::get_auc(std::string method_name, const char* training_output_p
 {
 	  TFile* training_output = TFile::Open(training_output_path);
 	  TH1D* roc = plot_rejBvsS(training_output, method_name);
+          TH1D ROC =*roc;
    double auc = 0;
 
    if (roc != 0x0)
    {
-     auc = roc->Integral();
+     auc = ROC.Integral();
    }
+training_output->Close();
 
    return auc;
 }
@@ -32,7 +34,7 @@ void RocCurves::plot_all_rejBvsS(std::vector<TFile*> training_outputs, DataChain
 	TCanvas* c1     = new TCanvas("c1", plot_name.c_str());
 	TLegend* legend = new TLegend(0.15, 0.6, 0.65, 0.15);
 	TGraph* point   = parked_data_point(signal, bg, preselection, var, variables, legend);
-	std::cout << "=> Parked Data Point done" << std::endl;
+	//std::cout << "=> Parked Data Point done" << std::endl;
 	for (int i = 0; i < training_outputs.size(); i++)
 	{
 		std::string training_name(training_outputs[i]->GetName());
@@ -78,8 +80,8 @@ TH1D* RocCurves::plot_rejBvsS(TFile* training_output, std::string method_name)
 		file_path = "Method_BDT/BDT/MVA_BDT_rejBvsS";
 	}
 	TH1D* rejBvsS_histo = (TH1D*) training_output->Get(file_path.c_str());
-	std::cout << "Training output name " << training_output->GetName() << std::endl;
-	std::cout << "test " << ", " << (TH2F*) training_output->Get("CorrelationMatrixS;1") << std::endl;
+	//std::cout << "Training output name " << training_output->GetName() << std::endl;
+	//std::cout << "test " << ", " << (TH2F*) training_output->Get("CorrelationMatrixS;1") << std::endl;
 	return rejBvsS_histo;
 }
 

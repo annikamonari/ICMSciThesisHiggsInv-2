@@ -1,6 +1,8 @@
 #include "../include/mva_analysis.h"
 #include "../include/bdt_analysis.h"
 #include "../include/mlp_analysis.h"
+#include <sstream>
+
 using namespace std;
 void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
 	SuperVars* super_vars, std::string method_name, std::string dir_name,
@@ -79,10 +81,15 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
+
+
+                    
 		}
 
 		std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
-		std::cout << "=> All background put through BDT" << std::endl;
+
+ if (create_cards) {		
+
 
 	//step 2 evaluate MVA's
 //________________________________________________________________________________________________________________________________________________	
@@ -207,7 +214,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","-1.25","1.5","-1.25","1.5","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","0.0","1.0","","","100","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 
@@ -220,6 +227,8 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain, output_data_chain, output_bg_chains,
 																																													&vars, output_graph_name, mva_cut);
 
+
+
 //step 5 create datacards
 //create array of test file bg and all other bgs remebering to halve the other mc weights later...
 
@@ -229,20 +238,121 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		if(i != bg_to_train){card_input_arr[i] = output_bg_chains[i];}
 		else if(i == bg_to_train){card_input_arr[i] = mva_output_test_chain;}
 	}
-	std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
+std::vector<DataChain*> card_input_vector (card_input_arr,  card_input_arr+ sizeof(card_input_arr) / sizeof(card_input_arr[0]));
 //turn array into vector for datacard input
 
-	if (create_cards) {create_datacards(bg_to_train, output_data_chain, card_input_vector[6], card_input_vector,
+create_datacards(bg_to_train, output_data_chain, card_input_vector[6], card_input_vector,
 		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}
 
-		std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
-		std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
+//roc curve plots plot train set so useless
+//std::cout<<"Area unde ROC: "<<RocCurves::get_auc( method_name, trained_output->GetName());
+
+
+
+//step 6 get estimators
+ //if (method_name == "MLP"){get_estimators(trained_output->GetName());}
+  std::cout << "=> Drew MVA Output plot for all backgrounds and signal" << std::endl;
+  std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
+  //get_estimators(trained_output->GetName());
+
 
 		return trained_output;
 	}
 
 //________________________________________________________________________________________
-	std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* NeuronType,
+void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
+{
+  TFile *_file0;
+//get get params from file name
+//"test/MLP-bg_wjets_ev-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16-LearningRate=0.00001-EstimatorType=CE.root";
+  string file_path;
+  string background;
+  string NeuronType;
+  string NCycles;
+  string HiddenLayers;
+  string LearningRate;
+  int len = training_file_paths.size();
+  Double_t test_estimator[len];
+  Double_t train_estimator[len];
+ 
+//get arr of estimators;
+  for(int i=0; i< len;i++)
+  {
+    _file0 = TFile::Open(training_file_paths[i]);
+    //go into estimator hiustogram directory
+    _file0->cd("Method_MLP;1/MLP;1");
+    //declare histogram pointers
+    TH1F* test;
+    TH1F * train;
+    //get histograms from subdirectory of file
+    gDirectory->GetObject("estimatorHistTest;1",test);
+    gDirectory->GetObject("estimatorHistTrain;1",train);
+    test_estimator[i] = test->GetBinContent(400);
+    train_estimator[i] = train->GetBinContent(400);
+    _file0->Close();
+  cout<<"test_estimator= "<<test_estimator[i]<<" train_estimator= "
+  <<train_estimator[i]<<" train/test= "<<train_estimator[i]/test_estimator[i]<<"\n";
+
+  }
+  int bglen;
+  int bgpos;
+  int NTpos;
+  int NTlen;
+  int NCpos;
+  int NClen;
+  int HLpos;
+  int HLlen;
+  int LRpos;
+  int LRlen;
+  bool human_readable=false;
+  std::fstream fs;
+  fs.open ("Estimator_statistics.txt", std::fstream::out | std::fstream::trunc);
+  fs << "Estimator statistics for last epoch of MLP training with G,P,N transform\n" ;
+  fs << "Background NeuronType  NCycles  HiddenLayers   LearningRate  test_estimator train_estimator train/test \n";
+  //done title lines 
+  for(int i=0; i< len;i++)
+  {
+    file_path= training_file_paths[i];
+
+    bgpos = file_path.find("bg");
+    bglen = file_path.find("-NeuronType") - (file_path.find("bg"));
+    background = file_path.substr(bgpos, bglen);
+
+    NTpos = file_path.find("NeuronType=")+11;
+    NTlen = file_path.find("-NCycles") - (11+file_path.find("NeuronType="));
+    NeuronType = file_path.substr(NTpos, NTlen);
+
+    NCpos = file_path.find("NCycles=")+8;
+    NClen = file_path.find("-HiddenLayers") - (8+file_path.find("NCycles="));
+    NCycles = file_path.substr(NCpos, NClen);
+
+    HLpos = file_path.find("HiddenLayers=")+13;
+    HLlen = file_path.find("-LearningRate") - (13+file_path.find("HiddenLayers="));
+    HiddenLayers = file_path.substr(HLpos, HLlen);
+
+    LRpos = file_path.find("LearningRate=")+13;
+    LRlen = file_path.find("-EstimatorType") - (13+file_path.find("LearningRate="));
+    LearningRate= file_path.substr(LRpos, LRlen);
+    if(human_readable){
+      fs<<background;
+      for(int i =15-bglen; i>0;i--){fs<<" ";}
+      fs << NeuronType <<"      "<<NCycles<<"     "<<HiddenLayers;
+      for(int i =15-HLlen; i>0;i--){fs<<" ";}
+      fs<<LearningRate;
+      for(int i =15-LRlen; i>0;i--){fs<<" ";}
+      fs<<test_estimator[i]<<"        "<<
+         train_estimator[i]<<"        "<<
+        train_estimator[i]/test_estimator[i]<<"\n";
+    }
+    else if (!human_readable){fs<<background<<" "<<NeuronType <<" "<<NCycles<<" "<<HiddenLayers<<" "<<LearningRate<<" ";
+    fs<<test_estimator[i]<<" "<<train_estimator[i]<<" "<<train_estimator[i]/test_estimator[i]<<"\n";}
+  }
+  fs.close();
+
+}
+
+//________________________________________________________________________________________
+std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* NeuronType,
 		const char* NCycles, const char* HiddenLayers,
 		const char* LearningRate, double auc)
 	{
