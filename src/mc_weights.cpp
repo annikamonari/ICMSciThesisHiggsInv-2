@@ -31,7 +31,9 @@ double MCWeights::get_nevents(DataChain* data_chain, Variable* var, bool with_cu
 
   if(!strcmp(data_chain->label, trained_bg_label))
   {
-    if(double_test_bg){integral = integral*2;}
+  		std::cout << "===== the bg calcing mc weights for == trained bg!!! ======" << std::endl;
+  		std::cout << trained_bg_label << std::endl;
+    if(double_test_bg){std::cout << "===== doubling the trained bg ======" << std::endl;integral = integral*2;}
   }
 
   return integral;

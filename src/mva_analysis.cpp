@@ -207,7 +207,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","-1.25","1.5","-1.25","1.5","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","-0.05","1.0","-0.05","1.0","100","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 
@@ -217,9 +217,14 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 4 draw plot
 //_________________________
 
-HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain, 
+HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,
 	output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
+/*
+output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
+TH1F* test = (TH1F*) gDirectory->Get("test");
+test->SaveAs("test.png");
+*/
 
 //step 5 create datacards
 //create array of test file bg and all other bgs remebering to halve the other mc weights later...
@@ -245,8 +250,8 @@ HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_
 
 	if (create_cards)
 		{
-			create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], card_input_vector,
-																				mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);
+			create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], output_bg_chains,
+							mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);
 			
 		}
 

@@ -146,7 +146,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
 
   //step 2.5: get background histo  problem area caused by signal using the same chain, try cloning the tree and running agsain
   testTree_chain->chain->SetLineColor(1);
-  testTree_chain->chain->SetFillColor(41);
+  testTree_chain->chain->SetFillColor(colours()[bg_trained]);
   TH1F* trained_histo = build_1d_histo(testTree_chain, mva_output, true, true, "goff", NULL, selection, trained_mc_weight, mva_cut);
   TH1F bg_histo_inThe_memory_Stack = *trained_histo;// save to stack emory fromn the heap
   std::cout << "events in wjets ev: ==========" << trained_histo->Integral() << std::endl;
@@ -374,7 +374,7 @@ std::string HistoPlot::add_mva_cut_to_selection(std::string selection, std::stri
 
 std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
                                           Variable* var, bool with_cut, std::vector<Variable*>* variables,
-					std::string mva_cut, bool double_test_bg)
+					                                     std::string mva_cut, int trained_bg, bool double_test_bg)
 {//cout<<"in HistoPlot::mc_weights\n";
   double mc_weight[bg_chains.size()];
   double zll_weight;
@@ -386,7 +386,7 @@ std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain
     if (bg_chains[i]->lep_sel != "")
     {
     		double mc_weight_val = MCWeights::calc_mc_weight(data, bg_chains, bg_chains[i], var, with_cut,
-																																																			    variables, mva_cut, double_test_bg);
+																																																			    variables, mva_cut, trained_bg, double_test_bg);
       if (mc_weight_val > 0)
     		{
       		mc_weight[i] = mc_weight_val;
@@ -405,7 +405,7 @@ std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain
     	 		mc_weight[i] = zll_weight*5.651*1.513;
     	 }
     }
-    //std::cout<<i<<": "<<mc_weight[i]<<"\n";
+    std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
   }
   std::vector<double> mc_weights_vector (mc_weight, mc_weight + sizeof(mc_weight) / sizeof(mc_weight[0]));
 

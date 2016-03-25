@@ -1,0 +1,38 @@
+{
+//========= Macro generated from object: test/output {((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto}
+//========= by ROOT version5.34/34
+   
+   TH1F *test = new TH1F("test","output {((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto}",100,-1.25,1.5);
+   test->SetBinContent(50,91.677);
+   test->SetBinContent(51,194.104);
+   test->SetBinContent(52,127.586);
+   test->SetBinContent(53,6.46243);
+   test->SetBinContent(54,2.59518);
+   test->SetBinContent(55,0.786309);
+   test->SetBinContent(56,0.887135);
+   test->SetBinContent(57,0.401505);
+   test->SetBinContent(58,0.281225);
+   test->SetBinContent(59,0.305435);
+   test->SetBinContent(60,0.23303);
+   test->SetBinContent(61,0.858173);
+   test->SetBinContent(62,0.518664);
+   test->SetEntries(10040);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#000099");
+   test->SetLineColor(ci);
+   test->GetXaxis()->SetLabelFont(42);
+   test->GetXaxis()->SetLabelSize(0.035);
+   test->GetXaxis()->SetTitleSize(0.035);
+   test->GetXaxis()->SetTitleFont(42);
+   test->GetYaxis()->SetLabelFont(42);
+   test->GetYaxis()->SetLabelSize(0.035);
+   test->GetYaxis()->SetTitleSize(0.035);
+   test->GetYaxis()->SetTitleFont(42);
+   test->GetZaxis()->SetLabelFont(42);
+   test->GetZaxis()->SetLabelSize(0.035);
+   test->GetZaxis()->SetTitleSize(0.035);
+   test->GetZaxis()->SetTitleFont(42);
+   test->Draw("");
+}

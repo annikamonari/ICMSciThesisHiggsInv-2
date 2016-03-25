@@ -317,7 +317,7 @@ const char* data_legend = "data";
   std::vector<const char*> NeuronType (NeuronType_arr, NeuronType_arr +
                                      sizeof(NeuronType_arr)/sizeof(const char*));
 
-  const char* NCycles_arr[] = {"800", "20", "4000", "5000", "10000"};
+  const char* NCycles_arr[] = {"20","800", "20", "4000", "5000", "10000"};
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
