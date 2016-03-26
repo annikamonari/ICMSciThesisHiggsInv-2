@@ -32,10 +32,10 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   int max = 75; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
-  for (int i = 0; i < LearningRate.size(); i++)
+  for (int i = 1; i < 2/*i < LearningRate.size()*/; i++)
   {  
     
-    for (int k = 0; k < 4; k++)
+    for (int k = 0; k < 2; k++)
     {
       for (int j = 0; j < HiddenLayers.size(); j++)
       {

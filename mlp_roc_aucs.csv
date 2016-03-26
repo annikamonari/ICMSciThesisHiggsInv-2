@@ -47,3 +47,45 @@ bg_zll,radial,800,100,0.02,60.2115
 bg_zll,radial,800,50 50 50,0.02,48.0756
 bg_wjets_ev,radial,800,20 20 20,0.02,66.145
 bg_wjets_ev,radial,800,5 10 20 40,0.02,68.2855
+bg_wjets_ev,radial,600,2,0.02,70.8255
+bg_wjets_ev,radial,600,5,0.02,70.085
+bg_wjets_ev,radial,600,10,0.02,69.9407
+bg_wjets_ev,radial,600,20,0.02,70.4651
+bg_wjets_ev,radial,600,50,0.02,67.9161
+bg_wjets_ev,radial,600,100,0.02,67.0883
+bg_wjets_ev,radial,600,2 2,0.02,70.9092
+bg_wjets_ev,radial,600,5 5,0.02,71.3342
+bg_wjets_ev,radial,600,10 10,0.02,66.9679
+bg_wjets_ev,radial,600,20 20,0.02,66.3113
+bg_wjets_ev,radial,600,50 50,0.02,65.5987
+bg_wjets_ev,radial,600,5 10 20,0.02,67.5309
+bg_wjets_ev,radial,600,5 10,0.02,70.8682
+bg_wjets_ev,radial,600,2 4,0.02,71.0868
+bg_wjets_ev,radial,600,4 8,0.02,69.9289
+bg_wjets_ev,radial,600,20 40,0.02,66.4682
+bg_wjets_muv,radial,600,2,0.02,70.444
+bg_wjets_muv,radial,600,5,0.02,69.6144
+bg_wjets_muv,radial,600,10,0.02,69.583
+bg_wjets_muv,radial,600,20,0.02,69.7228
+bg_wjets_muv,radial,600,50,0.02,67.672
+bg_wjets_muv,radial,600,100,0.02,66.3438
+bg_wjets_muv,radial,600,2 2,0.02,68.9689
+bg_wjets_muv,radial,600,5 5,0.02,68.538
+bg_wjets_muv,radial,600,10 10,0.02,66.2294
+bg_wjets_muv,radial,600,20 20,0.02,65.0086
+bg_wjets_muv,radial,600,50 50,0.02,63.8816
+bg_wjets_muv,radial,600,5 10 20,0.02,68.1311
+bg_wjets_muv,radial,600,5 10,0.02,69.047
+bg_wjets_muv,radial,600,2 4,0.02,70.2749
+bg_wjets_muv,radial,600,4 8,0.02,68.7879
+bg_wjets_muv,radial,600,20 40,0.02,65.4876
+bg_wjets_ev,radial,600,2,0.002,71.0734
+bg_wjets_ev,radial,600,5,0.002,71.2225
+bg_wjets_ev,radial,600,10,0.002,72.0187
+bg_wjets_ev,radial,600,20,0.002,70.0688
+bg_wjets_ev,radial,600,50,0.002,70.0462
+bg_wjets_ev,radial,600,100,0.002,69.5009
+bg_wjets_ev,radial,600,2 2,0.002,71.3265
+bg_wjets_ev,radial,600,5 5,0.002,70.8636
+bg_wjets_ev,radial,600,10 10,0.002,69.0884
+bg_wjets_ev,radial,600,20 20,0.002,67.8952
