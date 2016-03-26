@@ -322,15 +322,16 @@ test->SaveAs("test.png");
 			  {
 			    mkdir(folder_name.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 			  }
-
-		//folder_name += "/" + trained_output_str;
-		//folder_name = HistoPlot::replace_all(folder_name, ".root", ".png");
+	    int output_name_idx = trained_output_str.rfind("/");
+		folder_name += "/" + trained_output_str.substr(output_name_idx + 1, -1);
 		
 		std::vector<std::string> cut_arr = get_mva_cut_range(sign, min, max, digits);
 
 		for (int i = 0; i < cut_arr.size(); i++)
 		{
-			std::string output_graph_name = build_output_graph_name(trained_output, cut_arr[i]);
+			std::string output_graph_name = HistoPlot::replace_all(folder_name, ".root", cut_arr[i] + ".png");
+			//build_output_graph_name(trained_output, cut_arr[i]);
+
 			DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
 				mva_output, true, variables, output_graph_name, cut_arr[i]);
 		}
