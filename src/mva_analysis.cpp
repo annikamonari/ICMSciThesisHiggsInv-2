@@ -237,7 +237,7 @@ test->SaveAs("test.png");
 	}
 	std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
 	//turn array into vector for datacard input
-
+/*
 	std::fstream fs;
 	fs.open ("mlp_roc_aucs.csv", std::fstream::out | std::ofstream::app);
 	double auc = RocCurves::get_auc(method_name, trained_output->GetName());
@@ -247,7 +247,7 @@ test->SaveAs("test.png");
 	fs << "\n";
 	fs.flush();
 	fs.close();
-
+*/
 	if (create_cards)
 		{
 			create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], output_bg_chains,
