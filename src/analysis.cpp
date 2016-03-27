@@ -317,16 +317,30 @@ const char* data_legend = "data";
   std::vector<const char*> NeuronType (NeuronType_arr, NeuronType_arr +
                                      sizeof(NeuronType_arr)/sizeof(const char*));
 
+<<<<<<< HEAD
   const char* NCycles_arr[] = {"2000", "20", "4000", "5000", "10000"};
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
   const char* HiddenLayers_arr[] = {"2","2,4","2,4,8","2,4,8,16","2,4,8,16,32","2,4,8,16,32,64"}/*, "50", "100", "10,10","10,10,10",
+=======
+  const char* NCycles_arr[] = {"800","800", "20", "4000", "5000", "10000"};
+  std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
+                                       sizeof(NCycles_arr)/sizeof(const char*));
+
+  const char* HiddenLayers_arr[] = {"2", "5", "10", "20", "50", "100", "2,2", "5,5", "10,10", "20,20", "50,50", "5,10,20", "5,10", "2,4", "4,8", "20,40", "50,100"}
+//"20", "5", "50", "100", "20,20", "5,5", "10,10","5,10,15,20", "100","50,50,50", 
+                                    /*, "50", "100", "10,10","10,10,10",
+>>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
   																																		"10,10,10,10", "10,10,10,10,10", "30", "50", "100"} */;//number of neurons in each hidden layer
   std::vector<const char*> HiddenLayers (HiddenLayers_arr, HiddenLayers_arr +
                                          sizeof(HiddenLayers_arr)/sizeof(const char*));
 
+<<<<<<< HEAD
   const char* LearningRate_arr[] = {"0.1","0.1","0.01","0.001","0.1","0.001","0.000001", "0.005","0.002"};
+=======
+  const char* LearningRate_arr[] = {"0.02", "0.002", "0.0002"};
+>>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
   std::vector<const char*> LearningRate (LearningRate_arr, LearningRate_arr +
                                            sizeof(LearningRate_arr)/sizeof(const char*));
 

@@ -6,7 +6,7 @@
 
 //#include "../include/mlp_analysis.h"
 
-void produce_graphs(bool with_cut) {
+void produce_graphs(bool with_cut, const char* job_ptr) {
   SuperVars* super_vars             = new SuperVars();
   std::vector<Variable*> vars       = super_vars->get_discriminating_vars();
   std::vector<Variable*> cut_vars   = super_vars->get_signal_cut_vars();
@@ -25,27 +25,42 @@ void produce_graphs(bool with_cut) {
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
   bool create_cards = true;
+<<<<<<< HEAD
   std::string job_name = "5";
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
+=======
+  std::string job_name = job_ptr;
+>>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
   std::string mva_cut = "";
   std::string method_name = "MLP";
-  
+  int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
-  int min = 0; // the minimum value you want cuts to be from
-  int max = 70; // max value you want cuts to be to
+  int min = 20; // the minimum value you want cuts to be from
+  int max = 75; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
+  for (int i = 0; i < LearningRate.size(); i++)
+  {  
+    
+    for (int k = 0; k < 4; k++)
+    {
+      for (int j = 0; j < HiddenLayers.size(); j++)
+      {
+          int bg_to_train = rel_bgs[k];
+          std::string bg_label = bg_chains[bg_to_train]->label;
+          std::string folder_name = "MLP/" + bg_label;
+        
+    				MVAAnalysis::get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, folder_name, method_name,
+    				  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0],
+    				  NCycles[0], HiddenLayers[j], LearningRate[i],unique_output_files, create_cards, job_name, 
+              mva_cut, sign, min, max, digits);
 
-  for (int i = 1; i < 2/*bg_chains.size()*/; i++)
-  {
-  		for (int j = 0; j < 1/*3*/; j++)
-  		{
-  			 /*MVAAnalysis::get_plots_varying_params(bg_chains, 6, signal_chain, data_chain, super_vars, "MLP", varying_params[0],
-																																												NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts, NeuronType, NCycles,
-																																												HiddenLayers, LearningRate, unique_output_files, create_cards, "1");*/
-		}
+    		}
+    }
+    
   }
+<<<<<<< HEAD
 //TFile* trained_output;
 //for(int i =0; i<7;i++){
   MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
@@ -55,12 +70,15 @@ void produce_graphs(bool with_cut) {
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/
 //}
+=======
+>>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
 
 
 }
 
 int main(int argc, char** argv) {
   TApplication theApp("tapp", &argc, argv);
+<<<<<<< HEAD
   produce_graphs(true);
 /*const char * files[] = {
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.000001-EstimatorType=CE-PCA.root",
@@ -110,6 +128,9 @@ int main(int argc, char** argv) {
 };
 std::vector<const char*> files_v (files, files + sizeof(files) / sizeof(const char*));
   MVAAnalysis::get_estimators(files_v);*/
+=======
+  produce_graphs(true, argv[1]);
+>>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
   theApp.Run();
   return 0;
 }
