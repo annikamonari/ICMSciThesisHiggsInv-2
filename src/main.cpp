@@ -51,7 +51,7 @@ void produce_graphs(bool with_cut) {
 //for(int i =4; i<7;i++){
   MVAAnalysis::get_mva_results(bg_chains, 1, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  NCycles[2], HiddenLayers[0], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+  NCycles[2], HiddenLayers[0], LearningRate[0],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
 
    /*const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));

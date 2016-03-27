@@ -9,6 +9,16 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
 																															std::string mva_cut)
 {
 	 std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut, variables, mva_cut);
+	DataChain* card_input_arr[8];
+	for(int i=0; i<8;i++)
+	{
+		if(i != bg_to_train){card_input_arr[i] = bg_chains[i];}
+		else if(i == bg_to_train){card_input_arr[i] = signal_chain;}
+	}
+std::vector<DataChain*> card_input_vector (card_input_arr,  card_input_arr+ sizeof(card_input_arr) / sizeof(card_input_arr[0]));
+
+
+
 	 std::fstream fs;
 	 std::string data_card_name = get_data_card_name(output_graph_name, mva_cut);
 	 //std::cout << data_card_name << std::endl;
@@ -22,17 +32,17 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   fs << dashed_line();
   fs << bin_header_string();
 //cout<<"about to get observation string\n";
-  fs << bin_observation_string(get_total_nevents(bg_to_train, bg_chains, var, with_cut, NULL, mc_weights, mva_cut));
+  fs << bin_observation_string(get_total_nevents(bg_to_train, card_input_vector, var, with_cut, NULL, mc_weights, mva_cut));
 //cout<<"got observation string\n";  
   fs << dashed_line();
   fs << bin_grid_line(size);
   fs << process_labels(bg_chains, signal_chain);
   fs << process_2_string(process_line_2(size));
-  fs << rate_string(get_rates(bg_to_train, data_chain, bg_chains, signal_chain, var, with_cut, NULL, mc_weights, mva_cut));
+  fs << rate_string(get_rates(bg_to_train, data_chain, card_input_vector, signal_chain, var, with_cut, NULL, mc_weights, mva_cut));
 //cout<<"got rates string\n";
   fs << dashed_line();
 //cout<<"got dashed line\n";
-  fs << get_systematic_string(bg_to_train, data_chain, bg_chains, signal_chain, var, with_cut, NULL, mc_weights, mva_cut);
+  fs << get_systematic_string(bg_to_train, data_chain,card_input_vector , signal_chain, var, with_cut, NULL, mc_weights, mva_cut);
   //std::cout << "Data card created" << std::endl;
 	 fs.close();
 }

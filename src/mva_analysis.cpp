@@ -232,16 +232,9 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 5 create datacards
 //create array of test file bg and all other bgs remebering to halve the other mc weights later...
 
-	DataChain* card_input_arr[8];
-	for(int i=0; i<8;i++)
-	{
-		if(i != bg_to_train){card_input_arr[i] = output_bg_chains[i];}
-		else if(i == bg_to_train){card_input_arr[i] = mva_output_test_chain;}
-	}
-std::vector<DataChain*> card_input_vector (card_input_arr,  card_input_arr+ sizeof(card_input_arr) / sizeof(card_input_arr[0]));
 //turn array into vector for datacard input
 
-create_datacards(bg_to_train, output_data_chain, card_input_vector[6], card_input_vector,
+create_datacards(bg_to_train, output_data_chain,mva_output_test_chain, output_bg_chains,
 		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}
 
 //roc curve plots plot train set so useless

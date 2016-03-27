@@ -45,7 +45,6 @@ double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable
   for (int i = 0; i < bg_chains.size(); i++)
   {
     double integral = get_nevents(bg_chains[i], var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
-
     total_integral += integral;
   }
 
@@ -54,7 +53,7 @@ double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable
 
 double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,
-																																	int trained_bg, bool double_test_bg)
+				int trained_bg, bool double_test_bg)
 {
 //cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   std::string selection;
@@ -77,7 +76,7 @@ double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_cha
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   }
   //cout<<"mc weight selection: "<<selection<<"\n";
-  double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
+  double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label);
 cout<<"data in control region: "<<data_in_ctrl<<"\n";
   double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
   double weight;
@@ -88,7 +87,7 @@ cout<<"data in control region: "<<data_in_ctrl<<"\n";
     cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
      weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
   }
-  else if (ctrl_mc_in_ctrl==0){weight==1;}
+  else {weight==1;}
   cout<<bg_chain->label<<" mc weight: "<<weight<<endl;
   return weight;
 }

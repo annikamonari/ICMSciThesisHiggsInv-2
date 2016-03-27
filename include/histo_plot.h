@@ -70,12 +70,12 @@ class HistoPlot
   static std::string add_mva_cut_to_selection(std::string selection, std::string mva_cut_str);
 
   static std::vector<double> mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables = NULL, std::string mva_cut = "",
+                                 Variable* var, bool with_cut, std::vector<Variable*>* variables = NULL, std::string mva_cut = "", int trained_bg=6,
                                  bool double_test_bg = false);
 
   static double single_bg_error(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
-																																	std::string mva_cut = "", std::string selection="");
+				std::string mva_cut = "", std::string selection="");
 
   static std::vector<double> get_mc_weight_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
 																	                                 Variable* var, bool with_cut, std::vector<Variable*>* variables,
