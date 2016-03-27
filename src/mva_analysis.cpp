@@ -56,6 +56,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	{
 		std::vector<Variable*> vars = super_vars->get_signal_cut_vars();
 		std::vector<Variable*> vars2 = super_vars->get_discriminating_vars();
+		std::vector<Variable*> bdt_vars = super_vars->get_bdt_vars();
 		std::string selection_str = super_vars->get_final_cuts_str();
 		TFile* trained_output;
 //for(int i=0; i<8;i++){
@@ -69,7 +70,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
 				NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts,
 				trained_bg_label);
-			trained_output = BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+			trained_output = BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &bdt_vars, folder_name,
 				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
 		}
 		else if (method_name == "MLP")
@@ -203,7 +204,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 	if (method_name == "BDT")
 	{
-		mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
+		mva_output = new Variable("output","MVA Output","-1.0","1.0","-1.0","1.0","100","1", "", false);
 	}
 	else if (method_name == "MLP")
 	{
@@ -250,8 +251,10 @@ test->SaveAs("test.png");
 */
 	if (create_cards)
 		{
+			//create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], output_bg_chains,
+			//				mva_output, true, NULL, trained_output, method_name, "<", min, max, digits);
 			create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], output_bg_chains,
-							mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);
+							mva_output, true, NULL, trained_output, method_name, ">", min, max, digits);
 			
 		}
 

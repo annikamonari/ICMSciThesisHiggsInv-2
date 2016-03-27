@@ -44,6 +44,8 @@ class SuperVars
 
   std::vector<Variable*> get_discriminating_vars();
 
+  std::vector<Variable*> get_bdt_vars();
+
   std::vector<Variable*> get_signal_cut_vars();
 
   std::string get_final_cuts_str();

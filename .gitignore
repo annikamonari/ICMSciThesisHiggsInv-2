@@ -4,7 +4,8 @@ build/*
 weights/*
 # Ignore the data dir
 data/*
-
+BDT
+.gitignore
 # Ignore Dan's swp files
 *.swp
 *.swo
