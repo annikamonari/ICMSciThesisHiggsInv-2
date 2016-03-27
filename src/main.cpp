@@ -25,13 +25,9 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
   bool create_cards = true;
-<<<<<<< HEAD
-  std::string job_name = "5";
+  std::string job_name = job_ptr;
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
-=======
-  std::string job_name = job_ptr;
->>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
   std::string mva_cut = "";
   std::string method_name = "MLP";
   int rel_bgs[] = {1, 2, 3, 6};
@@ -40,7 +36,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   int max = 75; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
-  for (int i = 0; i < LearningRate.size(); i++)
+  /*for (int i = 0; i < LearningRate.size(); i++)
   {  
     
     for (int k = 0; k < 4; k++)
@@ -60,7 +56,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
     }
     
   }
-<<<<<<< HEAD
+*/
 //TFile* trained_output;
 //for(int i =0; i<7;i++){
   MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
@@ -70,16 +66,12 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/
 //}
-=======
->>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
 
 
 }
 
 int main(int argc, char** argv) {
   TApplication theApp("tapp", &argc, argv);
-<<<<<<< HEAD
-  produce_graphs(true);
 /*const char * files[] = {
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.000001-EstimatorType=CE-PCA.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.00001-EstimatorType=CE-PCA.root",
@@ -128,9 +120,7 @@ int main(int argc, char** argv) {
 };
 std::vector<const char*> files_v (files, files + sizeof(files) / sizeof(const char*));
   MVAAnalysis::get_estimators(files_v);*/
-=======
   produce_graphs(true, argv[1]);
->>>>>>> e9c8a36f6d151c2009fbe36d2d0fb63b3820ac24
   theApp.Run();
   return 0;
 }

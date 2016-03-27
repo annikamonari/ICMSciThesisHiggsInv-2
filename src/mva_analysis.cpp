@@ -239,11 +239,9 @@ test->SaveAs("test.png");
 //create array of test file bg and all other bgs remebering to halve the other mc weights later...
 
 
-create_datacards(bg_to_train, output_data_chain, mva_output_test_chain, output_bg_chains,
-		mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);}
-	std::vector<DataChain*> card_input_vector (card_input_arr, card_input_arr + sizeof(card_input_arr )/ sizeof(card_input_arr[0]));
-	//turn array into vector for datacard input
 
+	//turn array into vector for datacard input
+/*
 	std::fstream fs;
 	fs.open ("mlp_roc_aucs.csv", std::fstream::out | std::ofstream::app);
 	double auc = RocCurves::get_auc(method_name, trained_output->GetName());
@@ -253,10 +251,10 @@ create_datacards(bg_to_train, output_data_chain, mva_output_test_chain, output_b
 	fs << "\n";
 	fs.flush();
 	fs.close();
-
+*/
 	if (create_cards)
 		{
-			create_datacards(bg_to_train, output_data_chain, card_input_vector[bg_to_train], output_bg_chains,
+			create_datacards(bg_to_train, output_data_chain,mva_output_test_chain , output_bg_chains,
 							mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);
 			
 		}
@@ -272,7 +270,7 @@ create_datacards(bg_to_train, output_data_chain, mva_output_test_chain, output_b
   std::cout << "Trained output name: "<< trained_output->GetName() << " " << trained_output << std::endl;
   //get_estimators(trained_output->GetName());
 
-
+}
 		return trained_output;
 	}
 
