@@ -155,7 +155,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 	std::vector<const char*> tauv_vector (tauv_arr, tauv_arr + sizeof(tauv_arr)/sizeof(const char*));
 
-	DataChain* wjets_tauv_ch = new DataChain(tauv_vector,wjets_tauv_label,wjets_tauv_legend,"(ntaus == 1)");
+	DataChain* wjets_tauv_ch = new DataChain(tauv_vector,wjets_tauv_label,wjets_tauv_legend,"(ntaus == 1)&&(nvetomuons==0)&&(nvetoelectrons==0)");
 
 //////////zjets->nunu
 	const char* zjets_vv_arr[] = {"dataTrees/bg_zjets_vv.root"};
@@ -271,6 +271,7 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
   string NCycles;
   string HiddenLayers;
   string LearningRate;
+  string transform;
   int len = training_file_paths.size();
   Double_t test_estimator[len];
   Double_t train_estimator[len];
@@ -304,6 +305,8 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
   int HLlen;
   int LRpos;
   int LRlen;
+  int tflen;
+  int tfpos;
   bool human_readable=false;
   std::fstream fs;
   fs.open ("Estimator_statistics.txt", std::fstream::out | std::fstream::trunc);
@@ -331,8 +334,14 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
     HiddenLayers = file_path.substr(HLpos, HLlen);
 
     LRpos = file_path.find("LearningRate=")+13;
+//cout<<"tf pos = "<<tfpos<<endl;
     LRlen = file_path.find("-EstimatorType") - (13+file_path.find("LearningRate="));
-    LearningRate= file_path.substr(LRpos, LRlen);
+    LearningRate = file_path.substr(LRpos, LRlen);
+
+    tfpos = file_path.find("CE")+3;
+    tflen =  file_path.find(".root")-tfpos;
+    transform = file_path.substr(tfpos, tflen);
+
     if(human_readable){
       fs<<background;
       for(int i =15-bglen; i>0;i--){fs<<" ";}
@@ -345,7 +354,7 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
         train_estimator[i]/test_estimator[i]<<"\n";
     }
     else if (!human_readable){fs<<background<<" "<<NeuronType <<" "<<NCycles<<" "<<HiddenLayers<<" "<<LearningRate<<" ";
-    fs<<test_estimator[i]<<" "<<train_estimator[i]<<" "<<train_estimator[i]/test_estimator[i]<<"\n";}
+    fs<<test_estimator[i]<<" "<<train_estimator[i]<<" "<<train_estimator[i]/test_estimator[i]<<" "<<transform<<"\n";}
   }
   fs.close();
 

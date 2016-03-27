@@ -56,17 +56,17 @@ double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_cha
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,
 																																	int trained_bg, bool double_test_bg)
 {
-cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
+//cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
   else
   {
 //loosen the cuts for control region due to absence of events
-    if(!strcmp(bg_chain->label, "bg_zll"))
+   /* if(!strcmp(bg_chain->label, "bg_zll"))
     {
-      selection =  "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+      selection =  "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
-    else if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    else*/ if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
       selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
@@ -80,13 +80,16 @@ cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
 cout<<"data in control region: "<<data_in_ctrl<<"\n";
   double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
-cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
-
-  double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - ctrl_mc_in_ctrl;
-cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
-
-  double weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
-  cout<<"mc weight: "<<weight<<endl;
+  double weight;
+  if(ctrl_mc_in_ctrl!=0)
+  {
+    cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
+    double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - ctrl_mc_in_ctrl;
+    cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
+     weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
+  }
+  else if (ctrl_mc_in_ctrl==0){weight==1;}
+  cout<<bg_chain->label<<" mc weight: "<<weight<<endl;
   return weight;
 }
 
@@ -98,11 +101,11 @@ double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_
   else
   { 
 //loosen the cuts for control region due to absence of events
-    if(!strcmp(bg_chain->label, "bg_zll"))
+    /*if(!strcmp(bg_chain->label, "bg_zll"))
     {
-      selection =  "((classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+      selection =  "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
-    else if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    else*/ if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
       selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
@@ -114,6 +117,9 @@ double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_
   }
   double data_N_C       = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
   double MC_N_C         = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
+  double weight_error;
+if(MC_N_C!=0){
+
   double bg_N_C         = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - MC_N_C;
   double sigma_data_N_C = std::pow(data_N_C, 0.5);
   double sigma_MC_N_C   = std::pow(MC_N_C, 0.5);
@@ -122,7 +128,9 @@ double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_
   double err2           = sigma_bg_N_C/MC_N_C;
   double err3           = (data_N_C- bg_N_C)/(pow(MC_N_C,1.5));
   double error_sq       = std::pow(err1,2) + std::pow(err2,2) + std::pow(err3,2);
-  double weight_error   = std::pow(error_sq, 0.5);
+  weight_error   = std::pow(error_sq, 0.5);
+}
+else if (MC_N_C==0){weight_error=1;}
 cout<<"====="<<bg_chain->label<<endl;
 cout<<"mc weight error: "<<weight_error<<"\n";
   return weight_error;

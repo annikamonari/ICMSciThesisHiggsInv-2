@@ -277,10 +277,10 @@ THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, s
   std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
-  std::cout << "selection in draw stacked histo " << selection << std::endl;
+  //std::cout << "selection in draw stacked histo " << selection << std::endl;
   for(int i = 0; i < bg_chains.size(); i++) {
    if(strcmp(bg_chains[i]->label, testTree_chain->label)) {
-       cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
+       //cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
       TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, mc_weights_vector[i], mva_cut);
       stack.Add(single_bg_histo);
       std::string legend_str(bg_chains[i]->legend);
@@ -399,7 +399,7 @@ std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain
     {
     	 if (zll_weight != 1)
     	 {
-    	 		mc_weight[i] = zll_weight*5.651*1.513;
+    	 		mc_weight[i] = zll_weight*5.651;//*1.513;
     	 }
     }
     //std::cout<<i<<": "<<mc_weight[i]<<"\n";
@@ -457,7 +457,7 @@ string selection;
 	     mc_weight_errors[i] = zll_weight_error * 5.651 * 1.513;
 
 	   }
- cout << bg_chains[i]->label <<" total error: "<<mc_weight_errors[i]<< endl;
+// cout << bg_chains[i]->label <<" total error: "<<mc_weight_errors[i]<< endl;
 	 }
 	 std::vector<double> mc_weights_vector (mc_weight_errors, mc_weight_errors + sizeof(mc_weight_errors) / sizeof(mc_weight_errors[0]));
 
