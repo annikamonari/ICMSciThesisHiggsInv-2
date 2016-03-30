@@ -3,8 +3,7 @@
 using namespace std;
 void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
                           DataChain* signal_chain, DataChain* data, bool with_cut,
-                          std::vector<Variable*>* variables, bool plot_data, std::string file_name,
-																										std::string mva_cut)
+                          std::vector<Variable*>* variables, bool plot_data, std::string file_name,																					std::string mva_cut)
 {
   TCanvas* c1     = new TCanvas("c1", var->name_styled, 800, 800);
   TPad* p1        = new TPad("p1", "p1", 0.0, 0.95, 1.0, 1.0);
@@ -89,8 +88,7 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
 /////////// in red overlaid on top of grey background, als includes additional signal/nbackground plot below
 ///////////
 void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_output, DataChain* testTree_chain,
-																																																	DataChain* data, std::vector<DataChain*> bg_chains,
-																																																	std::vector<Variable*>* variables, std::string file_name, std::string mva_cut)
+DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* variables, std::string file_name, std::string mva_cut)
 {
   //////////////////////////////////////////////////////////////////
   cout<<"---------------------Started HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
@@ -122,21 +120,21 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   //step 2: create background histo
   //step 2.1: get zjets mc weight
    // don't need to double the trained bg in mc weights becauase this takes in test + train trees
-  std::vector<double> mc_weights_vector = mc_weights(data, bg_chains, mva_output, true, NULL, mva_cut, true);
+  std::vector<double> mc_weights_vector = mc_weights(data, bg_chains, mva_output, true, NULL, mva_cut,bg_trained, true);
 
   double trained_mc_weight = mc_weights_vector[bg_trained];
 
   cout<<"mc_weight of trained bg= "<< trained_mc_weight <<endl;
 //mc weights have been tested and work, now need to edit the draw stack function to not stack the zjets in the datachain vector and instead add the test_set th1
   //step 2.2 create output selection string
-  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
+  std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   //selection  += "*total_weight_lepveto";
   //step 2.3 add mva cut to selection string
   //step 2.3.1 reformat mva_cut string for MLPs
 
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
-  selection = add_mc_to_selection(testTree_chain,mva_output , selection, trained_mc_weight);
+  selection = add_mc_to_selection(testTree_chain,mva_output, selection, trained_mc_weight);
 
   //step 2.4 add mc weight to selection  
   /*std::string mc_weight_str = get_string_from_double(mc_weight);
@@ -168,7 +166,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 3: create signal histo 
   //step 3.1 get regular selection string
-  string sig_selection = "((nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
+  string sig_selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
   sig_selection = add_classID_to_selection(sig_selection, true);
   //step 3.2: add class ID to selection
   sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
@@ -278,7 +276,7 @@ THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, s
 																																						DataChain* testTree_chain, std::string mva_cut)
 {
   THStack stack(var->name_styled, "");
-  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   std::cout << "selection in draw stacked histo " << selection << std::endl;
@@ -373,9 +371,8 @@ std::string HistoPlot::add_mva_cut_to_selection(std::string selection, std::stri
   return selection;
 }
 
-std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
-                                          Variable* var, bool with_cut, std::vector<Variable*>* variables,
-					                                     std::string mva_cut, int trained_bg, bool double_test_bg)
+std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, 
+std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool double_test_bg)
 {//cout<<"in HistoPlot::mc_weights\n";
   double mc_weight[bg_chains.size()];
   double zll_weight;
@@ -387,12 +384,11 @@ std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain
     if (bg_chains[i]->lep_sel != "")
     {
     		double mc_weight_val = MCWeights::calc_mc_weight(data, bg_chains, bg_chains[i], var, with_cut,
-																																																			    variables, mva_cut, trained_bg, double_test_bg);
+						variables, mva_cut, trained_bg, double_test_bg);
       if (mc_weight_val > 0)
     		{
       		mc_weight[i] = mc_weight_val;
     		}
-
     		if(!strcmp(bg_chains[i]->label, "bg_zll"))
 	     {
 	     		zll_weight = mc_weight[i];
@@ -429,7 +425,7 @@ string selection;
 	 {
 		if(variables==NULL)
 		{
-    			selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    			selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     			selection = HistoPlot::add_classID_to_selection(selection, false);
     			selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);

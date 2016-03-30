@@ -65,7 +65,6 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 1 get output name and train MVa
 //________________________________________________________________________________________________________________________________________________
 		std::string app_output_name; 
-
 		if (method_name == "BDT")
 		{
 			app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
@@ -81,13 +80,11 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
-
-
-                    
 		}
-
+//MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,
+//				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
 		std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
-
+//}
  if (create_cards) {		
 
 
@@ -155,7 +152,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 	std::vector<const char*> tauv_vector (tauv_arr, tauv_arr + sizeof(tauv_arr)/sizeof(const char*));
 
-	DataChain* wjets_tauv_ch = new DataChain(tauv_vector,wjets_tauv_label,wjets_tauv_legend,"(ntaus == 1)");
+	DataChain* wjets_tauv_ch = new DataChain(tauv_vector,wjets_tauv_label,wjets_tauv_legend,"(nvetomuons==0)&&(nvetoelectrons==0)&&(ntaus == 1)");
 
 //////////zjets->nunu
 	const char* zjets_vv_arr[] = {"dataTrees/bg_zjets_vv.root"};
@@ -223,35 +220,17 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	std::cout << "mva output graph name: " << output_graph_name << std::endl;
 //step 4 draw plot
 //_________________________
-
+cout<<"step 4 in mva analysis"<<endl;
 HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,
 	output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
-/*
-output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
-TH1F* test = (TH1F*) gDirectory->Get("test");
-test->SaveAs("test.png");
-*/
 
-
-
+//output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
 //step 5 create datacards
 //create array of test file bg and all other bgs remebering to halve the other mc weights later...
 
 
 
-	//turn array into vector for datacard input
-/*
-	std::fstream fs;
-	fs.open ("mlp_roc_aucs.csv", std::fstream::out | std::ofstream::app);
-	double auc = RocCurves::get_auc(method_name, trained_output->GetName());
-	std::string auc_line = create_auc_line_MLP(output_bg_chains[bg_to_train]->label, NeuronType, NCycles, HiddenLayers,
-		LearningRate, auc);
-	fs << auc_line;
-	fs << "\n";
-	fs.flush();
-	fs.close();
-*/
 	if (create_cards)
 		{
 			create_datacards(bg_to_train, output_data_chain,mva_output_test_chain , output_bg_chains,

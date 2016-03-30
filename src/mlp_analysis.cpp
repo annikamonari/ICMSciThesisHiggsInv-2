@@ -30,6 +30,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	factory->AddSpectator("nselelectrons",  "nselelectrons", "", 'F' );
 	factory->AddSpectator("nvetoelectrons",  "nvetoelectrons", "", 'F' );
 	factory->AddSpectator("nvetomuons",  "nvetomuons", "", 'F' );
+	factory->AddSpectator("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)", "", 'F' );
 
 	  // Background
 	    double background_weight = 1.0;
@@ -42,7 +43,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	    factory->SetSignalWeightExpression("total_weight_lepveto");
 
 	    // Apply additional cuts on the signal and background samples (can be different)
-	    TCut signal_cuts = "alljetsmetnomu_mindphi>2.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && dijet_deta<8.0 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+	    TCut signal_cuts = "alljetsmetnomu_mindphi>2.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
 	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
@@ -76,7 +77,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 }
 
 TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
-																																	std::string job_name, bool unique_output_files)
+std::string job_name, bool unique_output_files)
 {
 	TMVA::Reader* reader = new TMVA::Reader( "!Color:!Silent" );
 
@@ -131,6 +132,7 @@ TTree* MLPAnalysis::evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* va
      reader->AddSpectator("nselelectrons", &nselelectrons );
 	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
 	reader->AddSpectator("nvetomuons",  &nvetomuons);
+	reader->AddSpectator("alljetsmetnomu_mindphi",  &alljetsmetnomu_mindphi);
 
 /*
 
@@ -317,7 +319,7 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	std::string lr = LearningRate;
 
 	MLP_options.append(nt);
-	MLP_options += ":VarTransform=G,P,N:NCycles=";
+	MLP_options += ":VarTransform=N:NCycles=";
 	MLP_options.append(nc);
 	MLP_options += ":HiddenLayers=";
 	MLP_options.append(hl);
@@ -345,7 +347,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=CE-PCA";
+        out_nam += "-EstimatorType=CE-N";
  out_nam += ".root";
 
 	return out_nam;

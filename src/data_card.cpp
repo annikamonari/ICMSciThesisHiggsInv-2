@@ -11,7 +11,7 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   std::vector<DataChain*> bg_chs = bg_chains;
   bg_chs[bg_to_train] = signal_chain;
 
-  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut, variables, mva_cut, bg_to_train, true);
+  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut, NULL, mva_cut, bg_to_train, false);
   std::fstream fs;
   std::string data_card_name = get_data_card_name(output_graph_name, mva_cut);
   std::cout << data_card_name << std::endl;
@@ -43,7 +43,7 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
 double DataCard::get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
   std::string mva_cut)
 {
-  std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection = HistoPlot::add_classID_to_selection(selection, true);
 
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -51,8 +51,10 @@ double DataCard::get_signal_error(DataChain* signal_chain, Variable* var, bool w
   TH1F* signalh = HistoPlot::build_1d_histo(signal_chain, var, with_cut, false, "goff", variables, "", 1, mva_cut);
   double total_signal = 2 * HistoPlot::get_histo_integral(signalh, with_cut, var);
   double sig_sqrt = std::pow(total_signal, 0.5);
-
-  return 1 + (sig_sqrt/total_signal);
+  double sig_err_formatted;
+  if(total_signal!=0){sig_err_formatted = 1 + (sig_sqrt/total_signal);}
+  else if (total_signal==0){sig_err_formatted=2;}
+  return sig_err_formatted;
 }
 
 std::vector<double> DataCard::get_bg_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
@@ -66,7 +68,14 @@ std::vector<double> DataCard::get_bg_errors(int bg_to_train, DataChain* data, st
   std::cout << "got mc weight errors" << std::endl;
   for(int i = 0; i < bg_chains.size(); i++)
   {
-    bg_errors_parsed[i] = 1 + (bg_errors[i] / rates[i+1]);
+    if(rates[i+1]!=0)
+    {
+      bg_errors_parsed[i] = 1 + (bg_errors[i] / rates[i+1]);
+    }
+    else if(rates[i+1]==0)
+    {
+      bg_errors_parsed[i] = 2;     
+    }
   }
   std::vector<double> bg_error_vector (bg_errors_parsed, bg_errors_parsed + sizeof(bg_errors_parsed) / sizeof(bg_errors_parsed[0]));
 
@@ -78,7 +87,7 @@ std::vector<double> DataCard::get_rates(int bg_to_train, DataChain* data, std::v
  std::string mva_cut)
 {
   double rates[bg_chains.size() + 1];
-  std::string selection1 = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+  std::string selection1 = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection1 = HistoPlot::add_classID_to_selection(selection1, true);
 
   selection1 = HistoPlot::add_mva_cut_to_selection(selection1, mva_cut);
@@ -90,7 +99,7 @@ std::vector<double> DataCard::get_rates(int bg_to_train, DataChain* data, std::v
   for(int i = 0; i < bg_chains.size();i++)
   {
     std::cout << "=====" << bg_chains[i]->label << std::endl;
-    std::string selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     selection = HistoPlot::add_classID_to_selection(selection, false);
     selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -261,7 +270,7 @@ std::string DataCard::get_systematic_string(int bg_to_train, DataChain* data, st
   std::vector<double> bg_mc_weights, std::string mva_cut)
 {
   double signal_error = get_signal_error(signal_chain, var, with_cut, variables, mva_cut);
-  std::cout << "got signal erro" << std::endl;
+  std::cout << "got signal error" << std::endl;
   std::vector<double> bg_errors = get_bg_errors(bg_to_train, data, bg_chains, signal_chain, var, with_cut, variables, bg_mc_weights, mva_cut);
   std::vector<std::vector<double> > uncertainty_vectors = DataCard::get_uncertainty_vectors(signal_error, bg_errors);
 
@@ -312,7 +321,7 @@ double DataCard::get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_c
   double total = 0;
   for (int i = 0; i < bg_chains.size(); i++)
   {
-    selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     selection = HistoPlot::add_classID_to_selection(selection, false);
     selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -321,7 +330,7 @@ double DataCard::get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_c
     double integral;
     integral = HistoPlot::get_histo_integral(histo, with_cut, var);
 
-    if(!strcmp(bg_chains[i]->label, bg_chains[bg_to_train]->label)) {integral = integral*2;}
+    if(i==bg_to_train) {integral = integral*2;}
 
     total += integral;
   }

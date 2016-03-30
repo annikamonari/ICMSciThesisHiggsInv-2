@@ -107,8 +107,7 @@ class HistoPlot
 
   static TH1F* build_1d_histo(DataChain* data_chain, Variable* variable, bool with_cut, 
                               bool is_signal, const char* option,
-                              std::vector<Variable*>* variables = NULL, std::string selection = "", double mc_weight = 1,
-																														std::string mva_cut = "");
+                              std::vector<Variable*>* variables = NULL, std::string selection = "", double mc_weight = 1,										std::string mva_cut = "");
 
   static TH1F* draw_data(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
                          std::vector<Variable*>* variables = NULL, std::string mva_cut = "");

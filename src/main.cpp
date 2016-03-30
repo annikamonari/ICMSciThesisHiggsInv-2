@@ -5,7 +5,7 @@
 
 
 //#include "../include/mlp_analysis.h"
-
+using namespace std;
 void produce_graphs(bool with_cut, const char* job_ptr) {
   SuperVars* super_vars             = new SuperVars();
   std::vector<Variable*> vars       = super_vars->get_discriminating_vars();
@@ -30,12 +30,11 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   int counter = std::atoi(jn);
   std::string mva_cut = "";
   std::string method_name = "MLP";
-  int rel_bgs[] = {1, 2, 3, 6};
+  //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
   int min = 0; // the minimum value you want cuts to be from
-  int max = 95; // max value you want cuts to be to
+  int max = 75; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
-
   /*for (int i = 0; i < LearningRate.size(); i++)
   {  
     
@@ -59,14 +58,29 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
 */
 //TFile* trained_output;
 //for(int i =0; i<7;i++){
-  MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
+/*  MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  NCycles[0], HiddenLayers[0], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+  NCycles[0], HiddenLayers[0], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);*/
    /*const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/
 //}
+HistoPlot::draw_plot(cut_vars[0], bg_chains,signal_chain, data_chain, with_cut, &cut_vars, true, "cuts_for_slides");
 
+std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
+double integral;double total;
+
+for(int i=0; i<8;i++){
+    TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], cut_vars[0], with_cut, false, "goff", &cut_vars,"", mc_weights_vector[i], mva_cut);
+    integral = HistoPlot::get_histo_integral(histo, with_cut, cut_vars[0]);
+    cout<<bg_chains[i]->label<<": "<<integral<<endl;
+    total+=integral;
+}
+ cout << "total background = "<< total <<endl;
+
+
+  TH1F* signal_histo = HistoPlot::build_1d_histo(signal_chain, cut_vars[0], with_cut, false, "goff", &cut_vars, "");
+ cout << "total signal = "<< HistoPlot::get_histo_integral(signal_histo, with_cut, cut_vars[0]) << endl;// taking into account test/train data split
 
 }
 

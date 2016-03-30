@@ -2,17 +2,17 @@
 
 SuperVars::SuperVars()
 {
-  forward_tag_eta        = new Variable("forward_tag_eta","Forward Tag #eta","-5.0","5.0","1.8",
-                                        "5.0","60","5", "", true);
-  dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","3.5","8.0","4.2","8.0","25","10", "");
+  forward_tag_eta        = new Variable("forward_tag_eta","Forward Tag #eta","","","1.8",
+                                        "","60","5", "", true);//why is there upper limit
+  dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","3.5","","4.2","","25","10", "");//why is there upper limit
   metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)",
                                         "3.0","","3.5","","50","10", "");
   sqrt_ht                = new Variable("sqrt_ht","Square Root HCAL Scalar Sum of Energy","0.0","35.0","9.0",
                                         "18.0","75","10", "GeV^{0.5}");
   alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
-                                        "0.0","3.15","2.0","","40","5", "");
-  dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","2000.0","800.0","","50","10", "GeV");
-  metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","400.0","120.0","",
+                                        "2.0","3.15","2.0","","40","5", "");
+  dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","","800.0","","50","10", "GeV");// whyis there upper limit
+  metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","","120.0","",//why the upper limit?
                                         "50","5", "GeV");
   jet1_pt                 = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","30","", "GeV");
   jet2_pt                 = new Variable("jet2_pt","Jet2pt","0.0","","45.0","","30","", "GeV");
@@ -22,7 +22,7 @@ SuperVars::SuperVars()
   jet2_phi = new Variable("jet2_phi","jet2_phi", "-4.0", "4.0", "-4.0", "4.0","50","1","");
   jet_csv1 = new Variable("jet_csv1","jet_csv1", "-1.5", "1.5", "-1.5", "1.5","50","1","");
   jet_csv2 = new Variable("jet_csv2","jet_csv2", "-1.5", "1.5", "-1.5", "1.5","50","1","");
-  dijet_dphi = new Variable("dijet_dphi","dijet_dphi", "0.0", "4.0", "0.0", "4.0","50","1","");
+  dijet_dphi = new Variable("dijet_dphi","Dijet dPhi", "0.0", "4.0", "0.0", "4.0","50","1","");
   metnomu_x = new Variable("metnomu_x","metnomu_x", "-400.0", "400.0", "-400.0", "400.0","50","1","");
   metnomu_y = new Variable("metnomu_y","metnomu_y", "-400.0", "400.0", "-400.0", "400.0","50","1","");
   sumet = new Variable("sumet","sumet", "0.0", "2400.0", "0.0", "2400.0","50","1","");
@@ -80,11 +80,8 @@ std::string SuperVars::get_final_cuts_str()
 std::string SuperVars::get_cuts_str_for_tmva()
 {
   std::string cut_str = HistoPlot::replace_all(
-  		                      HistoPlot::replace_all(
-  		                     		 HistoPlot::replace_all(get_final_cuts_str(),
-																																																			"(", " "),
-																																																 "*total_weight_lepveto", ""),
-																																														")", " ");
+  HistoPlot::replace_all( HistoPlot::replace_all(get_final_cuts_str(),
+       "(", " "), "*total_weight_lepveto", ""),")", " ");
 
   return cut_str;
 }
