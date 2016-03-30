@@ -9,8 +9,7 @@ SuperVars::SuperVars()
                                         "3.0","","3.5","","50","10", "");
   sqrt_ht                = new Variable("sqrt_ht","Square Root HCAL Scalar Sum of Energy","0.0","35.0","9.0",
                                         "18.0","75","10", "GeV^{0.5}");
-  alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
-                                        "2.0","3.15","2.0","","40","5", "");
+  alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)","0.0","3.15","2.0","","40","5", "");
   dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","","800.0","","50","10", "GeV");// whyis there upper limit
   metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","","120.0","",//why the upper limit?
                                         "50","5", "GeV");
@@ -36,15 +35,31 @@ SuperVars::SuperVars()
   jet1metnomu_scalarprod = new Variable("jet1metnomu_scalarprod","jet1metnomu_scalarprod", "-2000.0", "2000.0", "-2000.0", "2000.0","50","1","");
   jet2metnomu_scalarprod = new Variable("jet2metnomu_scalarprod","jet2metnomu_scalarprod", "-2000.0", "2000.0", "-2000.0", "2000.0","50","1","");
   classID = new Variable("classID","signal_binary", "-1", "2", "-1", "2","2","1","");//0 for background 1 for signal
+//CMS parked data variables
+  parked_jet1_pt                 = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","30","", "GeV");
+  parked_jet2_pt                 = new Variable("jet2_pt","Jet2pt","0.0","","40.0","","30","", "GeV");
+
+  parked_dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","3.5","","4.2","","25","10", "");
+  parked_metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","","90","","50","5", "GeV");
+
+  parked_jet1_eta = new Variable("jet1_eta","jet1_eta", "", "", "-4.7", "4.7","50","1","");
+  parked_jet2_eta = new Variable("jet2_eta","jet2_eta", "", "", "-4.7", "4.7","50","1","");
+  parked_dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","","1000.0","","50","10", "GeV");
+  parked_alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
+                                        "","","1.0","","40","5", "");
+  parked_metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)","","","","","50","10", "");
+
+
 }
+
 
 std::vector<Variable*> SuperVars::get_discriminating_vars()
 {
   Variable* var_arr[] = {
                           dijetmetnomu_ptfraction, dijetmetnomu_vectorialSum_pt, jet_csv2, 
-                          dijet_dphi, dijet_M
-                        /*
-			                       alljetsmetnomu_mindphi, forward_tag_eta, dijet_deta, metnomu_significance,
+                          dijet_dphi, dijet_M,
+                        
+			                       alljetsmetnomu_mindphi/*, forward_tag_eta, dijet_deta, metnomu_significance,
   		  	                   sqrt_ht, dijet_M, metnomuons ,jet1_pt,jet2_pt, jet1_eta,jet2_eta, jet1_phi,jet2_phi,
 																										jet_csv1,jet_csv2,dijet_dphi,metnomu_x,metnomu_y,sumet,mht,unclustered_et,
   		                      jetmetnomu_mindphi,jetunclet_mindphi,metnomuunclet_dphi,dijetmetnomu_vectorialSum_pt,
@@ -60,6 +75,15 @@ std::vector<Variable*> SuperVars::get_discriminating_vars()
 std::vector<Variable*> SuperVars::get_signal_cut_vars()
 {
   Variable* var_arr[] =  {alljetsmetnomu_mindphi, metnomu_significance, dijet_deta, jet1_pt, jet2_pt};
+
+  std::vector<Variable*> vars (var_arr, var_arr + sizeof(var_arr) / sizeof(var_arr[0]));
+
+  return vars;
+}
+std::vector<Variable*> SuperVars::get_parked_vars()
+{
+  Variable* var_arr[] =  {parked_jet1_pt, parked_jet2_pt, parked_dijet_deta,parked_metnomuons, parked_jet1_eta, parked_jet2_eta,
+      parked_dijet_M, parked_alljetsmetnomu_mindphi, parked_metnomu_significance};
 
   std::vector<Variable*> vars (var_arr, var_arr + sizeof(var_arr) / sizeof(var_arr[0]));
 

@@ -327,6 +327,7 @@ void HistoPlot::draw_title(const char* title)
   pt->SetAllWith(title, "size", 0.8);
   pt->Draw();
 }
+//_______________________________________________________________________________________________________________________
 
 std::string HistoPlot::get_selection(Variable* variable, std::vector<Variable*>* variables,
                                      bool with_cut, bool is_signal, DataChain* bg_chain, double mc_weight,
@@ -342,13 +343,28 @@ std::string HistoPlot::get_selection(Variable* variable, std::vector<Variable*>*
   {
     selection = variable->build_selection_string(with_cut, is_signal);
   }
+std::cout << selection << std::endl;
 
   selection.insert(selection.find("(") + 1, lep_sel_default());
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+  
+  return add_mc_to_selection(bg_chain, variable, selection, mc_weight);
+}
+//_______________________________________________________________________________________________________________________
+
+std::string HistoPlot::get_parked_selection(Variable* variable, std::vector<Variable*>* variables,  DataChain* bg_chain, double mc_weight)
+{
+  std::string selection;
+
+  selection = variable->build_parked_selection( variables);
+
+  selection.insert(selection.find("(") + 1, lep_sel_default());
   //std::cout << selection << std::endl;
 
   return add_mc_to_selection(bg_chain, variable, selection, mc_weight);
+
 }
+//_______________________________________________________________________________________________________________________
 
 std::string HistoPlot::add_mc_to_selection(DataChain* bg_chain, Variable* variable, std::string selection, double mc_weight)
 {
@@ -370,9 +386,10 @@ std::string HistoPlot::add_mva_cut_to_selection(std::string selection, std::stri
 
   return selection;
 }
+//_______________________________________________________________________________________________________________________
 
 std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, 
-std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool double_test_bg)
+std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool double_test_bg, bool if_parked)
 {//cout<<"in HistoPlot::mc_weights\n";
   double mc_weight[bg_chains.size()];
   double zll_weight;
@@ -384,7 +401,7 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
     if (bg_chains[i]->lep_sel != "")
     {
     		double mc_weight_val = MCWeights::calc_mc_weight(data, bg_chains, bg_chains[i], var, with_cut,
-						variables, mva_cut, trained_bg, double_test_bg);
+						variables, mva_cut, trained_bg, double_test_bg,if_parked);
       if (mc_weight_val > 0)
     		{
       		mc_weight[i] = mc_weight_val;
@@ -408,6 +425,7 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
 
   return mc_weights_vector;
 }
+//_______________________________________________________________________________________________________________________
 
 // new function written just like the one above: HistoPlot::mc_weights, which calculates the right error for the bgs without a control
 // region (its just sqrt(unweighted mc events in signal) / unweighted mc events in signal)
@@ -464,6 +482,7 @@ string selection;
 
 	 return mc_weights_vector;
 }
+//_______________________________________________________________________________________________________________________
 
 // problem: TH1F* bg doesn't plot with the mc weight? in the function above this, whenever we call this we pass through
 // the mc weight (see last arg: double weight), so if you realise we need it then just put it onto the end of the build_1d_histo call
@@ -485,6 +504,7 @@ std::string mva_cut, std::string selection)
   //std::cout << bg_chain->label << " - single bg error: " << sigma_total << std::endl;
   return sigma_total;
 }
+//_______________________________________________________________________________________________________________________
 
 std::string HistoPlot::get_string_from_double(double num)
 {
@@ -494,6 +514,7 @@ std::string HistoPlot::get_string_from_double(double num)
 
   return num_str;
 }
+//_______________________________________________________________________________________________________________________
 
 double HistoPlot::sig_to_bg_ratio(Variable* var, TH1F* bg,
                                   TH1F* signal_histo, bool with_cut)
@@ -505,6 +526,7 @@ double HistoPlot::sig_to_bg_ratio(Variable* var, TH1F* bg,
 
   return sig_to_bg;
 }
+//_______________________________________________________________________________________________________________________
 
 double HistoPlot::get_histo_integral(TH1F* histo, bool with_cut, Variable* var)
 {
@@ -521,6 +543,7 @@ double HistoPlot::get_histo_integral(TH1F* histo, bool with_cut, Variable* var)
 
   return integral;
 }
+//_______________________________________________________________________________________________________________________
 
 std::string HistoPlot::replace_all(std::string str, const std::string& from, const std::string& to)
 {
@@ -541,6 +564,7 @@ std::string HistoPlot::style_selection(std::string selection)
 
   return replace_all(replace_all(replace_all(replace_all(replace_all(sele, "_", " "), "))", ""), "(", ""), "((", ""), "<", " < ");
 }
+//_______________________________________________________________________________________________________________________
 
 void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variables,
                               bool with_cut, DataChain* data, std::string supervar_selection,
@@ -575,6 +599,7 @@ void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variab
   pts->Draw();
 }
 
+//_______________________________________________________________________________________________________________________
 
 THStack HistoPlot::draw_stacked_histo(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::string mva_cut)
@@ -613,11 +638,13 @@ TH1F* HistoPlot::get_max_histo(std::vector<TH1F*> plot_histos)
 
   return histo_max;
 }
+//_______________________________________________________________________________________________________________________
 
 double HistoPlot::get_histo_y_max(TH1F* histo)
 {
   return histo->GetBinContent(histo->GetMaximumBin());
 }
+//_______________________________________________________________________________________________________________________
 
 void HistoPlot::build_legend(TLegend* legend, TH1F* max_histo, Variable* var, bool with_cut)
 {
@@ -631,6 +658,7 @@ void HistoPlot::build_legend(TLegend* legend, TH1F* max_histo, Variable* var, bo
   legend->Draw();
 
 }
+//_______________________________________________________________________________________________________________________
 
 double HistoPlot::position_legend_x1(TH1F* max_histo, Variable* var, bool with_cut)
 {
@@ -647,11 +675,13 @@ double HistoPlot::position_legend_x1(TH1F* max_histo, Variable* var, bool with_c
     return 0.56;
   }
 }
+//_______________________________________________________________________________________________________________________
 
 double HistoPlot::get_x1_from_bin(double max_bin, double nbins)
 {
   return max_bin * 0.8 / nbins + 0.1;
 }
+//_______________________________________________________________________________________________________________________
 
 void HistoPlot::style_stacked_histo(THStack* hs, const char* x_label)
 {
@@ -660,6 +690,7 @@ void HistoPlot::style_stacked_histo(THStack* hs, const char* x_label)
   hs->GetYaxis()->SetTitleOffset(1.55);
   hs->GetXaxis()->SetLabelSize(0);
 }
+//_______________________________________________________________________________________________________________________
 
 void HistoPlot::style_ratio_histo(TH1F* single_histo, const char* x_label)
 {
@@ -676,6 +707,7 @@ void HistoPlot::style_ratio_histo(TH1F* single_histo, const char* x_label)
   single_histo->SetStats(false);
   single_histo->GetYaxis()->SetNdivisions(5, 5, 0);
 }
+//_______________________________________________________________________________________________________________________
 
 void HistoPlot::style_legend(TLegend* legend)
 {
@@ -683,6 +715,7 @@ void HistoPlot::style_legend(TLegend* legend)
   legend->SetBorderSize(0);
   legend->SetFillStyle(0);
 }
+//_______________________________________________________________________________________________________________________
 
 TH1F* HistoPlot::build_1d_histo(DataChain* data_chain, Variable* variable, bool with_cut, bool is_signal,
                                 const char* option, std::vector<Variable*>* variables, std::string selection,
@@ -700,13 +733,33 @@ TH1F* HistoPlot::build_1d_histo(DataChain* data_chain, Variable* variable, bool 
   {
     selection_str = selection;
   }
-//cout<<"selection string in build 1d histo: "<<selection_str<<"\n";
+cout<<"var string in build 1d histo: "<<var_arg<<endl;
+cout<<"selection string in build 1d histo: "<<selection_str<<"\n";
   data_chain->chain->Draw(var_arg.c_str(), selection_str.c_str(), option);
 
   TH1F* histo = (TH1F*)gDirectory->Get(data_chain->label);
 
   return histo;
 }
+//_______________________________________________________________________________________________________________________
+
+TH1F* HistoPlot::build_parked_histo(DataChain* data_chain, Variable* variable,std::vector<Variable*>* variables,double mc_weight)
+{
+  std::string var_arg = variable->build_var_string(data_chain->label, true);
+
+  std::string selection_str;
+
+  selection_str = get_parked_selection(variable, variables, data_chain, mc_weight);
+
+//cout<<"selection string in build parked histo: "<<selection_str<<"\n";
+  data_chain->chain->Draw(var_arg.c_str(), selection_str.c_str());
+
+  TH1F* histo = (TH1F*)gDirectory->Get(data_chain->label);
+
+  return histo;
+}
+//_______________________________________________________________________________________________________________________
+
 
 TH1F* HistoPlot::draw_data(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
                            std::vector<Variable*>* variables, std::string mva_cut)

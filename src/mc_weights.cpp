@@ -3,10 +3,15 @@
 using namespace std;
 
 std::string MCWeights::get_mc_selection_str(DataChain* bg_chain, Variable* variable, 
-                                            std::vector<Variable*>* variables, std::string mva_cut)
+                                            std::vector<Variable*>* variables, std::string mva_cut, bool if_parked)
 {
-  std::string selection_str = variable->build_multicut_selection(false, variables);
-
+  std::string selection_str;
+  if(!if_parked){
+    selection_str = variable->build_multicut_selection(false, variables);
+  }
+  else if(if_parked){
+    selection_str = variable->build_parked_selection(variables);
+  }
   if (bg_chain->lep_sel != "")
   {
   	 selection_str.insert(selection_str.find("(") + 1, bg_chain->lep_sel);
@@ -26,7 +31,7 @@ double MCWeights::get_nevents(DataChain* data_chain, Variable* var, bool with_cu
                               std::string selection, const char* trained_bg_label, bool double_test_bg)
 {
 
-TH1F* h = HistoPlot::build_1d_histo(data_chain, var, true, false, "goff", NULL, selection);
+TH1F* h = HistoPlot::build_1d_histo(data_chain, var, true, false, "goff", variables, selection);
   double integral = h->Integral();//HistoPlot::get_histo_integral(, with_cut, var);
   //cout<<"integral: "<<integral;
 
@@ -49,11 +54,11 @@ double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable
 }
 
 double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,Variable* var, 
-bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int trained_bg, bool double_test_bg)
+bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int trained_bg, bool double_test_bg, bool if_parked)
 {
 cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   std::string selection;
-  if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
+  if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut, if_parked);}
   else{ 
    /* if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
@@ -79,7 +84,7 @@ cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 }
 
 double MCWeights::calc_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
-Variable* var, bool with_cut, std::vector<Variable*>* variables, int trained_bg,bool double_test_bg, std::string mva_cut)
+Variable* var, bool with_cut, std::vector<Variable*>* variables, int trained_bg,bool double_test_bg, std::string mva_cut, bool if_parked)
 {
   std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}

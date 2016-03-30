@@ -15,7 +15,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   DataChain* signal_chain           = super_chains->signal_chain;
   DataChain* data_chain             = super_chains->data_chain;
   std::vector<DataChain*> all_bg_chains = super_chains->get_all_bg_chains();
- 
+  std::vector<Variable*> parked_vars = super_vars->get_parked_vars();
    //const char* mva_type = "BDT";
   // the topmost folder for all root files so gitignore ignores properly
   std::string top_folder_name = "analysis";
@@ -65,22 +65,39 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/
 //}
-HistoPlot::draw_plot(cut_vars[0], bg_chains,signal_chain, data_chain, with_cut, &cut_vars, true, "cuts_for_slides");
-
+HistoPlot::draw_plot(vars[5], bg_chains,signal_chain, data_chain, with_cut, &cut_vars,false, "cuts_for_slides");
+cout<<"plotted graph\n";
 std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
-double integral;double total;
+cout<<"got regular mc weights\n";
+std::vector<double> parked_mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars,"",6,false,true);
+cout<<"got park mc weights\n";
 
+double integral;double total;
+cout<<"===================Gordon and Monari's preselection==============\n";
 for(int i=0; i<8;i++){
-    TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], cut_vars[0], with_cut, false, "goff", &cut_vars,"", mc_weights_vector[i], mva_cut);
-    integral = HistoPlot::get_histo_integral(histo, with_cut, cut_vars[0]);
+    TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], vars[0], with_cut, false, "goff", &cut_vars,"", mc_weights_vector[i], mva_cut);
+    integral = HistoPlot::get_histo_integral(histo, with_cut, vars[0]);
     cout<<bg_chains[i]->label<<": "<<integral<<endl;
     total+=integral;
 }
  cout << "total background = "<< total <<endl;
 
+  TH1F* signal_histo = HistoPlot::build_1d_histo(signal_chain, vars[0], with_cut, false, "goff", &cut_vars, "");
+ cout << "total signal = "<< HistoPlot::get_histo_integral(signal_histo, with_cut, vars[0]) << endl;// taking into account test/train data split
 
-  TH1F* signal_histo = HistoPlot::build_1d_histo(signal_chain, cut_vars[0], with_cut, false, "goff", &cut_vars, "");
- cout << "total signal = "<< HistoPlot::get_histo_integral(signal_histo, with_cut, cut_vars[0]) << endl;// taking into account test/train data split
+cout<<"===================CMS parked preselection====================\n";
+
+for(int i=0; i<8;i++){
+    TH1F* parked_histo = HistoPlot::build_parked_histo(bg_chains[i], parked_vars[0],&parked_vars, mc_weights_vector[i]);
+    integral = HistoPlot::get_histo_integral(parked_histo, with_cut, parked_vars[0]);
+    cout<<bg_chains[i]->label<<": "<<integral<<endl;
+    total+=integral;
+}
+ cout << "total background = "<< total <<endl;
+
+  TH1F* parked_signal_histo = HistoPlot::build_parked_histo(signal_chain, parked_vars[0], &parked_vars,1);
+ cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[0]) << endl;// taking into account test/train data split
+
 
 }
 

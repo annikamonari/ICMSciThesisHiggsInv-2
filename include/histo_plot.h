@@ -63,7 +63,10 @@ class HistoPlot
 
   static std::string get_selection(Variable* variable, std::vector<Variable*>* variables,
                                    bool with_cut, bool is_signal, DataChain* bg_chain, double mc_weight = 1.0,
-																																			std::string mva_cut = "");
+				std::string mva_cut = "");
+
+  static std::string get_parked_selection(Variable* variable, std::vector<Variable*>* variables, DataChain* bg_chain,double mc_weight=1);
+
 
   static std::string add_mc_to_selection(DataChain* bg_chain, Variable* variable, std::string selection, double mc_weight);
 
@@ -71,7 +74,7 @@ class HistoPlot
 
   static std::vector<double> mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables = NULL, std::string mva_cut = "",
-                                 int trained_bg = 6, bool double_test_bg = false);
+                                 int trained_bg = 6, bool double_test_bg = false,  bool if_parked = false);
 
   static double single_bg_error(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
@@ -108,6 +111,9 @@ class HistoPlot
   static TH1F* build_1d_histo(DataChain* data_chain, Variable* variable, bool with_cut, 
                               bool is_signal, const char* option,
                               std::vector<Variable*>* variables = NULL, std::string selection = "", double mc_weight = 1,										std::string mva_cut = "");
+
+  static TH1F* build_parked_histo(DataChain* data_chain, Variable* variable,std::vector<Variable*>* variables,double mc_weight);
+
 
   static TH1F* draw_data(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
                          std::vector<Variable*>* variables = NULL, std::string mva_cut = "");
