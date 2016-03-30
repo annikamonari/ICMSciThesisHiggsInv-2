@@ -87,7 +87,7 @@ std::string Variable::build_var_string(const char* label, bool with_cut)
     var_string.append(x_max_nocut);
     var_string += ")";
   }
-std::cout<<"got var string"<<var_string<<"\n";
+//std::cout<<"got var string"<<var_string<<"\n";
   return var_string;
 }
 
@@ -111,14 +111,15 @@ std::string Variable::build_parked_selection( std::vector<Variable*>* variables)
   std::string sel_string = add_veto_parked_selection();
   int insert_pos         = sel_string.find("(") + 1;
 
-  for (int i = 0; i < variables->size()-1; i++)//-1 to exclude met sig
+  for (int i = 0; i < variables->size(); i++)//-1 to exclude met sig
   {
     std::string var_sel = build_selection((*variables)[i]->name, (*variables)[i]->x_min_cut,
                                             (*variables)[i]->x_max_cut, (*variables)[i]->abs_for_cut);
     sel_string.insert(insert_pos, "&&" + var_sel);
   }
-  std::string met_over_metsig = "(metnomuons/metnomu_significance>3.0)";
-  sel_string.insert(insert_pos, "&&" + met_over_metsig);
+  
+  /*std::string eta_product = "((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))";
+  sel_string.insert( insert_pos,"&&" + eta_product);*/
 
   return sel_string;
 }
@@ -128,7 +129,7 @@ std::string Variable::add_veto_parked_selection()
  std::string sel_string;
 
   sel_string += "(";
-  sel_string += build_selection(name, x_min_cut, x_max_nocut, abs_for_cut);
+  //sel_string += build_selection(name, x_min_cut, x_max_nocut, abs_for_cut);
   sel_string += ")*";
 
   sel_string += "total_weight_lepveto";
@@ -143,10 +144,10 @@ std::string Variable::build_selection_string(bool with_cut, bool is_signal)
   if (with_cut)
   {
     sel_string += "(";
-    sel_string += build_selection(name, x_min_cut, x_max_nocut, abs_for_cut);
+    //sel_string += build_selection(name, x_min_cut, x_max_nocut, abs_for_cut);
     sel_string += ")*";
   }
-
+  else{sel_string+="()*";}
   sel_string += "total_weight_lepveto";
 
   if(is_signal) {

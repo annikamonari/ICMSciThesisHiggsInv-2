@@ -11,7 +11,7 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   std::vector<DataChain*> bg_chs = bg_chains;
   bg_chs[bg_to_train] = signal_chain;
 
-  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut, NULL, mva_cut, bg_to_train, false, false);
+  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut, NULL, mva_cut, bg_to_train, false);
   std::fstream fs;
   std::string data_card_name = get_data_card_name(output_graph_name, mva_cut);
   std::cout << data_card_name << std::endl;

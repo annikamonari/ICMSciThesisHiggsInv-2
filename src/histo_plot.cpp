@@ -37,7 +37,7 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
 
   std::cout << "drew all" << std::endl;
   style_stacked_histo(&stack, var->name_styled);
-
+cout<<"histo styled"<<endl;
   /*TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo, signal_histo};
   if (!plot_data) {plot_histos[1] = NULL;}
   std::vector<TH1F*> plot_histos_vector (plot_histos, plot_histos + sizeof(plot_histos) / sizeof(plot_histos[0]));
@@ -46,7 +46,7 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   stack.SetMaximum(get_histo_y_max(max_histo)*1.15);*/
 
   build_legend(legend, signal_histo, var, with_cut);
-
+cout<<"legend built"<<endl;
   draw_subtitle(var, variables, with_cut, data, "", mva_cut);
   std::cout << "drew subtitle" << std::endl;
   p3->cd();
@@ -343,7 +343,7 @@ std::string HistoPlot::get_selection(Variable* variable, std::vector<Variable*>*
   {
     selection = variable->build_selection_string(with_cut, is_signal);
   }
-std::cout << selection << std::endl;
+//std::cout << selection << std::endl;
 
   selection.insert(selection.find("(") + 1, lep_sel_default());
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -432,8 +432,7 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
 // note:: changed so that if mc weight is 1 then dont calculate the mc weight error
 // TODO make error use sumw2 and integralanderror
 std::vector<double> HistoPlot::get_mc_weight_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
-																																																				Variable* var, bool with_cut, std::vector<Variable*>* variables,
-																																																				std::vector<double> bg_mc_weights, std::string mva_cut)
+Variable* var, bool with_cut, std::vector<Variable*>* variables,std::vector<double> bg_mc_weights, std::string mva_cut)
 {
 string selection;
 	 double mc_weight_errors[bg_chains.size()];
@@ -582,7 +581,7 @@ void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variab
 	 }
   std::cout << sel << std::endl;
 	 std::string selection = "Selection: " + sel;
-  std::string l1        = "#font[12]{" + selection.substr(0, 90) + "-}";
+  std::string l1        = "#font[12]{" + selection + "-}";
   std::string l2        = "#font[12]{" + selection.substr(88, 90) + "-}";
   std::string l3        = "#font[12]{" + selection.substr(178, 88) + "}";
 
@@ -733,8 +732,8 @@ TH1F* HistoPlot::build_1d_histo(DataChain* data_chain, Variable* variable, bool 
   {
     selection_str = selection;
   }
-cout<<"var string in build 1d histo: "<<var_arg<<endl;
-cout<<"selection string in build 1d histo: "<<selection_str<<"\n";
+//cout<<"var string in build 1d histo: "<<var_arg<<endl;
+//cout<<"selection string in build 1d histo: "<<selection_str<<"\n";
   data_chain->chain->Draw(var_arg.c_str(), selection_str.c_str(), option);
 
   TH1F* histo = (TH1F*)gDirectory->Get(data_chain->label);
@@ -750,7 +749,7 @@ TH1F* HistoPlot::build_parked_histo(DataChain* data_chain, Variable* variable,st
   std::string selection_str;
 
   selection_str = get_parked_selection(variable, variables, data_chain, mc_weight);
-
+  
 //cout<<"selection string in build parked histo: "<<selection_str<<"\n";
   data_chain->chain->Draw(var_arg.c_str(), selection_str.c_str());
 
