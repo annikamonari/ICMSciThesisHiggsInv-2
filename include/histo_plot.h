@@ -25,6 +25,11 @@ class HistoPlot
     return "(nvetomuons==0)&&(nvetoelectrons==0)";
   }
 
+  static void plot_control_testTree(int bg_trained, Variable* mva_output, DataChain* testTree_chain,
+                                      DataChain* data, std::vector<DataChain*> bg_chains,
+                                      std::vector<Variable*>* variables, std::string file_name, 
+                                      std::string control, std::string mva_cut);
+
   static void draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
                         DataChain* signal_chain, DataChain* data, bool with_cut,
                         std::vector<Variable*>* variables = NULL, bool plot_data = true, std::string file_name = "",
@@ -111,7 +116,7 @@ class HistoPlot
 																														std::string mva_cut = "");
 
   static TH1F* draw_data(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
-                         std::vector<Variable*>* variables = NULL, std::string mva_cut = "");
+                         std::vector<Variable*>* variables = NULL, std::string mva_cut = "", std::string selection = "");
 
   static TH1F* draw_signal(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
                            std::vector<Variable*>* variables = NULL, std::string mva_cut = "");

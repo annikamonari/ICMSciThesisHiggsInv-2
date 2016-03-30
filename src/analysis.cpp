@@ -317,11 +317,11 @@ const char* data_legend = "data";
   std::vector<const char*> NeuronType (NeuronType_arr, NeuronType_arr +
                                      sizeof(NeuronType_arr)/sizeof(const char*));
 
-  const char* NCycles_arr[] = {"600","800", "20", "4000", "5000", "10000"};
+  const char* NCycles_arr[] = {"800","800", "20", "4000", "5000", "10000"};
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
-  const char* HiddenLayers_arr[] = {"2", "5", "10", "20", "50", "100", "2,2", "5,5", "10,10", 
+  const char* HiddenLayers_arr[] = {"10,10", "5", "10", "20", "50", "100", "2,2", "5,5", "10,10", 
                       "20,20", "50,50", "5,10,20", "5,10", "2,4", "4,8", "20,40"}
 //"20", "5", "50", "100", "20,20", "5,5", "10,10","5,10,15,20", "100","50,50,50", 
                                     /*, "50", "100", "10,10","10,10,10",

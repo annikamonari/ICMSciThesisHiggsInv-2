@@ -207,7 +207,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","-1.25","1.5","-1.25","1.5","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","-0.1","1.2","-0.1","1.0","60","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 
@@ -216,10 +216,15 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	std::cout << "mva output graph name: " << output_graph_name << std::endl;
 //step 4 draw plot
 //_________________________
-
+/*
 HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,
-	output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+	output_data_chain, output_bg_chains,&vars, output_graph_name, "output>0.41");
+*/
 
+	HistoPlot::plot_control_testTree(bg_to_train, mva_output, mva_output_test_chain,
+																																		output_data_chain, output_bg_chains,
+	                                      &vars, output_graph_name,
+																																							zll_ch->lep_sel, "output>0.41");
 /*
 output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
 TH1F* test = (TH1F*) gDirectory->Get("test");

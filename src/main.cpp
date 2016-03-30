@@ -22,7 +22,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
-  bool create_cards = true;
+  bool create_cards = false;
   std::string job_name = job_ptr;
   std::string mva_cut = "";
   std::string method_name = "MLP";
@@ -31,28 +31,28 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   int min = 20; // the minimum value you want cuts to be from
   int max = 75; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
-
-  for (int i = 1; i < 2/*i < LearningRate.size()*/; i++)
+/*
+  for (int i = 0; i < 1i < LearningRate.size(); i++)
   {  
     
-    for (int k = 0; k < 2; k++)
+    for (int k = 0; k < 1; k++)
     {
       for (int j = 0; j < HiddenLayers.size(); j++)
       {
           int bg_to_train = rel_bgs[k];
           std::string bg_label = bg_chains[bg_to_train]->label;
           std::string folder_name = "MLP/" + bg_label;
-        
-    				MVAAnalysis::get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, folder_name, method_name,
+*/        
+    				MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
     				  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0],
-    				  NCycles[0], HiddenLayers[j], LearningRate[i],unique_output_files, create_cards, job_name, 
+    				  NCycles[0], HiddenLayers[0], LearningRate[0],unique_output_files, create_cards, job_name, 
               mva_cut, sign, min, max, digits);
-
+/*
     		}
     }
     
   }
-
+*/
 
 }
 
