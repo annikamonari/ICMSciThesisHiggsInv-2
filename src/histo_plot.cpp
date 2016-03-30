@@ -567,7 +567,7 @@ std::string HistoPlot::style_selection(std::string selection)
 
 void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variables,
                               bool with_cut, DataChain* data, std::string supervar_selection,
-																														std::string mva_cut)
+				std::string mva_cut)
 {
   std::string sel;
 	 if (variables == NULL)
@@ -581,7 +581,7 @@ void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variab
 	 }
   std::cout << sel << std::endl;
 	 std::string selection = "Selection: " + sel;
-  std::string l1        = "#font[12]{" + selection + "-}";
+  std::string l1        = "#font[12]{" + selection.substr(0, 90) + "-}";//selection.substr(0, 90)
   std::string l2        = "#font[12]{" + selection.substr(88, 90) + "-}";
   std::string l3        = "#font[12]{" + selection.substr(178, 88) + "}";
 
@@ -591,7 +591,7 @@ void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variab
   pts->SetFillColor(0);
   pts->AddText(l1.c_str());
   pts->AddText(l2.c_str());
- pts->AddText(l3.c_str());
+  pts->AddText(l3.c_str());
   pts->SetAllWith(l1.c_str(), "size", 0.03);
   pts->SetAllWith(l2.c_str(), "size", 0.03);
   pts->SetAllWith(l3.c_str(), "size", 0.03);
@@ -767,13 +767,14 @@ TH1F* HistoPlot::draw_data(DataChain* data_chain, Variable* variable, bool with_
   data_chain->chain->SetMarkerColor(1);
   data_chain->chain->SetLineColor(1);
   TH1F* data_histo = set_error_bars(
-//build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, "", 1,mva_cut)
-build_parked_histo(data_chain, variable, variables, 1)
+  //build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, "", 1,mva_cut)
+  build_parked_histo(data_chain, variable, variables, 1)
 );
   legend->AddEntry(data_histo, data_chain->legend, "lep");
 
   return data_histo;
 }
+//_______________________________________________________________________________________________________________________
 
 TH1F* HistoPlot::draw_signal(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
                              std::vector<Variable*>* variables, std::string mva_cut)
@@ -787,6 +788,7 @@ TH1F* HistoPlot::draw_signal(DataChain* data_chain, Variable* variable, bool wit
 
   return signal_histo;
 }
+//_______________________________________________________________________________________________________________________
 
 TH1F* HistoPlot::draw_background(DataChain* data_chain, Variable* variable, int fill_colour, bool with_cut,
 																																	std::vector<Variable*>* variables, double mc_weight, std::string mva_cut)
