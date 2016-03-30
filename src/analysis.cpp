@@ -321,7 +321,7 @@ const char* data_legend = "data";
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
-  const char* HiddenLayers_arr[] = {"2","2,4","2,4,8","2,4,8,16","2,4,8,16,32","2,4,8,16,32,64"};//number of neurons in each hidden layer
+  const char* HiddenLayers_arr[] = {"2","2,4","10,10","2,4,8,16","2,4,8,16,32","2,4,8,16,32,64"};//number of neurons in each hidden layer
   std::vector<const char*> HiddenLayers (HiddenLayers_arr, HiddenLayers_arr +
                                          sizeof(HiddenLayers_arr)/sizeof(const char*));
   const char* LearningRate_arr[] = {"0.1","0.01", "0.001", "0.02"};

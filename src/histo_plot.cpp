@@ -52,16 +52,16 @@ cout<<"legend built"<<endl;
   p3->cd();
   TH1F* data_bg_ratio_histo;
 
-  if (plot_data)
+  /*if (plot_data)
   {
   		std::cout << "data histo isnt null" << std::endl;
   		data_bg_ratio_histo = data_to_bg_ratio_histo(data_histo, (TH1F*)(stack.GetStack()->Last()));
   }
   else
-  {
+  {*/
   		std::cout << "data_histo appaz is null" << std::endl;
   		data_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo, (TH1F*)(stack.GetStack()->Last()));
-  }
+ // }
 
   data_bg_ratio_histo->Draw("e1");
   style_ratio_histo(data_bg_ratio_histo, var->name_styled);
@@ -591,7 +591,7 @@ void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variab
   pts->SetFillColor(0);
   pts->AddText(l1.c_str());
   pts->AddText(l2.c_str());
-  pts->AddText(l3.c_str());
+ pts->AddText(l3.c_str());
   pts->SetAllWith(l1.c_str(), "size", 0.03);
   pts->SetAllWith(l2.c_str(), "size", 0.03);
   pts->SetAllWith(l3.c_str(), "size", 0.03);
@@ -766,8 +766,10 @@ TH1F* HistoPlot::draw_data(DataChain* data_chain, Variable* variable, bool with_
   data_chain->chain->SetMarkerStyle(7);
   data_chain->chain->SetMarkerColor(1);
   data_chain->chain->SetLineColor(1);
-  TH1F* data_histo = set_error_bars(build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, "", 1,
-																																																			mva_cut));
+  TH1F* data_histo = set_error_bars(
+//build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, "", 1,mva_cut)
+build_parked_histo(data_chain, variable, variables, 1)
+);
   legend->AddEntry(data_histo, data_chain->legend, "lep");
 
   return data_histo;
@@ -779,7 +781,8 @@ TH1F* HistoPlot::draw_signal(DataChain* data_chain, Variable* variable, bool wit
   data_chain->chain->SetLineColor(2);
   data_chain->chain->SetLineWidth(3);
   data_chain->chain->SetFillColor(0);
-  TH1F* signal_histo = build_1d_histo(data_chain, variable, with_cut, true, "goff", variables, "", 1, mva_cut);
+  //TH1F* signal_histo = build_1d_histo(data_chain, variable, with_cut, true, "goff", variables, "", 1, mva_cut);
+  TH1F* signal_histo = build_parked_histo(data_chain, variable, variables,1);
   legend->AddEntry(signal_histo, (build_signal_leg_entry(variable, data_chain)).c_str(), "l");
 
   return signal_histo;
@@ -791,7 +794,8 @@ TH1F* HistoPlot::draw_background(DataChain* data_chain, Variable* variable, int 
   data_chain->chain->SetLineColor(1);
   data_chain->chain->SetFillColor(fill_colour);
   //std::cout << "in draw background: " << mva_cut << std::endl;
-  return build_1d_histo(data_chain, variable, with_cut, false, "goff", variables, "", mc_weight, mva_cut);
+  //return build_1d_histo(data_chain, variable, with_cut, false, "goff", variables, "", mc_weight, mva_cut);
+  return build_parked_histo(data_chain, variable, variables, mc_weight);
 }
 
 TH1F* HistoPlot::draw_background_from_trees(DataChain* data_chain, Variable* variable, int fill_colour, string selection,

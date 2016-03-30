@@ -68,11 +68,11 @@ std::vector<double> DataCard::get_bg_errors(int bg_to_train, DataChain* data, st
   std::cout << "got mc weight errors" << std::endl;
   for(int i = 0; i < bg_chains.size(); i++)
   {
-    if(rates[i+1]!=0)
+    if(rates[i+1]>0.1)
     {
       bg_errors_parsed[i] = 1 + (bg_errors[i] / rates[i+1]);
     }
-    else if(rates[i+1]==0)
+    else if(rates[i+1]<=0.1)
     {
       bg_errors_parsed[i] = 2;     
     }

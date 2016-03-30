@@ -347,7 +347,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=CE-N";
+        out_nam += "-EstimatorType=CE-50bins";
  out_nam += ".root";
 
 	return out_nam;

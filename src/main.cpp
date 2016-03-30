@@ -58,14 +58,14 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
 */
 //TFile* trained_output;
 //for(int i =0; i<7;i++){
-/*  MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
+  /*MVAAnalysis::get_mva_results(bg_chains, 2, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  NCycles[0], HiddenLayers[0], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);*/
+  NCycles[0], HiddenLayers[4], LearningRate[3],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);*/
    /*const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/
 //}
-HistoPlot::draw_plot(cut_vars[0], bg_chains,signal_chain, data_chain, true, &cut_vars,false, "cuts_for_slides.png");
+HistoPlot::draw_plot(cut_vars[0], bg_chains,signal_chain, data_chain, true, &cut_vars, true, "parked_for_slides.png");
 //cout<<"plotted graph\n";
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
 cout<<"got regular mc weights\n";
@@ -96,7 +96,7 @@ for(int i=0; i<8;i++){
  cout << "total background = "<< total <<endl;
 
   TH1F* parked_signal_histo = HistoPlot::build_parked_histo(signal_chain, parked_vars[7], &parked_vars,1);
- cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[7]) << endl;// taking into account test/train data split
+ cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[7]) << endl;// taking into account test/train data s 
 
 DataCard::create_datacard(0, data_chain, signal_chain, bg_chains, parked_vars[7], with_cut, &parked_vars, "parked_selection.png", mva_cut);
 */
