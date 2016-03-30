@@ -43,7 +43,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
           std::string bg_label = bg_chains[bg_to_train]->label;
           std::string folder_name = "MLP/" + bg_label;
 */        
-
+/*
     const char* file_arr[] ={
 
       "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=10,10-LearningRate=0.02-EstimatorType=CE.root",
@@ -54,12 +54,12 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
     std::vector<TFile*> files = MVAAnalysis::get_files_from_paths(file_paths);
     RocCurves::get_rocs(files, signal_chain, bg_chains[6], super_vars, "MLP", "test");
     ClassifierOutputs::plot_classifiers_for_all_files(files, "MLP", "test", bg_chains[6]->label);
-          /*
-    				MVAAnalysis::get_mva_results(bg_chains, 2, signal_chain, data_chain, super_vars, "test", method_name,
+*/
+    				MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
     				  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0],
     				  NCycles[0], HiddenLayers[0], LearningRate[0],unique_output_files, create_cards, job_name, 
               mva_cut, sign, min, max, digits); 
-*/
+
           
 /*
     		}
