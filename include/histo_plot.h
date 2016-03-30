@@ -43,7 +43,7 @@ class HistoPlot
 
   static THStack draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data,std::vector<double> mc_weights_vector,
-																																						DataChain* testTree_chain, std::string mva_cut);
+																																						DataChain* testTree_chain, std::string mva_cut, std::string control = "");
 
   static void draw_yline_on_plot(Variable* var, bool with_cut, double y);
 

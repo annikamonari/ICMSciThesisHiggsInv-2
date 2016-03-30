@@ -321,7 +321,7 @@ const char* data_legend = "data";
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
-  const char* HiddenLayers_arr[] = {"10,10", "5", "10", "20", "50", "100", "2,2", "5,5", "10,10", 
+  const char* HiddenLayers_arr[] = {"5,10", "5", "10", "20", "50", "100", "2,2", "5,5", "10,10", 
                       "20,20", "50,50", "5,10,20", "5,10", "2,4", "4,8", "20,40"}
 //"20", "5", "50", "100", "20,20", "5,5", "10,10","5,10,15,20", "100","50,50,50", 
                                     /*, "50", "100", "10,10","10,10,10",
@@ -329,7 +329,7 @@ const char* data_legend = "data";
   std::vector<const char*> HiddenLayers (HiddenLayers_arr, HiddenLayers_arr +
                                          sizeof(HiddenLayers_arr)/sizeof(const char*));
 
-  const char* LearningRate_arr[] = {"0.02", "0.002", "0.0002"};
+  const char* LearningRate_arr[] = {"0.002", "0.002", "0.0002"};
   std::vector<const char*> LearningRate (LearningRate_arr, LearningRate_arr +
                                            sizeof(LearningRate_arr)/sizeof(const char*));
 

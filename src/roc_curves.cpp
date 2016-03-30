@@ -85,10 +85,18 @@ TH1D* RocCurves::plot_rejBvsS(TFile* training_output, std::string method_name)
 
 double RocCurves::get_presel_effy(DataChain* data_chain, std::string preselection, Variable* var, std::vector<Variable*>* variables)
 {
-	TH1F* remaining_histo = histo(data_chain, var, preselection);
-	TH1F* total_histo = HistoPlot::build_1d_histo(data_chain, var, false, false, "goff", variables, "total_weight_lepveto");
+	std::string parked_data = "((nvetomuons==0)&&(nvetoelectrons==0)&&(jet1_eta<4.7)&&(jet2_eta<4.7)&&(jet1_pt > 50)&&(jet2_pt > 45)&&(dijet_M > 1200)&&(metnomuons > 90)&&(metnomu_significance > 4.0)&&(alljetsmetnomu_mindphi > 2.3)&&(dijet_deta>4.2))*total_weight_lepveto";
+	TH1F* remaining_histo = histo(data_chain, var, parked_data);
+	double remaining = remaining_histo->Integral();
+	std::cout << "remaining integral = " << remaining << std::endl;
 
-	return remaining_histo->GetEntries() / total_histo->GetEntries();
+	TH1F* total_histo = histo(data_chain, var, preselection);
+	double total = total_histo->Integral();
+	std::cout << "total integral" <<  total << std::endl;
+
+	double effy = remaining / total;
+	std::cout << effy << std::endl;
+	return effy;
 }
 
 TGraph* RocCurves::parked_data_point(DataChain* signal, DataChain* bg, std::string preselection, Variable* var,
@@ -96,6 +104,7 @@ TGraph* RocCurves::parked_data_point(DataChain* signal, DataChain* bg, std::stri
 {
 	double rejB = 1 - get_presel_effy(bg, preselection, var, variables);
 	double sigeff = get_presel_effy(signal, preselection, var, variables);
+	std::cout << "here\n";
 	TGraph* point = new TGraph(1);
 	point->SetPoint(1, sigeff, rejB);
 	point->SetMarkerStyle(20);
@@ -118,5 +127,19 @@ void RocCurves::style_legend(TLegend* legend)
 	legend->SetBorderSize(0);
 	legend->SetFillStyle(0);
 }
+/*
+THStack HistoPlot::draw_parked_stack(Variable* var, std::vector<DataChain*> bg_chains,
+									std::vector<Variable*>* parked_variables, DataChain* data, std::string parked_selection)
+{
+  THStack stack("parked", "");
+  std::vector<double> mc_weights_vector = mc_weights(data, bg_chains, var, true, parkedvariables, mva_cut);
 
-
+  for(int i = 0; i < bg_chains.size(); i++) {
+  	std::string selection = parked_selection + "*" + HistoPlot::get_string_from_double(mc_weights_vector[i]);
+	bg_chains[i]->chain->Draw((variable->build_var_string(bg_chains[i]->label, true)).c_str(), selection.c_str());
+	TH1F* histo = (TH1F*) gDirectory->Get(bg_chains[i]->label);																																						
+    stack.Add(histo);
+  }
+  return stack;
+}
+*/

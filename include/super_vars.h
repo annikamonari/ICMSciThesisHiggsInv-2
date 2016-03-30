@@ -40,8 +40,20 @@ class SuperVars
 	  Variable* jet2metnomu_scalarprod;
 	  Variable* classID;
 
+	  // Parked variables:
+	  Variable* jet1_eta_parked;
+	  Variable* jet2_eta_parked;
+	  Variable* jet1_pt_parked;
+	  Variable* jet2_pt_parked;
+	  Variable* dijet_M_parked;
+	  Variable* metnomuons_parked;
+	  Variable* metnomu_significance_parked;
+	  Variable* alljetsmetnomu_mindphi_parked;
+
+
   SuperVars();
 
+std::vector<Variable*> get_parked_vars();
   std::vector<Variable*> get_discriminating_vars();
 
   std::vector<Variable*> get_signal_cut_vars();

@@ -293,7 +293,7 @@ void HistoPlot::plot_control_testTree(int bg_trained, Variable* mva_output, Data
   cout<<"mc_weight of trained bg= "<< trained_mc_weight <<endl;
 //mc weights have been tested and work, now need to edit the draw stack function to not stack the zjets in the datachain vector and instead add the test_set th1
   //step 2.2 create output selection string
-  std::string selection = "((nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120))*2*total_weight_lepveto";
+  std::string selection = "(" + control + ")*2*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   //selection  += "*total_weight_lepveto";
   //step 2.3 add mva cut to selection string
@@ -322,7 +322,8 @@ void HistoPlot::plot_control_testTree(int bg_trained, Variable* mva_output, Data
    //cout<<"legend str: "<<legend_str<<"\n";
    //step 2.7 get stack for all non zjets_vv backgrounds here
 
-   THStack stack = draw_stacked_histo_no_zjets(legend, mva_output, bg_chains, true, variables, data, mc_weights_vector, testTree_chain, mva_cut);
+   THStack stack = draw_stacked_histo_no_zjets(legend, mva_output, bg_chains, true, variables, data, mc_weights_vector, testTree_chain, mva_cut,
+																																															control);
 
    //step 2.8 add zjets_vv to stack
    stack.Add(trained_histo);
@@ -332,7 +333,7 @@ void HistoPlot::plot_control_testTree(int bg_trained, Variable* mva_output, Data
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 3: create signal histo 
   //step 3.1 get regular selection string
-  string sig_selection = "((nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120))*total_weight_lepveto";
+  string sig_selection = "(" + control + ")*total_weight_lepveto";
   sig_selection = add_classID_to_selection(sig_selection, false);
   //step 3.2: add class ID to selection
   sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
@@ -358,6 +359,7 @@ void HistoPlot::plot_control_testTree(int bg_trained, Variable* mva_output, Data
   //step 4: draw and style primary histogram
   //step 4.1 draw background histogram
   stack.Draw();
+  data_histo->Draw("same");
   std::cout << "step 4.1 done" << std::endl;
 
   //step 4.2 draw signal histogram
@@ -438,10 +440,12 @@ std::string HistoPlot::add_classID_to_selection(std::string selection, bool is_s
 
 THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::vector<double> mc_weights_vector,
-																																						DataChain* testTree_chain, std::string mva_cut)
+																																						DataChain* testTree_chain, std::string mva_cut, std::string control)
 {
   THStack stack(var->name_styled, "");
-  std::string selection = "((nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120))*total_weight_lepveto";
+  std::string selection;
+  if (control != ""){selection = "(" + control + ")*total_weight_lepveto";}
+  else{selection = "((nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";}
   selection = add_classID_to_selection(selection, false);
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   std::cout << "selection in draw stacked histo " << selection << std::endl;

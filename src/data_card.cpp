@@ -99,6 +99,7 @@ std::vector<double> DataCard::get_rates(int bg_to_train, DataChain* data, std::v
     TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], var, with_cut, false, "goff", variables, selection, bg_mc_weights[i], mva_cut);
 
     double N = HistoPlot::get_histo_integral(histo, with_cut, var);
+    std::cout << bg_chains[i]->label << " - " << N << std::endl;
     if(!strcmp(bg_chains[i]->label, bg_chains[bg_to_train]->label)){N = 2*N;}// taking into account test/train data split
     rates[i + 1]= N;
     std::cout << bg_chains[i]->label << " - " << N << std::endl;
