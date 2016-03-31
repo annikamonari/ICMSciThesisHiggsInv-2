@@ -221,23 +221,41 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		output_data_chain, output_bg_chains,&vars, output_graph_name, "");
 
 
-
-	HistoPlot::plot_control_testTree(bg_to_train, vars2[4], mva_output_test_chain,
+    Variable* control_var = super_vars->dijet_M_parked;
+    Variable* control_var2 = super_vars->dijet_M;
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
 		output_data_chain, output_bg_chains,
-		&vars, "zll_control_withoutcut.png",
+		&vars, "zll_control.png",
 		zll_ch->lep_sel, "");
-	HistoPlot::plot_control_testTree(bg_to_train, vars2[4], mva_output_test_chain,
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
 		output_data_chain, output_bg_chains,
-		&vars, "zll_control_withcut.png",
-		zll_ch->lep_sel, "output>0.36");
-
-	HistoPlot::plot_control_testTree(bg_to_train, vars2[4], mva_output_test_chain,
-		output_data_chain, output_bg_chains,
-		&vars, "ev_control_withoutcut.png",
+		&vars, "ev_control.png",
 		wjets_ev_ch->lep_sel, "");
-	HistoPlot::plot_control_testTree(bg_to_train, vars2[4], mva_output_test_chain,
+
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
 		output_data_chain, output_bg_chains,
-		&vars, "ev_control_withcut.png", wjets_ev_ch->lep_sel, "output>0.36");
+		&vars, "muv_control.png",
+		wjets_muv_ch->lep_sel, "");
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "tauv_control.png", wjets_tauv_ch->lep_sel, "");
+////// cut
+	HistoPlot::plot_control_testTree(bg_to_train, control_var2, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "zll_control_cut.png",
+		zll_ch->lep_sel, "");
+	HistoPlot::plot_control_testTree(bg_to_train, control_var2, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "ev_control_cut.png",
+		wjets_ev_ch->lep_sel, "");
+
+	HistoPlot::plot_control_testTree(bg_to_train, control_var2, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "muv_control_cut.png",
+		wjets_muv_ch->lep_sel, "");
+	HistoPlot::plot_control_testTree(bg_to_train, control_var2, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "tauv_control_cut.png", wjets_tauv_ch->lep_sel, "");
 
 
 /*

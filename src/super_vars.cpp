@@ -42,7 +42,7 @@ SuperVars::SuperVars()
   jet2_eta_parked = new Variable("jet2_eta","jet2_eta", "-20.0", "5.0", "-10.0", "4.7","133","1","");
   jet1_pt_parked  = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","30","", "GeV");
   jet2_pt_parked  = new Variable("jet2_pt","Jet2pt","0.0","","45.0","","30","", "GeV");
-  dijet_M_parked  = new Variable("dijet_M","Dijet Mass","0.0","","1200","","50","10", "GeV");
+  dijet_M_parked  = new Variable("dijet_M","Dijet Mass","0.0","8000","0.0","5000","60","1", "GeV");
   metnomuons_parked = new Variable("metnomuons","MET (No Muons)","0.0","","90.0","", "50","5", "GeV");
   metnomu_significance_parked = new Variable("metnomu_significance","MET Significance (No Muons)",
                                           "3.0","","4.0","","50","10", "");

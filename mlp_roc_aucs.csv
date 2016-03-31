@@ -104,3 +104,5 @@ bg_wjets_muv,radial,800,5 10,0.002,70.4992
 bg_wjets_muv,radial,800,5 10,0.002,70.4992
 bg_wjets_muv,radial,800,5 10,0.002,70.4992
 bg_zjets_vv,radial,800,20 40,0.002,70.1369
+bg_zjets_vv,radial,20,20 40,0.002,69.9298
+bg_zjets_vv,radial,2,20 40,0.002,68.7314
