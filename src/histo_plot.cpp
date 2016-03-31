@@ -285,8 +285,8 @@ void HistoPlot::plot_control_testTree(int bg_trained, Variable* mva_output, Data
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 2: create background histo
   //step 2.1: get zjets mc weight
-   // don't need to double the trained bg in mc weights becauase this takes in test + train trees
-  std::vector<double> mc_weights_vector = mc_weights(data, bg_chains, mva_output, true, NULL, mva_cut);
+  double mc_weights_arr[] = {1, 1, 1, 1, 1, 1, 1, 1};
+  std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0]));  
 
   double trained_mc_weight = mc_weights_vector[bg_trained];
 

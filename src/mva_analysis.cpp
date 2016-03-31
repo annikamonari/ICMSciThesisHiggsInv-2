@@ -239,7 +239,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
 		output_data_chain, output_bg_chains,
 		&vars, "tauv_control.png", wjets_tauv_ch->lep_sel, "");
-////// cut
+/*
 	HistoPlot::plot_control_testTree(bg_to_train, control_var2, mva_output_test_chain,
 		output_data_chain, output_bg_chains,
 		&vars, "zll_control_cut.png",
@@ -257,7 +257,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		output_data_chain, output_bg_chains,
 		&vars, "tauv_control_cut.png", wjets_tauv_ch->lep_sel, "");
 
-
+*/
 /*
 output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
 TH1F* test = (TH1F*) gDirectory->Get("test");

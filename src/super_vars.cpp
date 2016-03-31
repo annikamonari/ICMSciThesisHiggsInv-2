@@ -11,7 +11,7 @@ SuperVars::SuperVars()
                                         "18.0","75","10", "GeV^{0.5}");
   alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
                                         "0.0","3.15","2.0","","40","5", "");
-  dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","2000.0","800.0","","20","10", "GeV");
+  dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","6000.0","800.0","","20","10", "GeV");
   metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","400.0","120.0","",
                                         "50","5", "GeV");
   jet1_pt                 = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","30","", "GeV");
@@ -42,7 +42,7 @@ SuperVars::SuperVars()
   jet2_eta_parked = new Variable("jet2_eta","jet2_eta", "-20.0", "5.0", "-10.0", "4.7","133","1","");
   jet1_pt_parked  = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","30","", "GeV");
   jet2_pt_parked  = new Variable("jet2_pt","Jet2pt","0.0","","45.0","","30","", "GeV");
-  dijet_M_parked  = new Variable("dijet_M","Dijet Mass","0.0","8000","0.0","5000","60","1", "GeV");
+  dijet_M_parked  = new Variable("dijet_M","Dijet Mass","0.0","9000","0.0","4000","50","1", "GeV");
   metnomuons_parked = new Variable("metnomuons","MET (No Muons)","0.0","","90.0","", "50","5", "GeV");
   metnomu_significance_parked = new Variable("metnomu_significance","MET Significance (No Muons)",
                                           "3.0","","4.0","","50","10", "");
