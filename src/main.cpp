@@ -65,14 +65,15 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/
 //}
-//HistoPlot::draw_plot(parked_vars[7], bg_chains,signal_chain, data_chain, true, &parked_vars, true, "parked_for_slides.png");
+HistoPlot::draw_plot(parked_vars[7], bg_chains,signal_chain, data_chain, true, &parked_vars, true, "parked_for_slides.png");
 //cout<<"plotted graph\n";
+//
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
 cout<<"got regular mc weights\n";
-*/
+
 std::vector<double> parked_mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, parked_vars[0], true, &parked_vars,"",6,false,true);
 cout<<"got park mc weights\n";
-/*
+
 double integral;double total=0;
 cout<<"===================Gordon and Monari's preselection==============\n";
 for(int i=0; i<8;i++){
@@ -85,7 +86,7 @@ for(int i=0; i<8;i++){
 
   TH1F* signal_histo = HistoPlot::build_1d_histo(signal_chain, cut_vars[0], with_cut, false, "goff", &cut_vars, "");
  cout << "total signal = "<< HistoPlot::get_histo_integral(signal_histo, with_cut, vars[0]) << endl;// taking into account test/train data split
-*/
+
 cout<<"===================CMS parked preselection====================\n";
 double total,integral;
 for(int i=0; i<8;i++){
@@ -100,8 +101,8 @@ for(int i=0; i<8;i++){
 
 // cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[7]) << endl;// taking into account test/train data s 
 
-DataCard::create_datacard(0, data_chain, signal_chain, bg_chains, parked_vars[7], with_cut, &parked_vars, "parked_selection.png");
-
+//DataCard::create_datacard(0, data_chain, signal_chain, bg_chains, parked_vars[7], with_cut, &parked_vars, "parked_selection.png");
+*/
 }
 
 int main(int argc, char** argv) {
