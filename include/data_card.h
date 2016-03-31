@@ -57,6 +57,8 @@ class DataCard
 
   static std::string get_uncertainties_string(std::vector<std::vector<double> > uncertainty_vectors);
 
+  static double get_total_data_events(DataChain* data, Variable* var, bool with_cut, std::vector<Variable*>* variables,std::string mva_cut);
+
   static double get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																		std::vector<double> bg_mc_weights, std::string mva_cut = "");
 

@@ -187,7 +187,10 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
 
   legend->AddEntry(signal_histo, (signal_leg_str).c_str(), "l");
   std::cout << "step 3 done" << std::endl;
-
+  ////////////////////////////////////////////////////////
+  //step 3.5 add data histo
+  TH1F* data_histo;
+  data_histo = draw_data(data, mva_output, true, legend, NULL, mva_cut);
   /////////////////////////////////////////////////////////
   //step 4: draw and style primary histogram
   //step 4.1 draw background histogram
@@ -197,6 +200,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
 
   //step 4.2 draw signal histogram
   signal_histo->Draw("SAME");
+  data_histo->Draw("SAME");
 
   std::cout << "step 4.2 done" << std::endl;
 
@@ -442,10 +446,10 @@ string selection="";
 	 {
 		if(variables==NULL)
 		{
-    			/*selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    			selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     			selection = HistoPlot::add_classID_to_selection(selection, false);
     			selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
-    			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);*/
+    			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
 //std::cout << "in histoplot mc weight errors" << selection << std::endl;
 		}
 //cout<<"selection :"<<selection<<"\n";

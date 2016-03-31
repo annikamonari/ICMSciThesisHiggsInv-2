@@ -78,8 +78,8 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
 				NeuronType, NCycles, HiddenLayers, LearningRate, trained_bg_label);
 
-			trained_output = MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
+			trained_output = TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=1000-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root");/*MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);*/
 		}
 //MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,
 //				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
@@ -221,8 +221,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 4 draw plot
 //_________________________
 cout<<"step 4 in mva analysis"<<endl;
-HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,
-	output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
 
 //output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
