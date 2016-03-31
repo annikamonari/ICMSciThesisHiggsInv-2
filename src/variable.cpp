@@ -118,8 +118,8 @@ std::string Variable::build_parked_selection( std::vector<Variable*>* variables)
     sel_string.insert(insert_pos, "&&" + var_sel);
   }
   
-  /*std::string eta_product = "((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))";
-  sel_string.insert( insert_pos,"&&" + eta_product);*/
+  std::string eta_product = "((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))";
+  sel_string.insert( insert_pos,"&&" + eta_product);
 
   return sel_string;
 }

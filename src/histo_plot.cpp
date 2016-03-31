@@ -434,7 +434,7 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
 std::vector<double> HistoPlot::get_mc_weight_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
 Variable* var, bool with_cut, std::vector<Variable*>* variables,std::vector<double> bg_mc_weights, std::string mva_cut)
 {
-string selection;
+string selection="";
 	 double mc_weight_errors[bg_chains.size()];
 	 double zll_weight_error;
 
@@ -442,10 +442,10 @@ string selection;
 	 {
 		if(variables==NULL)
 		{
-    			selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    			/*selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     			selection = HistoPlot::add_classID_to_selection(selection, false);
     			selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
-    			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+    			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);*/
 //std::cout << "in histoplot mc weight errors" << selection << std::endl;
 		}
 //cout<<"selection :"<<selection<<"\n";
@@ -750,7 +750,7 @@ TH1F* HistoPlot::build_parked_histo(DataChain* data_chain, Variable* variable,st
 
   selection_str = get_parked_selection(variable, variables, data_chain, mc_weight);
   
-//cout<<"selection string in build parked histo: "<<selection_str<<"\n";
+cout<<"selection string in build parked histo: "<<selection_str<<"\n";
   data_chain->chain->Draw(var_arg.c_str(), selection_str.c_str());
 
   TH1F* histo = (TH1F*)gDirectory->Get(data_chain->label);
@@ -767,8 +767,8 @@ TH1F* HistoPlot::draw_data(DataChain* data_chain, Variable* variable, bool with_
   data_chain->chain->SetMarkerColor(1);
   data_chain->chain->SetLineColor(1);
   TH1F* data_histo = set_error_bars(
-  //build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, "", 1,mva_cut)
-  build_parked_histo(data_chain, variable, variables, 1)
+  build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, "", 1,mva_cut)
+  //build_parked_histo(data_chain, variable, variables, 1)
 );
   legend->AddEntry(data_histo, data_chain->legend, "lep");
 
@@ -782,8 +782,8 @@ TH1F* HistoPlot::draw_signal(DataChain* data_chain, Variable* variable, bool wit
   data_chain->chain->SetLineColor(2);
   data_chain->chain->SetLineWidth(3);
   data_chain->chain->SetFillColor(0);
-  //TH1F* signal_histo = build_1d_histo(data_chain, variable, with_cut, true, "goff", variables, "", 1, mva_cut);
-  TH1F* signal_histo = build_parked_histo(data_chain, variable, variables,1);
+  TH1F* signal_histo = build_1d_histo(data_chain, variable, with_cut, true, "goff", variables, "", 1, mva_cut);
+  //TH1F* signal_histo = build_parked_histo(data_chain, variable, variables,1);
   legend->AddEntry(signal_histo, (build_signal_leg_entry(variable, data_chain)).c_str(), "l");
 
   return signal_histo;
@@ -796,8 +796,8 @@ TH1F* HistoPlot::draw_background(DataChain* data_chain, Variable* variable, int 
   data_chain->chain->SetLineColor(1);
   data_chain->chain->SetFillColor(fill_colour);
   //std::cout << "in draw background: " << mva_cut << std::endl;
-  //return build_1d_histo(data_chain, variable, with_cut, false, "goff", variables, "", mc_weight, mva_cut);
-  return build_parked_histo(data_chain, variable, variables, mc_weight);
+  return build_1d_histo(data_chain, variable, with_cut, false, "goff", variables, "", mc_weight, mva_cut);
+  //return build_parked_histo(data_chain, variable, variables, mc_weight);
 }
 
 TH1F* HistoPlot::draw_background_from_trees(DataChain* data_chain, Variable* variable, int fill_colour, string selection,

@@ -36,8 +36,8 @@ SuperVars::SuperVars()
   jet2metnomu_scalarprod = new Variable("jet2metnomu_scalarprod","jet2metnomu_scalarprod", "-2000.0", "2000.0", "-2000.0", "2000.0","50","1","");
   classID = new Variable("classID","signal_binary", "-1", "2", "-1", "2","2","1","");//0 for background 1 for signal
 //CMS parked data variables
-  parked_jet1_eta = new Variable("jet1_eta","jet1_eta", "-20", "5", "-10.0", "4.7","50","1","");
-  parked_jet2_eta = new Variable("jet2_eta","jet2_eta", "-20", "5", "-10.0", "4.7","50","1","");
+  parked_jet1_eta = new Variable("jet1_eta","jet1_eta", "-20", "5", "-4.7", "4.7","50","1","");
+  parked_jet2_eta = new Variable("jet2_eta","jet2_eta", "-20", "5", "-4.7", "4.7","50","1","");
 
   parked_jet1_pt                 = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","50","", "GeV");
   parked_jet2_pt                 = new Variable("jet2_pt","Jet2pt","0.0","","45.0","","50","", "GeV");
