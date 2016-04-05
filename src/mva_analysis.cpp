@@ -264,6 +264,7 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
   string NCycles;
   string HiddenLayers;
   string LearningRate;
+  string PreTransform;
   int len = training_file_paths.size();
   Double_t test_estimator[len];
   Double_t train_estimator[len];
@@ -297,10 +298,13 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
   int HLlen;
   int LRpos;
   int LRlen;
+  int PTlen;
+  int PTpos;
+
   bool human_readable=false;
   std::fstream fs;
   fs.open ("Estimator_statistics.txt", std::fstream::out | std::fstream::trunc);
-  fs << "Estimator statistics for last epoch of MLP training with G,P,N transform\n" ;
+  fs << "Estimator statistics for last epoch of MLP training with transform\n" ;
   fs << "Background NeuronType  NCycles  HiddenLayers   LearningRate  test_estimator train_estimator train/test \n";
   //done title lines 
   for(int i=0; i< len;i++)
@@ -326,6 +330,12 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
     LRpos = file_path.find("LearningRate=")+13;
     LRlen = file_path.find("-EstimatorType") - (13+file_path.find("LearningRate="));
     LearningRate= file_path.substr(LRpos, LRlen);
+
+    PTpos = file_path.find("CE-")+3;
+    PTlen = file_path.find(".root") - PTpos;
+    PreTransform= file_path.substr(PTpos, PTlen);
+
+
     if(human_readable){
       fs<<background;
       for(int i =15-bglen; i>0;i--){fs<<" ";}
@@ -338,7 +348,7 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
         train_estimator[i]/test_estimator[i]<<"\n";
     }
     else if (!human_readable){fs<<background<<" "<<NeuronType <<" "<<NCycles<<" "<<HiddenLayers<<" "<<LearningRate<<" ";
-    fs<<test_estimator[i]<<" "<<train_estimator[i]<<" "<<train_estimator[i]/test_estimator[i]<<"\n";}
+    fs<<test_estimator[i]<<" "<<train_estimator[i]<<" "<<train_estimator[i]/test_estimator[i]<<" "<<PreTransform<<"\n";}
   }
   fs.close();
 
