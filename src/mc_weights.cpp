@@ -70,12 +70,12 @@ cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
   double weight;
   //cout<<"mc weight selection: "<<selection<<"\n";
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
-cout<<"data in control region: "<<data_in_ctrl<<"\n";
+//cout<<"data in control region: "<<data_in_ctrl<<"\n";
   double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
-cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
+//cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 if(ctrl_mc_in_ctrl!=0){ 
   double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - ctrl_mc_in_ctrl;
-cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
+//cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
  weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
  }
@@ -104,7 +104,7 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, int trained_bg,
   double bg_N_C         = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - MC_N_C;
   double sigma_data_N_C = std::pow(data_N_C, 0.5);
   double sigma_MC_N_C   = std::pow(MC_N_C, 0.5);
-if(sigma_MC_N_C!=0){
+if(MC_N_C!=0){
   double sigma_bg_N_C   = std::pow(bg_N_C, 0.5);
   double err1           = sigma_data_N_C/MC_N_C;
   double err2           = sigma_bg_N_C/MC_N_C;
@@ -112,8 +112,9 @@ if(sigma_MC_N_C!=0){
   double error_sq       = std::pow(err1,2) + std::pow(err2,2) + std::pow(err3,2);
   weight_error   = std::pow(error_sq, 0.5);
 }
-else if(sigma_MC_N_C==0){weight_error = 1;}
-cout<<bg_chain->label<<"weight error: "<<weight_error<<"\n";
+else if(MC_N_C==0){cout<<"Warning!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"<<bg_chains[trained_bg]->label<<"target background"<<" = "<<MC_N_C;
+weight_error = 1;}
+cout<<bg_chain->label<<"=============================weight error: "<<weight_error<<"\n";
   return weight_error;
 
 }

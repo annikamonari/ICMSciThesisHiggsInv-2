@@ -133,8 +133,8 @@ std::string job_name, bool unique_output_files)
 	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
 	reader->AddSpectator("nvetomuons",  &nvetomuons);
 	reader->AddSpectator("alljetsmetnomu_mindphi",  &alljetsmetnomu_mindphi);
-
 /*
+
 
 		   reader->AddVariable("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
 		   reader->AddVariable("forward_tag_eta", &forward_tag_eta);
@@ -319,7 +319,7 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	std::string lr = LearningRate;
 
 	MLP_options.append(nt);
-	MLP_options += ":VarTransform=N:NCycles=";
+	MLP_options += ":VarTransform=U,P,N:NCycles=";
 	MLP_options.append(nc);
 	MLP_options += ":HiddenLayers=";
 	MLP_options.append(hl);
@@ -347,7 +347,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=CE-50bins";
+        out_nam += "-EstimatorType=CE-UPN";
  out_nam += ".root";
 
 	return out_nam;

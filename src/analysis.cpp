@@ -313,7 +313,7 @@ const char* data_legend = "data";
   std::vector<const char*> nCuts (nCuts_arr, nCuts_arr +
                                    sizeof(nCuts_arr)/sizeof(const char*));
   
-  const char* NeuronType_arr[] = {"radial","sigmoid","radial"};//"tanh"
+  const char* NeuronType_arr[] = {"radial","sigmoid","tanh"};//"tanh"
   std::vector<const char*> NeuronType (NeuronType_arr, NeuronType_arr +
                                      sizeof(NeuronType_arr)/sizeof(const char*));
 
@@ -321,10 +321,10 @@ const char* data_legend = "data";
   std::vector<const char*> NCycles (NCycles_arr, NCycles_arr +
                                        sizeof(NCycles_arr)/sizeof(const char*));
 
-  const char* HiddenLayers_arr[] = {"2","2,4","4,8","2,4,8,16","2,4,8,16,32","2,4,8,16,32,64"};//number of neurons in each hidden layer
+  const char* HiddenLayers_arr[] = {"2","2,4","2,4,8","2,4,8,16","2,4,8,16,32","2,4,8,16,32,64"};//number of neurons in each hidden layer
   std::vector<const char*> HiddenLayers (HiddenLayers_arr, HiddenLayers_arr +
                                          sizeof(HiddenLayers_arr)/sizeof(const char*));
-  const char* LearningRate_arr[] = {"0.1","0.01", "0.001", "0.02","0.00"};
+  const char* LearningRate_arr[] = {"0.1","0.01", "0.001", "0.0001"};
   std::vector<const char*> LearningRate (LearningRate_arr, LearningRate_arr +
                                            sizeof(LearningRate_arr)/sizeof(const char*));
 

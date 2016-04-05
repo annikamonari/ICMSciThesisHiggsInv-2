@@ -24,7 +24,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
-  bool create_cards = true;
+  bool create_cards = false;
   std::string job_name = job_ptr;
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
@@ -33,7 +33,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
   int min = 0; // the minimum value you want cuts to be from
-  int max = 75; // max value you want cuts to be to
+  int max = 72; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
   /*for (int i = 0; i < LearningRate.size(); i++)
   {  
@@ -56,16 +56,40 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
     
   }
 */
+/*std::cout<<"Area under tanh ROC: "<<RocCurves::get_auc( method_name,"test/MLP-all_bg-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
+std::cout<<"Area under radial ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
+std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
+
+		const char* file_arr[] =  {
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=10-HiddenLayers=5-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=10-HiddenLayers=5-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=tanh-NCycles=10-HiddenLayers=5-LearningRate=0.01-EstimatorType=CE-50bins.root"
+};
+		std::vector<const char*> file_paths (file_arr, file_arr +sizeof(file_arr)/sizeof(const char*));
+		std::vector<TFile*> files = MVAAnalysis::get_files_from_paths(file_paths);
+
+		std::string folder_name = "test/";
+		std::cout << "=> Set Folder Name: " << folder_name << std::endl;
+
+  //ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[bg_to_train]->label);
+		RocCurves::get_rocs(files, signal_chain, bg_chains[6], super_vars, method_name, folder_name);*/
+
+
+
 //TFile* trained_output;
-//for(int i =0; i<7;i++){
-  MVAAnalysis::get_mva_results(bg_chains, 1, signal_chain, data_chain, super_vars, "test", method_name,
+TFile* trained_file;
+for(int j=0; j<1;j++){
+for(int i =0; i<6;i++){
+trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  NCycles[0], HiddenLayers[2], LearningRate[4],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+  "500", HiddenLayers[i], LearningRate[j],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;
+}}
    /*const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
-   MVAAnalysis::get_estimators(single_file_vector);*/
-//}
-//HistoPlot::draw_plot(parked_vars[7], bg_chains,signal_chain, data_chain, true, &parked_vars, true, "parked_for_slides.png");
+   MVAAnalysis::get_estimators(single_file_vector);
+//}*/
+//HistoPlot::draw_plot(cut_vars[4], bg_chains,signal_chain, data_chain, true, &parked_vars, true, "parked_for_slides.png");
 //cout<<"plotted graph\n";
 //
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
@@ -100,62 +124,208 @@ for(int i=0; i<8;i++){
 //  TH1F* parked_signal_histo = HistoPlot::build_parked_histo(signal_chain, parked_vars[7], &parked_vars,1);
 
 // cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[7]) << endl;// taking into account test/train data s 
+*/
+//DataCard::create_datacard(0, data_chain, signal_chain, bg_chains, cut_vars[0], with_cut, &cut_vars, "parked_selection.png");
+/*double z = MCWeights::calc_mc_weight(data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, mva_cut, 1, false,false);
+double z_error = MCWeights::calc_weight_error( data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, 1, false,  mva_cut);
+cout<<"zll: "<<z<<endl;
+cout<<"zll error ="<<z_error<<endl;
 
-//DataCard::create_datacard(0, data_chain, signal_chain, bg_chains, parked_vars[7], with_cut, &parked_vars, "parked_selection.png");
+
+double enu = MCWeights::calc_mc_weight(data_chain, bg_chains, bg_chains[1], cut_vars[0], with_cut, &cut_vars, mva_cut, 1, false,false);
+double enu_error = MCWeights::calc_weight_error( data_chain, bg_chains, bg_chains[1], cut_vars[0], with_cut, &cut_vars, 1, false,  mva_cut);
+cout<<"enu: "<<enu<<endl;
+cout<<"e error ="<<enu_error<<endl;
+
+double munu = MCWeights::calc_mc_weight(data_chain, bg_chains, bg_chains[2], cut_vars[0], with_cut, &cut_vars, mva_cut, 1, false,false);
+double munu_error = MCWeights::calc_weight_error( data_chain, bg_chains, bg_chains[2], cut_vars[0], with_cut, &cut_vars, 1, false,  mva_cut);
+cout<<"munu: "<<enu<<endl;
+cout<<"mu error ="<<enu_error<<endl;
+
+double taunu = MCWeights::calc_mc_weight(data_chain, bg_chains, bg_chains[3], cut_vars[0], with_cut, &cut_vars, mva_cut, 1, false,false);
+double taunu_error = MCWeights::calc_weight_error( data_chain, bg_chains, bg_chains[3], cut_vars[0], with_cut, &cut_vars, 1, false,  mva_cut);
+cout<<"taunu: "<<taunu<<endl;
+cout<<"tau error ="<<enu_error<<endl;
 */
 }
 
 int main(int argc, char** argv) {
-  TApplication theApp("tapp", &argc, argv);
-/*const char * files[] = {
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.000001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.00001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.0001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.1-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32,64-LearningRate=0.5-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.000001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.00001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.0001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.005-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16,32-LearningRate=0.5-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16-LearningRate=0.000001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16-LearningRate=0.00001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16-LearningRate=0.0001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.000001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.00001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.0001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.2-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4,8-LearningRate=0.5-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.000001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.00001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.0001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.002-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2,4-LearningRate=0.5-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2-LearningRate=0.000001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2-LearningRate=0.00001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2-LearningRate=0.0001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-PCA.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=2000-HiddenLayers=2-LearningRate=0.5-EstimatorType=CE-PCA.root",
+TApplication theApp("tapp", &argc, argv);
+const char * files[] = {
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.0001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.01-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.0001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.0001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.0001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.0001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.001-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.01-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.0001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.0001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.0001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.0001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.0001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.001-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.01-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.0001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.0001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.0001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.0001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.0001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.001-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.01-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.0001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.0001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.0001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.0001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.0001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.001-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.0001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.0001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.0001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.0001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.0001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.001-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.1-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4-LearningRate=0.1-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8-LearningRate=0.1-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-50bins.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-GDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-GPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-UDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-UGDN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-UGPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-UN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-UPN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.1-EstimatorType=CE-50bins.root",
+
 };
 std::vector<const char*> files_v (files, files + sizeof(files) / sizeof(const char*));
-  MVAAnalysis::get_estimators(files_v);*/
-  produce_graphs(true, argv[1]);
+  MVAAnalysis::get_estimators(files_v);
+ // produce_graphs(true, argv[1]);
   theApp.Run();
   return 0;
 }

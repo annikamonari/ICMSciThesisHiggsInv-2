@@ -49,7 +49,7 @@ SuperVars::SuperVars()
 
   parked_alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
                                         "2.3","3.15","2.3","","50","1", "");
-  parked_metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)","3.0","","4.0","","50","1", "");
+  parked_metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)","","","","","50","1", "");
 
 
 }
@@ -58,16 +58,15 @@ SuperVars::SuperVars()
 std::vector<Variable*> SuperVars::get_discriminating_vars()
 {
   Variable* var_arr[] = {
-                          dijetmetnomu_ptfraction, dijetmetnomu_vectorialSum_pt, jet_csv2, 
+                         dijetmetnomu_ptfraction, dijetmetnomu_vectorialSum_pt, jet_csv2, 
                           dijet_dphi, dijet_M,
-                        
-			                       /*alljetsmetnomu_mindphi, forward_tag_eta, dijet_deta, metnomu_significance,
+                          alljetsmetnomu_mindphi,metnomu_significance/*, forward_tag_eta, dijet_deta, 
   		  	                   sqrt_ht, dijet_M, metnomuons ,jet1_pt,jet2_pt, jet1_eta,jet2_eta, jet1_phi,jet2_phi,
 																										jet_csv1,jet_csv2,dijet_dphi,metnomu_x,metnomu_y,sumet,mht,unclustered_et,
   		                      jetmetnomu_mindphi,jetunclet_mindphi,metnomuunclet_dphi,dijetmetnomu_vectorialSum_pt,
 																										dijetmetnomu_ptfraction, jet1metnomu_scalarprod,jet2metnomu_scalarprod
-  	                     */
-																								};
+  	                     
+						*/																		};
 
   std::vector<Variable*> vars (var_arr, var_arr + sizeof(var_arr) / sizeof(var_arr[0]));
 

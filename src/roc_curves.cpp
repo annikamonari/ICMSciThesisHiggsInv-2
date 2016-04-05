@@ -33,7 +33,7 @@ void RocCurves::plot_all_rejBvsS(std::vector<TFile*> training_outputs, DataChain
 	std::string plot_name = "ROC Curves";
 	TCanvas* c1     = new TCanvas("c1", plot_name.c_str());
 	TLegend* legend = new TLegend(0.15, 0.6, 0.65, 0.15);
-	TGraph* point   = parked_data_point(signal, bg, preselection, var, variables, legend);
+	//TGraph* point   = parked_data_point(signal, bg, preselection, var, variables, legend);
 	//std::cout << "=> Parked Data Point done" << std::endl;
 	for (int i = 0; i < training_outputs.size(); i++)
 	{
@@ -60,7 +60,7 @@ void RocCurves::plot_all_rejBvsS(std::vector<TFile*> training_outputs, DataChain
 		legend->AddEntry(rejBvsS_histo, legend_text.c_str(), "f");
 	}
 	style_legend(legend);
-	point->Draw("pSAME");
+//	point->Draw("pSAME");
 	legend->Draw();
 	std::string bg_name = bg->label;
 	std::string img_name = dir + "/" + bg_name + "_roc_curves.png";

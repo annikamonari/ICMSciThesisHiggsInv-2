@@ -111,14 +111,14 @@ std::string Variable::build_parked_selection( std::vector<Variable*>* variables)
   std::string sel_string = add_veto_parked_selection();
   int insert_pos         = sel_string.find("(") + 1;
 
-  for (int i = 0; i < variables->size(); i++)//-1 to exclude met sig
+  for (int i = 0; i < variables->size()-1; i++)//-1 to exclude met sig
   {
     std::string var_sel = build_selection((*variables)[i]->name, (*variables)[i]->x_min_cut,
                                             (*variables)[i]->x_max_cut, (*variables)[i]->abs_for_cut);
     sel_string.insert(insert_pos, "&&" + var_sel);
   }
   
-  std::string eta_product = "((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))";
+  std::string eta_product = "((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))&(metnomu_significance/metnomuons)";
   sel_string.insert( insert_pos,"&&" + eta_product);
 
   return sel_string;
