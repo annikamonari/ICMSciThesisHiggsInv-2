@@ -32,8 +32,8 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   std::string method_name = "MLP";
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
-  int min = 0; // the minimum value you want cuts to be from
-  int max = 72; // max value you want cuts to be to
+  int min = 0;//1769; // the minimum value you want cuts to be from
+  int max = 82;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
   /*for (int i = 0; i < LearningRate.size(); i++)
   {  
@@ -55,15 +55,14 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
     }
     
   }
-*/
-/*std::cout<<"Area under tanh ROC: "<<RocCurves::get_auc( method_name,"test/MLP-all_bg-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
+
+std::cout<<"Area under tanh ROC: "<<RocCurves::get_auc( method_name,"test/MLP-all_bg-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
 std::cout<<"Area under radial ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
 std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
 
 		const char* file_arr[] =  {
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=10-HiddenLayers=5-LearningRate=0.01-EstimatorType=CE-50bins.root",
-"test/MLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=10-HiddenLayers=5-LearningRate=0.01-EstimatorType=CE-50bins.root",
-"test/MLP-bg_zjets_vv-NeuronType=tanh-NCycles=10-HiddenLayers=5-LearningRate=0.01-EstimatorType=CE-50bins.root"
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=MSE-GN.root"
 };
 		std::vector<const char*> file_paths (file_arr, file_arr +sizeof(file_arr)/sizeof(const char*));
 		std::vector<TFile*> files = MVAAnalysis::get_files_from_paths(file_paths);
@@ -71,25 +70,30 @@ std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP
 		std::string folder_name = "test/";
 		std::cout << "=> Set Folder Name: " << folder_name << std::endl;
 
-  //ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[bg_to_train]->label);
-		RocCurves::get_rocs(files, signal_chain, bg_chains[6], super_vars, method_name, folder_name);*/
+  ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[6]->label);
+		RocCurves::get_rocs(files, signal_chain, bg_chains[6], super_vars, method_name, folder_name);
 
+*/
 
 
 //TFile* trained_output;
-TFile* trained_file;
+/*TFile* trained_file;
 for(int j=0; j<1;j++){
-for(int i =0; i<6;i++){
+for(int i =0; i<3;i++){
 trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  "500", HiddenLayers[i], LearningRate[j],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
-std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;
-}}
-   /*const char* train_file_arr[1] = {trained_output->GetName()};
+  "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+//std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;}
+//}}
+   const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);
 //}*/
-//HistoPlot::draw_plot(cut_vars[4], bg_chains,signal_chain, data_chain, true, &parked_vars, true, "parked_for_slides.png");
+for( int i =0;i< vars.size();i++){
+	string plot_name = "nocuts/"; plot_name.append(vars[i]->name);
+	plot_name.append(".png");
+	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, false, &vars, true, plot_name);
+}
 //cout<<"plotted graph\n";
 //
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
@@ -151,7 +155,7 @@ cout<<"tau error ="<<enu_error<<endl;
 
 int main(int argc, char** argv) {
 TApplication theApp("tapp", &argc, argv);
-const char * files[] = {
+/*const char * files[] = {
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.0001-EstimatorType=CE-50bins.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-50bins.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.001-EstimatorType=CE-GDN.root",
@@ -310,7 +314,8 @@ const char * files[] = {
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UGDN.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UGPN.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UN.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UPN.root",
+"teMLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root
+MLP-bg_zjets_vv-NeuronType=tanh-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.rootst/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16-LearningRate=0.1-EstimatorType=CE-UPN.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-50bins.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-GDN.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-GN.root",
@@ -321,11 +326,13 @@ const char * files[] = {
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-UN.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32-LearningRate=0.1-EstimatorType=CE-UPN.root",
 "test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2,4,8,16,32,64-LearningRate=0.1-EstimatorType=CE-50bins.root",
-
+"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root",
+"test/MLP-bg_zjets_vv-NeuronType=tanh-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root"
 };
 std::vector<const char*> files_v (files, files + sizeof(files) / sizeof(const char*));
   MVAAnalysis::get_estimators(files_v);
- // produce_graphs(true, argv[1]);
+ */produce_graphs(true, argv[1]);
   theApp.Run();
   return 0;
 }

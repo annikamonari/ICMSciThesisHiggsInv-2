@@ -30,7 +30,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	factory->AddSpectator("nselelectrons",  "nselelectrons", "", 'F' );
 	factory->AddSpectator("nvetoelectrons",  "nvetoelectrons", "", 'F' );
 	factory->AddSpectator("nvetomuons",  "nvetomuons", "", 'F' );
-	factory->AddSpectator("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)", "", 'F' );
+	//factory->AddSpectator("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)", "", 'F' );
 
 	  // Background
 	    double background_weight = 1.0;
@@ -132,14 +132,14 @@ std::string job_name, bool unique_output_files)
      reader->AddSpectator("nselelectrons", &nselelectrons );
 	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
 	reader->AddSpectator("nvetomuons",  &nvetomuons);
-	reader->AddSpectator("alljetsmetnomu_mindphi",  &alljetsmetnomu_mindphi);
-/*
-
-
 		   reader->AddVariable("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
+		   reader->AddVariable("metnomu_significance", &metnomu_significance);
+
+
+/*
+	reader->AddSpectator("alljetsmetnomu_mindphi",  &alljetsmetnomu_mindphi);
 		   reader->AddVariable("forward_tag_eta", &forward_tag_eta);
 		   reader->AddVariable("dijet_deta", &dijet_deta);
-		   reader->AddVariable("metnomu_significance", &metnomu_significance);
 		   //reader->AddVariable("sqrt_ht", &sqrt_ht);
 		   //reader->AddVariable("dijet_M", &dijet_M);
 		   reader->AddVariable("metnomuons", &metnomuons);
@@ -183,12 +183,14 @@ std::string job_name, bool unique_output_files)
       		   data->SetBranchAddress("jet_csv2", &jet_csv2);
       		   data->SetBranchAddress("dijet_dphi", &dijet_dphi);
                    data->SetBranchAddress("dijet_M", &dijet_M);
+	   	   data->SetBranchAddress("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
+	   	   data->SetBranchAddress("metnomu_significance", &metnomu_significance);
+
 /*
 	   	   data->SetBranchAddress("dijet_deta", &dijet_deta);
 	   	   data->SetBranchAddress("forward_tag_eta", &forward_tag_eta);
 	   	   
 	   	   data->SetBranchAddress("sqrt_ht", &sqrt_ht);
-	   	   data->SetBranchAddress("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
 	   	   
 	   	   data->SetBranchAddress("metnomuons", &metnomuons);
 	   	   data->SetBranchAddress("jet1_pt", &jet1_pt);
@@ -319,14 +321,13 @@ std::string MLPAnalysis::MLP_options_str(const char* NeuronType, const char* NCy
 	std::string lr = LearningRate;
 
 	MLP_options.append(nt);
-	MLP_options += ":VarTransform=U,P,N:NCycles=";
+	MLP_options += ":VarTransform=G,N:NCycles=";
 	MLP_options.append(nc);
 	MLP_options += ":HiddenLayers=";
 	MLP_options.append(hl);
 	MLP_options += ":LearningRate=";
 	MLP_options.append(lr);
-	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=CE"; //ConvergenceTests=100:
-
+	MLP_options += ":TestRate=5:UseRegulator:EstimatorType=CE"; //ConvergenceTests=100
  return MLP_options;
 }
 
@@ -347,7 +348,7 @@ std::string MLPAnalysis::MLP_output_name_str(const char* NeuronType, const char*
 	out_nam.append(hl);
 	out_nam += "-LearningRate=";
 	out_nam.append(lr);
-        out_nam += "-EstimatorType=CE-UPN";
+        out_nam += "-EstimatorType=CE-GN";
  out_nam += ".root";
 
 	return out_nam;

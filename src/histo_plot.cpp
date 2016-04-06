@@ -21,12 +21,12 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   p2->Draw();
   p3->Draw();
   p2->cd();
-  std::cout << "mva cut: " << mva_cut << std::endl;
+  //std::cout << "mva cut: " << mva_cut << std::endl;
   THStack stack      = draw_stacked_histo(legend, var, bg_chains, with_cut, variables, data, mva_cut);
-  std::cout << "drew stack" << std::endl;
+  //std::cout << "drew stack" << std::endl;
   TH1F* signal_histo = draw_signal(signal_chain, var, with_cut, legend, variables, mva_cut);
-  std::cout << "drew signal" << std::endl;
-  std::cout << signal_histo << std::endl;
+  //std::cout << "drew signal" << std::endl;
+  //std::cout << signal_histo << std::endl;
   TH1F* data_histo;
   if (plot_data) {data_histo = draw_data(data, var, with_cut, legend, variables, mva_cut);}
 
@@ -35,9 +35,9 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
 
   if (plot_data) {data_histo->Draw("SAME");}
 
-  std::cout << "drew all" << std::endl;
+  //std::cout << "drew all" << std::endl;
   style_stacked_histo(&stack, var->name_styled);
-cout<<"histo styled"<<endl;
+//cout<<"histo styled"<<endl;
   /*TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo, signal_histo};
   if (!plot_data) {plot_histos[1] = NULL;}
   std::vector<TH1F*> plot_histos_vector (plot_histos, plot_histos + sizeof(plot_histos) / sizeof(plot_histos[0]));
@@ -46,9 +46,9 @@ cout<<"histo styled"<<endl;
   stack.SetMaximum(get_histo_y_max(max_histo)*1.15);*/
 
   build_legend(legend, signal_histo, var, with_cut);
-cout<<"legend built"<<endl;
+//cout<<"legend built"<<endl;
   draw_subtitle(var, variables, with_cut, data, "", mva_cut);
-  std::cout << "drew subtitle" << std::endl;
+  //std::cout << "drew subtitle" << std::endl;
   p3->cd();
   TH1F* data_bg_ratio_histo;
 
@@ -59,14 +59,14 @@ cout<<"legend built"<<endl;
   }
   else
   {*/
-  		std::cout << "data_histo appaz is null" << std::endl;
+  //		std::cout << "data_histo appaz is null" << std::endl;
   		data_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo, (TH1F*)(stack.GetStack()->Last()));
  // }
 
   data_bg_ratio_histo->Draw("e1");
   style_ratio_histo(data_bg_ratio_histo, var->name_styled);
   draw_yline_on_plot(var, with_cut, 1.0);
-  std::cout << "ratio histo done" << std::endl;
+ // std::cout << "ratio histo done" << std::endl;
   std::string img_name;
 
   if (file_name == "")
@@ -200,7 +200,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
 
   //step 4.2 draw signal histogram
   signal_histo->Draw("SAME");
-  data_histo->Draw("SAME");
+ // data_histo->Draw("SAME");
 
   std::cout << "step 4.2 done" << std::endl;
 
@@ -423,7 +423,7 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
     	 		mc_weight[i] = zll_weight*5.651*1.513;
     	 }
     }
-    std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
+  //  std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
   }
   std::vector<double> mc_weights_vector (mc_weight, mc_weight + sizeof(mc_weight) / sizeof(mc_weight[0]));
 
@@ -479,7 +479,7 @@ string selection="";
 	     mc_weight_errors[i] = zll_weight_error * 5.651 * 1.513;
 
 	   }
- cout << bg_chains[i]->label << endl;
+ //cout << bg_chains[i]->label << endl;
 	 }
 	 std::vector<double> mc_weights_vector (mc_weight_errors, mc_weight_errors + sizeof(mc_weight_errors) / sizeof(mc_weight_errors[0]));
 
@@ -583,13 +583,15 @@ void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variab
 
 			 sel = style_selection(get_selection(variable, variables, with_cut, false, data, 1.0, mva_cut));
 	 }
-  std::cout << sel << std::endl;
+ // std::cout << sel << std::endl;
 	 std::string selection = "Selection: " + sel;
+TPaveText* pts;
+  if(with_cut){
   std::string l1        = "#font[12]{" + selection.substr(0, 90) + "-}";//selection.substr(0, 90)
   std::string l2        = "#font[12]{" + selection.substr(88, 90) + "-}";
   std::string l3        = "#font[12]{" + selection.substr(178, 88) + "}";
 
-  TPaveText* pts        = new TPaveText(0.1, 1.0, 0.9, 0.9, "blNDC");
+  pts        = new TPaveText(0.1, 1.0, 0.9, 0.9, "blNDC");
 
   pts->SetBorderSize(0);
   pts->SetFillColor(0);
@@ -599,6 +601,17 @@ void HistoPlot::draw_subtitle(Variable* variable, std::vector<Variable*>* variab
   pts->SetAllWith(l1.c_str(), "size", 0.03);
   pts->SetAllWith(l2.c_str(), "size", 0.03);
   pts->SetAllWith(l3.c_str(), "size", 0.03);
+}
+else{
+  std::string l1        = "#font[12]{" + selection + "-}";//;
+
+  pts        = new TPaveText(0.1, 1.0, 0.9, 0.9, "blNDC");
+
+  pts->SetBorderSize(0);
+  pts->SetFillColor(0);
+  pts->AddText(l1.c_str());
+  pts->SetAllWith(l1.c_str(), "size", 0.03);
+}
   pts->Draw();
 }
 
@@ -811,7 +824,7 @@ TH1F* HistoPlot::draw_background_from_trees(DataChain* data_chain, Variable* var
   data_chain->chain->SetFillColor(fill_colour);
   //std::cout << "in draw background: " << mva_cut << std::endl;
   selection = add_mc_to_selection(data_chain, variable, selection, mc_weight);
-  std::cout << "final selection in draw background from trees " << selection << std::endl;
+  //std::cout << "final selection in draw background from trees " << selection << std::endl;
 
   return build_1d_histo(data_chain, variable, true, false, "goff", NULL,selection, mc_weight, mva_cut);
 }
