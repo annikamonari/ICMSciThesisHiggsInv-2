@@ -435,12 +435,11 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
 // region (its just sqrt(unweighted mc events in signal) / unweighted mc events in signal)
 // note:: changed so that if mc weight is 1 then dont calculate the mc weight error
 // TODO make error use sumw2 and integralanderror
-std::vector<double> HistoPlot::get_mc_weight_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
+std::vector<double> HistoPlot::get_bg_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
 Variable* var, bool with_cut, std::vector<Variable*>* variables,std::vector<double> bg_mc_weights, std::string mva_cut, int trained_bg, bool double_test_bg, bool if_parked)
 {
 string selection="";
-	 double mc_weight_errors[bg_chains.size()];
-	 double zll_error;
+	 double bg_errors[bg_chains.size()];
 	double integral[8];
 	 for(int i = 0; i < bg_chains.size();i++)
 	 {
@@ -448,7 +447,7 @@ string selection="";
 		{
     			selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     			selection = HistoPlot::add_classID_to_selection(selection, false);
-    			selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
+    			if(strcmp(bg_chains[i]->label, "bg_zjets_vv")){selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);}
     			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
 //std::cout << "in histoplot mc weight errors" << selection << std::endl;
 		}
@@ -456,7 +455,7 @@ string selection="";
 	   TH1F* histo = build_1d_histo(bg_chains[i], var,with_cut, false, "goff", variables, selection, 1, mva_cut);
 //cout<<"got histo\n";
 	   integral[i] = get_histo_integral(histo, with_cut, var);
-	 		mc_weight_errors[i] = std::pow(integral[i], 0.5);
+	 		bg_errors[i] = std::pow(integral[i], 0.5);
 //cout<<"got integral: "<<integral<<"\n";
 
 	   if (bg_mc_weights[i] != 1) 
@@ -464,13 +463,10 @@ string selection="";
 					if(strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 					{
 			//cout<<"mc wiehgt in if loop: "<<bg_mc_weights[i]<<endl;
-							mc_weight_errors[i] = single_bg_error(bg_to_train, data, bg_chains, bg_chains[i], var,
+							bg_errors[i] = single_bg_error(bg_to_train, data, bg_chains, bg_chains[i], var,
 							with_cut, variables, bg_mc_weights[i], mva_cut,selection, trained_bg, double_test_bg,if_parked);
 	//cout<<"got bg error\n";
-							if(!strcmp(bg_chains[i]->label, "bg_zll"))
-							{
-									zll_error = mc_weight_errors[i];
-							}
+
 					}
            }
 
@@ -482,15 +478,19 @@ cout<<"zll_weight_error: "<<zll_weight_error<<"\n";
 	     double zll_weight_error_sq=std::pow(zll_weight_error,2);
 	     double N_nunu=integral[6];if(trained_bg==6){N_nunu=2*N_nunu;}
 	     double W_ll_sq=std::pow(bg_mc_weights[0],2);
+	     double to_root = N_nunu*(W_ll_sq+ N_nunu*zll_weight_error_sq);
 cout<<"W_ll_sq"<<W_ll_sq<<"\n";
-	     mc_weight_errors[i] = 5.651 * 1.513*std::pow( N_nunu*(W_ll_sq+ N_nunu*zll_weight_error_sq),0.5);
-cout<<i<<" znunu "<<mc_weight_errors[i]<<"\n";
-	   }
- //cout << bg_chains[i]->label << endl;
-	 }
-	 std::vector<double> mc_weights_vector (mc_weight_errors, mc_weight_errors + sizeof(mc_weight_errors) / sizeof(mc_weight_errors[0]));
+            cout<<"to root: "<<to_root<<"\n";
+cout<<i<<" znunu "<<N_nunu<<"\n";
+	     bg_errors[i] = 5.651 * 1.513*std::pow(to_root,0.5);
+ cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 
-	 return mc_weights_vector;
+	   }
+ cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
+	 }
+	 std::vector<double> bg_error_vector (bg_errors, bg_errors + sizeof(bg_errors) / sizeof(bg_errors[0]));
+
+	 return bg_error_vector;
 }
 //_______________________________________________________________________________________________________________________
 

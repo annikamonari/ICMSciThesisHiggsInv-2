@@ -31,9 +31,9 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   std::string mva_cut = "";
   std::string method_name = "MLP";
   //int rel_bgs[] = {1, 2, 3, 6};
-  std::string sign = ">"; // direction of cut
+  std::string sign = ">="; // direction of cut
   int min = 0;//1769; // the minimum value you want cuts to be from
-  int max = 75;//1770; // max value you want cuts to be to
+  int max =0;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
   /*for (int i = 0; i < LearningRate.size(); i++)
   {  

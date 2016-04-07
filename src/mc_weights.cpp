@@ -60,22 +60,22 @@ bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int traine
   std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut, if_parked);}
   else{ 
-   /* if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
-	selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+	selection = "((alljetsmetnomu_mindphi>1.5)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
-    	else{*/selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chain->lep_sel+")*total_weight_lepveto";//}
-    	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+    	else{selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chain->lep_sel+")*total_weight_lepveto";//}
+    	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);}
    }
   double weight;
   //cout<<"mc weight selection: "<<selection<<"\n";
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
-//cout<<"data in control region: "<<data_in_ctrl<<"\n";
+cout<<"data in control region: "<<data_in_ctrl<<"\n";
   double ctrl_mc_in_ctrl  = get_nevents(bg_chain, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
-//cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
+cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 if(ctrl_mc_in_ctrl!=0){ 
   double other_bg_in_ctrl = get_all_bg_in_ctrl(bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg) - ctrl_mc_in_ctrl;
-//cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
+cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
 
  weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
  }
@@ -90,13 +90,13 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, int trained_bg,
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
   else
   { 
-    /*if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
-	selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+	selection = "((alljetsmetnomu_mindphi>1.5)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
     else
-    {*/selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";//}
-    selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+    {selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";//}
+    selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);}
   }
   double weight_error;
   double data_N_C       = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
@@ -114,7 +114,7 @@ if(MC_N_C!=0){
 }
 else if(MC_N_C==0){cout<<"Warning!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"<<bg_chains[trained_bg]->label<<"target background"<<" = "<<MC_N_C;
 weight_error = 1;}
-//cout<<bg_chain->label<<"=============================weight error: "<<weight_error<<"\n";
+cout<<bg_chain->label<<"=============================weight error: "<<weight_error<<"\n";
   return weight_error;
 
 }
