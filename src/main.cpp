@@ -76,15 +76,14 @@ std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP
 */
 
 
-//TFile* trained_output;
-/*TFile* trained_file;
+TFile* trained_file;/*
 for(int j=0; j<1;j++){
-for(int i =0; i<3;i++){
+for(int i =0; i<3;i++){*/
 trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
 //std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;}
-}}*/
+//}}
   /* const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);*/
@@ -129,7 +128,7 @@ for(int i=0; i<8;i++){
 
 // cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[7]) << endl;// taking into account test/train data s 
 */
-DataCard::create_datacard(5, data_chain, signal_chain, bg_chains, parked_vars[0], with_cut, &parked_vars, "parked_selection.png");
+//DataCard::create_datacard(5, data_chain, signal_chain, bg_chains, vars[0], with_cut, &vars, "preselection.png");
 /*double z = MCWeights::calc_mc_weight(data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, mva_cut, 1, false,false);
 double z_error = MCWeights::calc_weight_error( data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, 1, false,  mva_cut);
 cout<<"zll: "<<z<<endl;

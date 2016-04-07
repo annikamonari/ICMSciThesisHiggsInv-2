@@ -9,9 +9,9 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
  std::string mva_cut)
 {
   std::vector<DataChain*> bg_chs = bg_chains;
-  //bg_chs[bg_to_train] = signal_chain;//parked
+  bg_chs[bg_to_train] = signal_chain;
 
-  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut,variables , mva_cut, bg_to_train, true, true);//last var is if parked
+  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut,variables , mva_cut, bg_to_train, true, false);//last var is if parked
   std::fstream fs;
   std::string data_card_name = get_data_card_name(output_graph_name, mva_cut);
   std::cout << data_card_name << std::endl;
@@ -50,9 +50,9 @@ double DataCard::get_signal_error(DataChain* signal_chain, Variable* var, bool w
 
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
 
-  //TH1F* signalh = HistoPlot::build_1d_histo(signal_chain, var, with_cut, false, "goff", variables, selection, 1, mva_cut);//add selection back in here
-  TH1F* signalh = HistoPlot::build_parked_histo(signal_chain, var, variables,1);
-  double total_signal = HistoPlot::get_histo_integral(signalh, with_cut, var);//parked parked parked!!!!
+  TH1F* signalh = HistoPlot::build_1d_histo(signal_chain, var, with_cut, false, "goff", variables, selection, 1, mva_cut);//add selection back in here
+  //TH1F* signalh = HistoPlot::build_parked_histo(signal_chain, var, variables,1);
+  double total_signal = 2*HistoPlot::get_histo_integral(signalh, with_cut, var);//
 
   double sig_sqrt = std::pow(total_signal, 0.5);
   double sig_err_formatted;
@@ -67,7 +67,7 @@ std::vector<double> DataCard::get_bg_errors(int bg_to_train, DataChain* data, st
 {
   double bg_errors_parsed[bg_chains.size()];
 
-  std::vector<double> bg_errors = HistoPlot::get_mc_weight_errors(bg_to_train, data, bg_chains, var, with_cut, variables, bg_mc_weights, mva_cut,             bg_to_train, true, true);// last var is if parked
+  std::vector<double> bg_errors = HistoPlot::get_mc_weight_errors(bg_to_train, data, bg_chains, var, with_cut, variables, bg_mc_weights, mva_cut,             bg_to_train, true, false);// last var is if parked
   std::vector<double> rates = get_rates(bg_to_train, data, bg_chains, signal_chain, var,with_cut, variables, bg_mc_weights, mva_cut);
   std::cout << "got mc weight errors" << std::endl;
   for(int i = 0; i < bg_chains.size(); i++)
@@ -97,10 +97,10 @@ std::vector<double> DataCard::get_rates(int bg_to_train, DataChain* data, std::v
   selection1 = HistoPlot::add_mva_cut_to_selection(selection1, mva_cut);
   std::cout << "===signal" << std::endl;
   //std::cout << selection1 << std::endl;
-  //TH1F* signal_histo = HistoPlot::build_1d_histo(signal_chain, var, with_cut, false, "goff", variables, selection1, 1, mva_cut);
-  TH1F* signal_histo = HistoPlot::build_parked_histo(signal_chain, var, variables,1);
-//aprked parked multiply rates by 2
-  rates[0] = HistoPlot::get_histo_integral(signal_histo, with_cut, var);// taking into account test/train data split
+  TH1F* signal_histo = HistoPlot::build_1d_histo(signal_chain, var, with_cut, false, "goff", variables, selection1, 1, mva_cut);
+  //TH1F* signal_histo = HistoPlot::build_parked_histo(signal_chain, var, variables,1);
+// multiply rates by 2
+  rates[0] =2* HistoPlot::get_histo_integral(signal_histo, with_cut, var);// taking into account test/train data split
    // rates[0] =   HistoPlot::get_histo_integral(signal_histo, with_cut, var);// taking into account test/train data split
 std::cout<<rates[0]<<"\n";
   for(int i = 0; i < bg_chains.size();i++)
@@ -112,10 +112,10 @@ std::cout<<rates[0]<<"\n";
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
     std::cout << bg_mc_weights[i] << std::endl;
     //std::cout << selection << std::endl;
-    //TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], var, with_cut, false, "goff", variables, selection, bg_mc_weights[i], mva_cut);
-    TH1F* histo = HistoPlot::build_parked_histo(bg_chains[i], var, variables,bg_mc_weights[i]);
+    TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], var, with_cut, false, "goff", variables, selection, bg_mc_weights[i], mva_cut);
+    //TH1F* histo = HistoPlot::build_parked_histo(bg_chains[i], var, variables,bg_mc_weights[i]);
     double N = HistoPlot::get_histo_integral(histo, with_cut, var);
-    if(!strcmp(bg_chains[i]->label, bg_chains[bg_to_train]->label)){N = N;}// parked , *2 for taking into account test/train data split
+    if(!strcmp(bg_chains[i]->label, bg_chains[bg_to_train]->label)){N = 2*N;}//  , *2 for taking into account test/train data split
     rates[i + 1]= N;
     std::cout << bg_chains[i]->label << " - " << N << std::endl;
   }
@@ -277,7 +277,7 @@ std::string DataCard::get_systematic_string(int bg_to_train, DataChain* data, st
   DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
   std::vector<double> bg_mc_weights, std::string mva_cut)
 {
-  double signal_error = get_signal_error(signal_chain, var, with_cut, variables, mva_cut);
+  double signal_error = 1.0;//get_signal_error(signal_chain, var, with_cut, variables, mva_cut);
   //std::cout << "got signal error" << std::endl;
   std::vector<double> bg_errors = get_bg_errors(bg_to_train, data, bg_chains, signal_chain, var, with_cut, variables, bg_mc_weights, mva_cut);
   std::vector<std::vector<double> > uncertainty_vectors = DataCard::get_uncertainty_vectors(signal_error, bg_errors);
@@ -347,13 +347,13 @@ double DataCard::get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_c
     selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
 
-    //TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], var, with_cut, false, "goff", variables, selection, bg_mc_weights[i], mva_cut);
-        TH1F* histo = HistoPlot::build_parked_histo(bg_chains[i], var, variables,bg_mc_weights[i]);
+    TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], var, with_cut, false, "goff", variables, selection, bg_mc_weights[i], mva_cut);
+    //    TH1F* histo = HistoPlot::build_parked_histo(bg_chains[i], var, variables,bg_mc_weights[i]);
 
     double integral;
     integral = HistoPlot::get_histo_integral(histo, with_cut, var);
 
-    if(i==bg_to_train) {integral = integral;}//parked multiply this by 2
+    if(i==bg_to_train) {integral = 2*integral;}// multiply this by 2
 
     total += integral;
   }
