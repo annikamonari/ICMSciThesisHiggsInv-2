@@ -62,7 +62,7 @@ bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int traine
   else{ 
     if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
-	selection = "((alljetsmetnomu_mindphi>1.5)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+	selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
     	else{selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chain->lep_sel+")*total_weight_lepveto";//}
     	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);}
@@ -92,7 +92,7 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, int trained_bg,
   { 
     if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
-	selection = "((alljetsmetnomu_mindphi>1.5)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+	selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
     else
     {selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";//}
