@@ -49,7 +49,7 @@ SuperVars::SuperVars()
 
   parked_alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
                                         "2.3","3.15","2.3","","50","1", "");
-  parked_metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)","","","","","50","1", "");
+  parked_metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)","0","","4","","50","1", "");
 
 
 }

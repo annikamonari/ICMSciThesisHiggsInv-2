@@ -24,7 +24,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   // boolean is for whether or not to create separate output app files
   bool unique_output_files = false;
   // boolean is for whether or not to create datacards
-  bool create_cards = false;
+  bool create_cards = true;
   std::string job_name = job_ptr;
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
@@ -33,7 +33,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
   int min = 0;//1769; // the minimum value you want cuts to be from
-  int max = 82;//1770; // max value you want cuts to be to
+  int max = 75;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
   /*for (int i = 0; i < LearningRate.size(); i++)
   {  
@@ -84,16 +84,16 @@ trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_cha
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
 //std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;}
-//}}
-   const char* train_file_arr[1] = {trained_output->GetName()};
+}}*/
+  /* const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
-   MVAAnalysis::get_estimators(single_file_vector);
-//}*/
-for( int i =0;i< vars.size();i++){
-	string plot_name = "nocuts/"; plot_name.append(vars[i]->name);
-	plot_name.append(".png");
-	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, false, &vars, true, plot_name);
-}
+   MVAAnalysis::get_estimators(single_file_vector);*/
+//}
+//for( int i =0;i< vars.size();i++){
+ // cout<<vars[i]->name<<endl;}
+	//plot_name.append(".png");
+	//HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, false, &vars, true, plot_name);
+
 //cout<<"plotted graph\n";
 //
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
@@ -129,7 +129,7 @@ for(int i=0; i<8;i++){
 
 // cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[7]) << endl;// taking into account test/train data s 
 */
-//DataCard::create_datacard(0, data_chain, signal_chain, bg_chains, cut_vars[0], with_cut, &cut_vars, "parked_selection.png");
+DataCard::create_datacard(5, data_chain, signal_chain, bg_chains, parked_vars[0], with_cut, &parked_vars, "parked_selection.png");
 /*double z = MCWeights::calc_mc_weight(data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, mva_cut, 1, false,false);
 double z_error = MCWeights::calc_weight_error( data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, 1, false,  mva_cut);
 cout<<"zll: "<<z<<endl;
