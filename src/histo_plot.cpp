@@ -77,7 +77,7 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   {
   		img_name = file_name;
   }
-  std::cout << "file name" << std::endl;
+  //std::cout << "file name" << std::endl;
   p1->cd();
   draw_title(var->name_styled);
   c1->SaveAs(img_name.c_str());
@@ -109,7 +109,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   p2->Draw();
   p3->Draw();
   p2->cd();
-  std::cout << "mva cut: " << mva_cut << std::endl;
+ // std::cout << "mva cut: " << mva_cut << std::endl;
    //step 1.2 clone data chain
 	 TChain* test_clone     = (TChain*) testTree_chain->chain->Clone();
  DataChain* clone_chain  = new DataChain(mc_signal_data, mc_signal_label, mc_signal_legend, "","",test_clone);
@@ -124,7 +124,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
 
   double trained_mc_weight = mc_weights_vector[bg_trained];
 
-  cout<<"mc_weight of trained bg= "<< trained_mc_weight <<endl;
+  //cout<<"mc_weight of trained bg= "<< trained_mc_weight <<endl;
 //mc weights have been tested and work, now need to edit the draw stack function to not stack the zjets in the datachain vector and instead add the test_set th1
   //step 2.2 create output selection string
   std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*2*total_weight_lepveto";
@@ -139,15 +139,15 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   //step 2.4 add mc weight to selection  
   /*std::string mc_weight_str = get_string_from_double(mc_weight);
   selection = selection + "*" + mc_weight_str; */
-  std::cout << "selection for test tree background =============" << std::endl;
-  std::cout<<"final selection: "<< selection <<"\n";
+  //std::cout << "selection for test tree background =============" << std::endl;
+  //std::cout<<"final selection: "<< selection <<"\n";
 
   //step 2.5: get background histo  problem area caused by signal using the same chain, try cloning the tree and running agsain
   testTree_chain->chain->SetLineColor(1);
   testTree_chain->chain->SetFillColor(colours()[bg_trained]);
   TH1F* trained_histo = build_1d_histo(testTree_chain, mva_output, true, true, "goff", NULL, selection, trained_mc_weight, mva_cut);
   TH1F bg_histo_inThe_memory_Stack = *trained_histo;// save to stack emory fromn the heap
-  std::cout << "events in wjets ev: ==========" << trained_histo->Integral() << std::endl;
+  //std::cout << "events in zjets vv: ==========" << trained_histo->Integral() << std::endl;
   //step 2.6 add legend entry
   std::string legend_str(testTree_chain->label);
   legend_str += (" #font[12]{(MC weight: " + get_string_from_double(trained_mc_weight) + ")}");// get string from double fails so mc weight is added manually
@@ -171,7 +171,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   //step 3.2: add class ID to selection
   sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
 
-  std::cout<<"final sig_selection: "<< sig_selection<<"\n";
+  //std::cout<<"final sig_selection: "<< sig_selection<<"\n";
 
   //step 3.3 get signal his0-HiddenLayers=2,2,2,2-LearningRate=0.02-EstimatorType=CEoutput_nocuts.pngto 
   test_clone->SetLineColor(2);
@@ -196,13 +196,13 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   //step 4.1 draw background histogram
   stack.Draw();
 //trained_histo->Draw();
-  std::cout << "step 4.1 done" << std::endl;
+  //std::cout << "step 4.1 done" << std::endl;
 
   //step 4.2 draw signal histogram
   signal_histo->Draw("SAME");
  // data_histo->Draw("SAME");
 
-  std::cout << "step 4.2 done" << std::endl;
+  //std::cout << "step 4.2 done" << std::endl;
 
   //step 4.3 style histogram
   style_stacked_histo(&stack, mva_output->name_styled);
@@ -229,7 +229,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
 
   //step 6.3 style signal/background histo
   style_ratio_histo(signal_bg_ratio_histo, mva_output->name_styled);
-  std::cout << "ratio histo done" << std::endl;
+  //std::cout << "ratio histo done" << std::endl;
   //step 6.4 draw line, y=1 on signal/background histogram
   draw_yline_on_plot(mva_output, true, 1.0);
   draw_yline_on_plot(mva_output, true, 1.0);
@@ -239,7 +239,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   //step 7: add title and save histogram to file
   //step 7.1 create file name
   std::string img_name = file_name;
-  std::cout << "file name" << std::endl;
+ // std::cout << "file name" << std::endl;
   
   //step 7.2 change pad and add title
   p1->cd();
@@ -247,7 +247,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   //
   //step 7.3 close and save the file
   c1->SaveAs(img_name.c_str());
-cout<<"file saved\n";
+//cout<<"file saved\n";
   c1->Close();
   std::cout << "step 7 done" << std::endl;
 cout<<"---------------------Finished HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
@@ -283,10 +283,10 @@ THStack HistoPlot::draw_stacked_histo_no_zjets(TLegend* legend, Variable* var, s
   std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
   selection = add_classID_to_selection(selection, false);
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
-  std::cout << "selection in draw stacked histo " << selection << std::endl;
+ // std::cout << "selection in draw stacked histo " << selection << std::endl;
   for(int i = 0; i < bg_chains.size(); i++) {
    if(strcmp(bg_chains[i]->label, testTree_chain->label)) {
-       cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
+       //cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
       TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, mc_weights_vector[i], mva_cut);
       stack.Add(single_bg_histo);
       std::string legend_str(bg_chains[i]->legend);
@@ -347,7 +347,7 @@ std::string HistoPlot::get_selection(Variable* variable, std::vector<Variable*>*
   {
     selection = variable->build_selection_string(with_cut, is_signal);
   }
-std::cout << selection << std::endl;
+//std::cout << selection << std::endl;
 
   selection.insert(selection.find("(") + 1, lep_sel_default());
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
@@ -417,13 +417,13 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
     }
 
     if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
-    {std::cout<<"in vv loop\n";
+    {//std::cout<<"in vv loop\n";
     	 if (zll_weight != 1)
     	 {
     	 		mc_weight[i] = zll_weight*5.651*1.513;
     	 }
     }
-    std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
+    //std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
   }
   std::vector<double> mc_weights_vector (mc_weight, mc_weight + sizeof(mc_weight) / sizeof(mc_weight[0]));
 
@@ -474,19 +474,19 @@ string selection="";
 	   {
              double zll_weight_error =  MCWeights::calc_weight_error( data, bg_chains,  bg_chains[0], var, 
                         with_cut,  variables,  trained_bg, double_test_bg,  mva_cut, if_parked);
-cout<<"zll_weight_error: "<<zll_weight_error<<"\n";
+//cout<<"zll_weight_error: "<<zll_weight_error<<"\n";
 	     double zll_weight_error_sq=std::pow(zll_weight_error,2);
 	     double N_nunu=integral[6];if(trained_bg==6){N_nunu=2*N_nunu;}
 	     double W_ll_sq=std::pow(bg_mc_weights[0],2);
 	     double to_root = N_nunu*(W_ll_sq+ N_nunu*zll_weight_error_sq);
-cout<<"W_ll_sq"<<W_ll_sq<<"\n";
-            cout<<"to root: "<<to_root<<"\n";
-cout<<i<<" znunu "<<N_nunu<<"\n";
+//cout<<"W_ll_sq"<<W_ll_sq<<"\n";
+            //cout<<"to root: "<<to_root<<"\n";
+//cout<<i<<" znunu "<<N_nunu<<"\n";
 	     bg_errors[i] = 5.651 * 1.513*std::pow(to_root,0.5);
- cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
+// cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 
 	   }
- cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
+ //cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 	 }
 	 std::vector<double> bg_error_vector (bg_errors, bg_errors + sizeof(bg_errors) / sizeof(bg_errors[0]));
 

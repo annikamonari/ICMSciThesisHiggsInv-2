@@ -303,7 +303,7 @@ void MVAAnalysis::get_estimators(std::vector<const char*> training_file_paths)
 
   bool human_readable=false;
   std::fstream fs;
-  fs.open ("Estimator_statistics.txt", std::fstream::out | std::fstream::trunc);
+
   fs << "Estimator statistics for last epoch of MLP training with transform\n" ;
   fs << "Background NeuronType  NCycles  HiddenLayers   LearningRate  test_estimator train_estimator train/test \n";
   //done title lines 

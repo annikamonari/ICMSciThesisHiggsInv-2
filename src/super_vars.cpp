@@ -40,8 +40,8 @@ SuperVars::SuperVars()
   parked_jet2_eta = new Variable("jet2_eta","jet2_eta", "-20", "5", "-4.7", "4.7","50","1","");
 
   parked_jet1_pt                 = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","50","", "GeV");
-  parked_jet2_pt                 = new Variable("jet2_pt","Jet2pt","0.0","","45.0","","50","", "GeV");
-  parked_dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","","1200.0","","50","1", "GeV");
+  parked_jet2_pt                 = new Variable("jet2_pt","Jet2pt","0.0","","40.0","","50","", "GeV");
+  parked_dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","","800.0","","50","1", "GeV");
 
   parked_dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","3.6","","3.6","","50","1", "");
   parked_metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","","90","","50","1", "GeV");
@@ -49,7 +49,7 @@ SuperVars::SuperVars()
 
   parked_alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)",
                                         "2.3","3.15","2.3","","50","1", "");
-  parked_metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)","0","","4","","50","1", "");
+  parked_metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)","0","","3","","50","1", "");
 
 
 }
