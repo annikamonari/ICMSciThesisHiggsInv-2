@@ -211,7 +211,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","0.0","1.0","","","50","1", "", false);
+		mva_output = new Variable("output","MVA Output","0.0","1.0","","","100","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 

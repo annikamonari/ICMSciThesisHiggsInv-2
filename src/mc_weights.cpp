@@ -56,7 +56,7 @@ double MCWeights::get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable
 double MCWeights::calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,Variable* var, 
 bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int trained_bg, bool double_test_bg, bool if_parked)
 {
-//cout<<"bg to be calculated: "<<bg_chain->label<<"\n";
+//cout<<"bg to be calculated: !!!!!!!!!!!"<<bg_chain->label<<"!!!!!!!!!!!\n";
   std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut, if_parked);}
   else{ 

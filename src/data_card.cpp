@@ -17,6 +17,7 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   std::cout << data_card_name << std::endl;
   fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
   int size = 1 + bg_chains.size();
+  cout<<mva_cut<<"\n";
   //cout<<"opened text file\n";
   fs << imax_string();
   fs << jmax_string(size - 1);
@@ -41,12 +42,12 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   fs << get_systematic_string(bg_to_train, data_chain, bg_chains,bg_chs, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
   std::cout << "Data card created" << std::endl;
   fs.close();  
-  create_weights_series(bg_to_train, data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut);
+  create_weights_series(bg_to_train, data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut,rates_d);
   std::cout << "weights and errors added to series\n"; 
 }
 void DataCard::create_weights_series(int bg_to_train, DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name,
- std::string mva_cut)
+ std::string mva_cut, std::vector<double> rates_d)
 {
 	std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut,variables , mva_cut, bg_to_train, true, false);
 	bool if_parked=false;
@@ -69,11 +70,16 @@ void DataCard::create_weights_series(int bg_to_train, DataChain* data_chain, Dat
 	std::fstream fsw;
 	fsw.open ("weights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 	fsw<<mva_cut;
-	fsw<<","<<mc_weights[0]<<","<<mc_weight_errors[0];
-        fsw<<","<<mc_weights[6]<<","<<mc_weight_errors[1];
-	fsw<<","<<mc_weights[1]<<","<<mc_weight_errors[2];
-	fsw<<","<<mc_weights[2]<<","<<mc_weight_errors[3];
-	fsw<<","<<mc_weights[3]<<","<<mc_weight_errors[4];
+	fsw<<","<<rates_d[0]<<",0";
+	fsw<<","<<rates_d[1]<<",,"<<mc_weights[0]<<","<<mc_weight_errors[0];
+	fsw<<","<<rates_d[2]<<",,"<<mc_weights[1]<<","<<mc_weight_errors[2];
+	fsw<<","<<rates_d[3]<<",,"<<mc_weights[2]<<","<<mc_weight_errors[3];
+	fsw<<","<<rates_d[4]<<",,"<<mc_weights[3]<<","<<mc_weight_errors[4];
+        fsw<<","<<rates_d[5]<<",,1,0";
+        fsw<<","<<rates_d[6]<<",,1,0";
+        fsw<<","<<rates_d[7]<<",,"<<mc_weights[6]<<","<<mc_weight_errors[1];
+        fsw<<","<<rates_d[8]<<",,1,0";
+
 	fsw<<"\n";
 	fsw.close();  
 }
