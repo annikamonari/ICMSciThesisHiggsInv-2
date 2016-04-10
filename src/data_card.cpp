@@ -82,28 +82,33 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 	fsw<<"\n";
 	fsw.close();  
 }
-double DataCard::get_total_events_from_file(const char* weights_file_name,int cut_number)
+double DataCard::get_total_events_from_line(const char* weights_file_name,int cut_number,string line)
 {
 	int line_number = cut_number+ 4; //cut number of 1 corresponds to output>0.01 
-	std::fstream fstr;
-	fstr.open (weights_file_name, std::fstream:in);
-	fstr.close();
+        double total;
+	std::ifstream ifs;
+	ifs.open (weights_file_name, std::fstream::in);
+	string line;
+	for(
+	ifs.close();
 }
 
-std::vector<double> DataCard::get_rates_from_file(const char* weights_file_name,int cut_number)
+std::vector<double> DataCard::get_rates_from_line(const char* weights_file_name,int cut_number, string line)
 {
+	double rates_arr[9];
 	int line_number = cut_number+ 4;
-	std::fstream fstr;
-	fstr.open (weights_file_name, std::fstream:in);
-	fstr.close();
+	std::ifstream ifs;
+	ifs.open (weights_file_name, std::fstream::in);
+	ifs.close();
 }
 
-std::vector<double> DataCard::get_errors_from_file(const char* weights_file_name,int cut_number)
+std::vector<double> DataCard::get_errors_from_line(const char* weights_file_name,int cut_number, string line)
 {
+	double error_arr[9];
 	int line_number = cut_number+ 4;
-	std::fstream fstr;
-	fstr.open (weights_file_name, std::fstream:in);
-	fstr.close();
+	std::ifstream ifs;
+	ifs.open (weights_file_name, std::fstream::in);
+	ifs.close();
 }
 
 double DataCard::get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,

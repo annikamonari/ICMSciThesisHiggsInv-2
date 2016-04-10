@@ -24,6 +24,12 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string out
   static std::vector<double> get_rates(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
   							                              Variable* var, bool with_cut, std::vector<Variable*>* variables, std::vector<double> bg_mc_weights,	std::string mva_cut = "");
 
+  static double get_total_events_from_line(const char* weights_file_name,int cut_number, std::string line);
+
+  static std::vector<double> get_rates_from_line(const char* weights_file_name,int cut_number, std::string line);
+
+  static std::vector<double> get_errors_from_line(const char* weights_file_name,int cut_number, std::string line);
+
   static std::vector<int> process_line_2(int size);
 
   static std::vector<int> bin_line(std::vector<DataChain*> bg_chains);

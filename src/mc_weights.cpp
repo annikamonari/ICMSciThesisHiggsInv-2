@@ -136,7 +136,7 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva
 	if(strcmp(bg_chain->label, bg_chains[i]->label))
 	{
 	  	std:: string bg_selection = HistoPlot::add_mc_to_selection(bg_chains[i], var, selection, mc_weights[i]);
-		TH1F* bg_h = HistoPlot::build_1d_histo(bg_chains[i], var, true, false, "goff", variables, selection);
+		TH1F* bg_h = HistoPlot::build_1d_histo(bg_chains[i], var, true, false, "goff", variables, bg_selection);
 		bg_N_C += bg_h->IntegralAndError(1,nbins,sigma_bg,"");
 		sigma_bg_NC_sq += std::pow(sigma_bg,2);
 	}
