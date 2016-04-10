@@ -54,7 +54,7 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
   std::vector<double> errors = DataCard::get_errors_from_line(line_vector);
 
   std::fstream fs;
-  std::string data_card_name = "";
+  std::string data_card_name = "Optimum-MLP-config-output>" + double_to_str(cut_number);
   std::cout << data_card_name << std::endl;
   fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
   int size = 9;
@@ -79,7 +79,7 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
   //cout<<"got rates string\n";
   fs << dashed_line();
   //cout<<"got dashed line\n";
-  fs << get_systematic_string(bg_to_train, data_chain, bg_chains,bg_chs, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
+  fs << get_systematic_string(get_uncertainties_string(errors));
   std::cout << "Data card created" << std::endl;
   fs.close();  
 }
