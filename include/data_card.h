@@ -11,7 +11,7 @@ class DataCard
   static void create_datacard(int bg_to_train, DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name = "",std::string mva_cut = "");
 
-  static void create_weights_series(int bg_to_train, DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
+  static void create_weights_series(DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name, std::string mva_cut, std::vector<double> rates_d);
 
   static double get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,

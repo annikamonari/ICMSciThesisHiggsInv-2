@@ -395,37 +395,28 @@ std::string HistoPlot::add_mva_cut_to_selection(std::string selection, std::stri
 std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, 
 std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool double_test_bg, bool if_parked)
 {//cout<<"in HistoPlot::mc_weights\n";
-  double mc_weight[bg_chains.size()];
-  double zll_weight;
+  double mc_weight[8];
 
-  for(int i=0; i<bg_chains.size();i++)
-  {
-    mc_weight[i] = 1;
-
-    if (bg_chains[i]->lep_sel != "")
-    {
-    		double mc_weight_val = MCWeights::calc_mc_weight(data, bg_chains, bg_chains[i], var, with_cut,
-						variables, mva_cut, trained_bg, double_test_bg,if_parked);
-      if (mc_weight_val > 0)
-    		{
-      		mc_weight[i] = mc_weight_val;
-    		}
-    		if(!strcmp(bg_chains[i]->label, "bg_zll"))
-	     {
-	     		zll_weight = mc_weight[i];
-	     }
-    }
-
-    if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
-    {//std::cout<<"in vv loop\n";
-    	 if (zll_weight != 1)
-    	 {
-    	 		mc_weight[i] = zll_weight*5.651*1.513;
-    	 }
-    }
-    //std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
-  }
   std::vector<double> mc_weights_vector (mc_weight, mc_weight + sizeof(mc_weight) / sizeof(mc_weight[0]));
+
+  for(int i =0; i< 8;i++){mc_weights_vector[i]=1;}
+
+  mc_weights_vector[0] = MCWeights::calc_mc_weight(mc_weights_vector,0, data, bg_chains, bg_chains[0], var, with_cut,
+						variables, mva_cut, trained_bg, double_test_bg,if_parked);
+  mc_weights_vector[6] = mc_weights_vector[0]*5.651*1.513;
+  for(int i =1; i < 4;i++)
+  {
+  	mc_weights_vector[i] = MCWeights::calc_mc_weight(mc_weights_vector,i, data, bg_chains, bg_chains[i], var, with_cut,
+						variables, mva_cut, trained_bg, double_test_bg,if_parked);
+cout<<"mc weights:"<<mc_weights_vector[0];
+cout<<","<<mc_weights_vector[1];
+cout<<","<<mc_weights_vector[2];
+cout<<","<<mc_weights_vector[3];
+cout<<","<<mc_weights_vector[6]<<"\n";
+  }
+
+    //std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
+  
 
   return mc_weights_vector;
 }
@@ -436,7 +427,7 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
 // note:: changed so that if mc weight is 1 then dont calculate the mc weight error
 // TODO make error use sumw2 and integralanderror
 std::vector<double> HistoPlot::get_bg_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
-Variable* var, bool with_cut, std::vector<Variable*>* variables,std::vector<double> bg_mc_weights, std::string mva_cut, int trained_bg, bool double_test_bg, bool if_parked)
+Variable* var, bool with_cut, std::vector<Variable*>* variables,std::vector<double> bg_mc_weights, std::string mva_cut, bool if_parked)
 {
 string selection="";
 	 double bg_errors[bg_chains.size()];
@@ -447,7 +438,6 @@ string selection="";
 		{
     			selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     			selection = HistoPlot::add_classID_to_selection(selection, false);
-    			if(strcmp(bg_chains[i]->label, "bg_zjets_vv")){selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);}
     			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
 //std::cout << "in histoplot mc weight errors" << selection << std::endl;
 		}
@@ -463,30 +453,30 @@ string selection="";
 					if(strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 					{
 			//cout<<"mc wiehgt in if loop: "<<bg_mc_weights[i]<<endl;
-							bg_errors[i] = single_bg_error(bg_to_train, data, bg_chains, bg_chains[i], var,
-							with_cut, variables, bg_mc_weights[i], mva_cut,selection, trained_bg, double_test_bg,if_parked);
+							bg_errors[i] = single_bg_error(bg_mc_weights,i, data, bg_chains, bg_chains[i], var,
+							with_cut, variables, bg_mc_weights[i], mva_cut,selection,if_parked);
 	//cout<<"got bg error\n";
 
 					}
            }
 
-	   if (i==6)//!strcmp(bg_chains[i]->label, "bg_zjets_vv")
+	   if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 	   {
-             double zll_weight_error =  MCWeights::calc_weight_error( data, bg_chains,  bg_chains[0], var, 
-                        with_cut,  variables,  trained_bg, double_test_bg,  mva_cut, if_parked);
+             double zll_weight_error =  MCWeights::calc_weight_error( bg_mc_weights,0,data, bg_chains,  bg_chains[0], var, 
+                        with_cut,  variables,  mva_cut, if_parked);
 //cout<<"zll_weight_error: "<<zll_weight_error<<"\n";
 	     double zll_weight_error_sq=std::pow(zll_weight_error,2);
-	     double N_nunu=integral[6];if(trained_bg==6){N_nunu=2*N_nunu;}
 	     double W_ll_sq=std::pow(bg_mc_weights[0],2);
+	     double N_nunu = integral[i];
 	     double to_root = N_nunu*(W_ll_sq+ N_nunu*zll_weight_error_sq);
 //cout<<"W_ll_sq"<<W_ll_sq<<"\n";
             //cout<<"to root: "<<to_root<<"\n";
-//cout<<i<<" znunu "<<N_nunu<<"\n";
+cout<<i<<" znunu "<<N_nunu<<"\n";
 	     bg_errors[i] = 5.651 * 1.513*std::pow(to_root,0.5);
 // cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 
 	   }
- //cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
+ cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 	 }
 	 std::vector<double> bg_error_vector (bg_errors, bg_errors + sizeof(bg_errors) / sizeof(bg_errors[0]));
 
@@ -496,19 +486,18 @@ string selection="";
 
 // problem: TH1F* bg doesn't plot with the mc weight? in the function above this, whenever we call this we pass through
 // the mc weight (see last arg: double weight), so if you realise we need it then just put it onto the end of the build_1d_histo call
-double HistoPlot::single_bg_error(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
+double HistoPlot::single_bg_error(std::vector<double> bg_mc_weights, int desired_bg_index, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
-std::string mva_cut, std::string selection, int trained_bg, bool double_test_bg, bool if_parked)
+std::string mva_cut, std::string selection, bool if_parked)
 {//cout<<"selection: "<<selection<<"\n";
   TH1F* bg = build_1d_histo(bg_chain, var, with_cut, false, "goff", variables, selection, 1, mva_cut);
   //cout << "histo" << bg << endl;
   double MC_N_S = get_histo_integral(bg, with_cut, var);
-  if (!strcmp(bg_chain->label, bg_chains[bg_to_train]->label)) {MC_N_S = MC_N_S * 2;}
-//cout << MC_N_S << endl;
+cout <<"unweighted background: "<< MC_N_S << endl;
   double sigma_N = std::pow(MC_N_S, 0.5);
 //cout << "got sigma_N" << endl;
-  double sigma_w = MCWeights::calc_weight_error(data, bg_chains, bg_chain, var, with_cut, variables, bg_to_train,true, mva_cut,if_parked);
-//cout << "got weight error" << endl;
+  double sigma_w = MCWeights::calc_weight_error(bg_mc_weights,desired_bg_index,data, bg_chains, bg_chain, var, with_cut, variables, mva_cut,if_parked);
+cout << "got weight error:"<< sigma_w << endl;
   double sigma_total_sq = std::pow(sigma_w*MC_N_S,2)+std::pow(sigma_N*weight,2);
   double sigma_total = std::pow(sigma_total_sq,0.5);
   //std::cout << bg_chain->label << " - single bg error: " << sigma_total << std::endl;

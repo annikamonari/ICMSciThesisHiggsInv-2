@@ -11,7 +11,7 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   std::vector<DataChain*> bg_chs = bg_chains;
   bg_chs[bg_to_train] = signal_chain;//if parked remove this line
 
-  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut,variables , mva_cut, bg_to_train, true, false);//last var is if parked
+  std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut,variables , mva_cut,1,false, false);//last var is if parked
   std::fstream fs;
   std::string data_card_name = get_data_card_name(output_graph_name, mva_cut);
   std::cout << data_card_name << std::endl;
@@ -42,30 +42,29 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   fs << get_systematic_string(bg_to_train, data_chain, bg_chains,bg_chs, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
   std::cout << "Data card created" << std::endl;
   fs.close();  
-  create_weights_series(bg_to_train, data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut,rates_d);
+  create_weights_series(data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut,rates_d);
   std::cout << "weights and errors added to series\n"; 
 }
-void DataCard::create_weights_series(int bg_to_train, DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
+void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name,
  std::string mva_cut, std::vector<double> rates_d)
 {
-	std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut,variables , mva_cut, bg_to_train, true, false);
+	std::vector<double> mc_weights = HistoPlot::mc_weights(data_chain, bg_chains, var, with_cut, variables, mva_cut,1,false,false);
 	bool if_parked=false;
         bool double_test_bg=true;
   	std::vector<DataChain*> bg_chs = bg_chains;
-  	bg_chs[bg_to_train] = signal_chain;
 
 	double mc_weight_errors[5];
-	mc_weight_errors[0]=MCWeights::calc_weight_error(data_chain, bg_chains, bg_chains[0], // zll
-			var, with_cut,  variables,  bg_to_train, double_test_bg,  mva_cut, if_parked);// zll
+	mc_weight_errors[0]=MCWeights::calc_weight_error(mc_weights, 0, data_chain, bg_chains, bg_chains[0], // zll
+			var, with_cut,  variables, mva_cut, if_parked);// zll
 	mc_weight_errors[1]=5.651 * 1.513*mc_weight_errors[0];// znunu
 
-	mc_weight_errors[2]=MCWeights::calc_weight_error(data_chain, bg_chains, bg_chains[1], // W enu
-			var, with_cut,  variables,  bg_to_train, double_test_bg,  mva_cut, if_parked);// W enu
-	mc_weight_errors[3]=MCWeights::calc_weight_error(data_chain, bg_chains, bg_chains[2], // W munu
-			var, with_cut,  variables,  bg_to_train, double_test_bg,  mva_cut, if_parked);// W munu
-	mc_weight_errors[4]=MCWeights::calc_weight_error(data_chain, bg_chains, bg_chains[3], // W taunu
-			var, with_cut,  variables,  bg_to_train, double_test_bg,  mva_cut, if_parked);// W taunu
+	mc_weight_errors[2]=MCWeights::calc_weight_error(mc_weights, 1,data_chain, bg_chains, bg_chains[1], // W enu
+			var, with_cut,  variables, mva_cut, if_parked);// W enu
+	mc_weight_errors[3]=MCWeights::calc_weight_error(mc_weights, 2,data_chain, bg_chains, bg_chains[2], // W munu
+			var, with_cut,  variables, mva_cut, if_parked);// W munu
+	mc_weight_errors[4]=MCWeights::calc_weight_error(mc_weights, 3,data_chain, bg_chains, bg_chains[3], // W taunu
+			var, with_cut,  variables, mva_cut, if_parked);// W taunu
 
 	std::fstream fsw;
 	fsw.open ("weights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
@@ -111,7 +110,7 @@ std::vector<double> DataCard::get_bg_errors(int bg_to_train, DataChain* data, st
   double bg_errors_parsed[bg_chains.size()];
 
   std::vector<double> bg_errors = HistoPlot::get_bg_errors(bg_to_train, data, bg_chs_tree, var, with_cut, variables, bg_mc_weights, mva_cut, 
-            bg_to_train, true, false);// last var is if parked
+            false);// last var is if parked
   std::vector<double> rates = get_rates(bg_to_train, data, bg_chs_tree, signal_chain, var,with_cut, variables, bg_mc_weights, mva_cut);
   std::cout << "got mc weight errors" << std::endl;
   for(int i = 0; i < bg_chains.size(); i++)
@@ -323,7 +322,7 @@ std::string DataCard::get_systematic_string(int bg_to_train, DataChain* data, st
 {
   double signal_error = 1.0;//get_signal_error(signal_chain, var, with_cut, variables, mva_cut);
   //std::cout << "got signal error" << std::endl;
-  std::vector<double> bg_errors = get_bg_errors(bg_to_train, data, bg_chains,bg_chs_tree, signal_chain, var, with_cut, variables, bg_mc_weights, mva_cut);
+  std::vector<double> bg_errors = get_bg_errors(bg_to_train, data, bg_chains,bg_chs_tree, signal_chain, var, with_cut, variables, bg_mc_weights, mva_cut);//if parked is last variable
   std::vector<std::vector<double> > uncertainty_vectors = DataCard::get_uncertainty_vectors(signal_error, bg_errors);
 
   return get_uncertainties_string(uncertainty_vectors);

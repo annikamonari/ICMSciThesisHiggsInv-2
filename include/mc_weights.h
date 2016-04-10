@@ -13,17 +13,16 @@ class MCWeights
                             std::vector<Variable*>* variables, std::string selection,
 																												const char* trained_bg_label = "bg_zjets_vv", bool double_test_bg = false);
 
-  static double get_all_bg_in_ctrl(std::vector<DataChain*> bg_chains, Variable* var, bool with_cut,
+  static double get_other_bg_in_ctrl(int desired_bg_index,std::vector<double> mc_weights,std::vector<DataChain*> bg_chains, Variable* var, bool with_cut,
                                    std::vector<Variable*>* variables, std::string selection, int trained_bg,
 																																			bool double_test_bg = false);
 
-  static double calc_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
+  static double calc_mc_weight(std::vector<double> mc_weights,int desired_bg_index,DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut = "",
 int trained_bg = 6, bool double_test_bg = false, bool if_parked =false);
 
-  static double calc_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, int trained_bg,
-				bool double_test_bg, std::string mva_cut = "", bool if_parked =false);
+  static double calc_weight_error(std::vector<double> mc_weights,int desired_bg_index,DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
+                                 Variable* var, bool with_cut, std::vector<Variable*>* variables,std::string mva_cut = "", bool if_parked =false);
 };
 
 
