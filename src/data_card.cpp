@@ -56,8 +56,8 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 
 	double mc_weight_errors[5];
 	mc_weight_errors[0]=MCWeights::calc_weight_error(mc_weights, 0, data_chain, bg_chains, bg_chains[0], // zll
-			var, with_cut,  variables, mva_cut, if_parked);// zll
-	mc_weight_errors[1]=5.651 * 1.513*mc_weight_errors[0];// znunu
+			var, with_cut,  variables, mva_cut, if_parked)*1.513;// zll
+	mc_weight_errors[1]=5.651 * mc_weight_errors[0];// znunu
 
 	mc_weight_errors[2]=MCWeights::calc_weight_error(mc_weights, 1,data_chain, bg_chains, bg_chains[1], // W enu
 			var, with_cut,  variables, mva_cut, if_parked);// W enu
@@ -82,33 +82,74 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 	fsw<<"\n";
 	fsw.close();  
 }
-double DataCard::get_total_events_from_line(const char* weights_file_name,int cut_number,string line)
+
+string DataCard::get_line_from_file(const char* weights_file_name,int cut_number)
 {
-	int line_number = cut_number+ 4; //cut number of 1 corresponds to output>0.01 
+	int line_number = cut_number+ 3; //cut number of 1 corresponds to output>0.01 
         double total;
 	std::ifstream ifs;
 	ifs.open (weights_file_name, std::fstream::in);
-	string line;
-	for(
+	string fline;
+	for(int i=0;i<line_number;i++)
+	{
+		getline(ifs,fline);
+	}
 	ifs.close();
+	cout<<fline<<"\n";
+	return fline;
 }
 
-std::vector<double> DataCard::get_rates_from_line(const char* weights_file_name,int cut_number, string line)
+std::vector<string> DataCard::get_vector_from_line(string line)
+{
+	std::vector<string> line_vector;
+	string string_before_comma;
+        int comma_position;
+
+	for(int i=0;i<35;i++)
+	{
+		comma_position =line.find(",");
+	//	cout<<"commas position"<<comma_position<<"\n";
+		string_before_comma = line.substr(0,comma_position);
+	//	cout<<string_before_comma<<"\n";
+		line_vector.push_back(string_before_comma);
+		line  = line.substr(line.find(",")+1);
+	}
+	return line_vector;
+}
+double DataCard::get_total_events_from_line(std::vector<string> line_vector)
+{
+	double total_events;
+	total_events = atof(line_vector[1].c_str());
+
+	for(int i=1;i<9;i++)
+	{
+		total_events += atof(line_vector[4*i-1].c_str());
+	}
+	return total_events;
+}
+std::vector<double> DataCard::get_rates_from_line(std::vector<string> line_vector)
 {
 	double rates_arr[9];
-	int line_number = cut_number+ 4;
-	std::ifstream ifs;
-	ifs.open (weights_file_name, std::fstream::in);
-	ifs.close();
+	rates_arr[0] = atof(line_vector[1].c_str());
+	for(int i=1;i<9;i++)
+	{
+		rates_arr[i] = atof(line_vector[4*i-1].c_str());
+	}
+	std::vector<double> rates (rates_arr, rates_arr + sizeof(rates_arr)/sizeof(double)); 
+	return rates;
 }
 
-std::vector<double> DataCard::get_errors_from_line(const char* weights_file_name,int cut_number, string line)
+std::vector<double> DataCard::get_errors_from_line(std::vector<string> line_vector)
 {
 	double error_arr[9];
-	int line_number = cut_number+ 4;
-	std::ifstream ifs;
-	ifs.open (weights_file_name, std::fstream::in);
-	ifs.close();
+	error_arr[0] = atof(line_vector[2].c_str());
+	for(int i=1;i<9;i++)
+	{
+		error_arr[i] = atof(line_vector[4*i].c_str());
+	}
+
+	std::vector<double> errors (error_arr, error_arr + sizeof(error_arr)/sizeof(double));
+	return errors;
 }
 
 double DataCard::get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,

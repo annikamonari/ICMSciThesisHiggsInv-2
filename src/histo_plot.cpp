@@ -402,8 +402,8 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
   for(int i =0; i< 8;i++){mc_weights_vector[i]=1;}
 
   mc_weights_vector[0] = MCWeights::calc_mc_weight(mc_weights_vector,0, data, bg_chains, bg_chains[0], var, with_cut,
-						variables, mva_cut, trained_bg, double_test_bg,if_parked);
-  mc_weights_vector[6] = mc_weights_vector[0]*5.651*1.513;
+						variables, mva_cut, trained_bg, double_test_bg,if_parked)*1.513;
+  mc_weights_vector[6] = mc_weights_vector[0]*5.651;
   for(int i =1; i < 4;i++)
   {
   	mc_weights_vector[i] = MCWeights::calc_mc_weight(mc_weights_vector,i, data, bg_chains, bg_chains[i], var, with_cut,
