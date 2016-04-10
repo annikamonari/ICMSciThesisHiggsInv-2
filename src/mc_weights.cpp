@@ -84,9 +84,10 @@ cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 
   double other_bg_in_ctrl = get_other_bg_in_ctrl(desired_bg_index,mc_weights, bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg);
 cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
-
+ if(ctrl_mc_in_ctrl!=0){
  weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
-
+  }
+  else{weight=0;}
   return weight;
 }
 

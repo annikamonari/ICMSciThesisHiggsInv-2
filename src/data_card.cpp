@@ -82,6 +82,29 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 	fsw<<"\n";
 	fsw.close();  
 }
+double DataCard::get_total_events_from_file(const char* weights_file_name,int cut_number)
+{
+	int line_number = cut_number+ 4; //cut number of 1 corresponds to output>0.01 
+	std::fstream fstr;
+	fstr.open (weights_file_name, std::fstream:in);
+	fstr.close();
+}
+
+std::vector<double> DataCard::get_rates_from_file(const char* weights_file_name,int cut_number)
+{
+	int line_number = cut_number+ 4;
+	std::fstream fstr;
+	fstr.open (weights_file_name, std::fstream:in);
+	fstr.close();
+}
+
+std::vector<double> DataCard::get_errors_from_file(const char* weights_file_name,int cut_number)
+{
+	int line_number = cut_number+ 4;
+	std::fstream fstr;
+	fstr.open (weights_file_name, std::fstream:in);
+	fstr.close();
+}
 
 double DataCard::get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
   std::string mva_cut)
