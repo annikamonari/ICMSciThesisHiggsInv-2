@@ -33,7 +33,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
   int min = 0;//1769; // the minimum value you want cuts to be from
-  int max =81;//1770; // max value you want cuts to be to
+  int max =82;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
   /*for (int i = 0; i < LearningRate.size(); i++)
   {  
@@ -76,12 +76,12 @@ std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP
 */
 
 
-//TFile* trained_file;
+TFile* trained_file;
 /*for(int j=0; j<1;j++){
 for(int i =0; i<3;i++){*/
-/*trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
+trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);*/
+  "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
 //std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;}
 //}}
   /* const char* train_file_arr[1] = {trained_output->GetName()};
@@ -154,7 +154,7 @@ cout<<"tau error ="<<enu_error<<endl;
 
 int main(int argc, char** argv) {
 TApplication theApp("tapp", &argc, argv);
-string fline = DataCard::get_line_from_file("weights.txt", 0);
+/*string fline = DataCard::get_line_from_file("weights.txt", 0);
 std::vector<string> line_vector = DataCard::get_vector_from_line(fline);
 double total = DataCard::get_total_events_from_line(line_vector);
 std::vector<double> rates = DataCard::get_rates_from_line(line_vector);
@@ -165,8 +165,8 @@ for(int i=0;i<9;i++)
 }
 
 cout<<"total event: "<<total<<"\n";
-//cout<<line_vector<<"\n";
- //produce_graphs(true, argv[1]);
+cout<<line_vector<<"\n";*/
+ produce_graphs(true, argv[1]);
   theApp.Run();
   return 0;
 }

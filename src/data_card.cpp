@@ -45,6 +45,45 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   create_weights_series(data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut,rates_d);
   std::cout << "weights and errors added to series\n"; 
 }
+void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,int cut_number)
+{
+  string fline = get_line_from_file(const char* weights_file_name,int cut_number);
+  std::vector<string> line_vector = DataCard::get_vector_from_line(fline);
+  double total = DataCard::get_total_events_from_line(line_vector);
+  std::vector<double> rates = DataCard::get_rates_from_line(line_vector);
+  std::vector<double> errors = DataCard::get_errors_from_line(line_vector);
+
+  std::fstream fs;
+  std::string data_card_name = "";
+  std::cout << data_card_name << std::endl;
+  fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
+  int size = 9;
+  cout<<mva_cut<<"\n";
+  //cout<<"opened text file\n";
+  fs << imax_string();
+  fs << jmax_string(size - 1);
+  fs << kmax_string(size);
+  fs << no_shape_line();
+  fs << dashed_line();
+  fs << bin_header_string();
+  //cout<<"about to get observation string\n";
+  fs << bin_observation_string(total);
+  //cout<<"got observation string\n";  
+  fs << dashed_line();
+  fs << bin_grid_line(size);
+  fs << "Signal   Z_ll   W_enu   W_munu   W_taunu   top   VV   Z_nunu   QCD";
+  fs << process_2_string(process_line_2(size));
+  string rate_str = rate_string(rates);
+  //cout<<rate_str<<"\n";
+  fs <<  rate_str;
+  //cout<<"got rates string\n";
+  fs << dashed_line();
+  //cout<<"got dashed line\n";
+  fs << get_systematic_string(bg_to_train, data_chain, bg_chains,bg_chs, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
+  std::cout << "Data card created" << std::endl;
+  fs.close();  
+}
+
 void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name,
  std::string mva_cut, std::vector<double> rates_d)
