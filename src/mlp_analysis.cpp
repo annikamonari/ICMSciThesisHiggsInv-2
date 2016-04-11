@@ -30,7 +30,8 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	factory->AddSpectator("nselelectrons",  "nselelectrons", "", 'F' );
 	factory->AddSpectator("nvetoelectrons",  "nvetoelectrons", "", 'F' );
 	factory->AddSpectator("nvetomuons",  "nvetomuons", "", 'F' );
-	//factory->AddSpectator("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)", "", 'F' );
+	factory->AddSpectator("jetmetnomu_mindphi","Two leading Jets - MET Min. #Delta#phi (No Muons)", "", 'F' );
+	factory->AddSpectator("mht","Hadronic tau mass", "", 'F' );
 
 	  // Background
 	    double background_weight = 1.0;
@@ -43,7 +44,7 @@ TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std
 	    factory->SetSignalWeightExpression("total_weight_lepveto");
 
 	    // Apply additional cuts on the signal and background samples (can be different)
-	    TCut signal_cuts = "alljetsmetnomu_mindphi>2.0 && jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && nvetomuons==0 && nvetoelectrons==0"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+	    TCut signal_cuts = "jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && alljetsmetnomu_mindphi>2.0 && nvetomuons==0 && nvetoelectrons==0";
 	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
@@ -132,16 +133,18 @@ std::string job_name, bool unique_output_files)
      reader->AddSpectator("nselelectrons", &nselelectrons );
 	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
 	reader->AddSpectator("nvetomuons",  &nvetomuons);
+
+	reader->AddSpectator("jetmetnomu_mindphi",  &jetmetnomu_mindphi);
+	reader->AddSpectator("mht",  &mht);	
+	   
 		   reader->AddVariable("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
 		   reader->AddVariable("metnomu_significance", &metnomu_significance);
 
 
 /*
-	reader->AddSpectator("alljetsmetnomu_mindphi",  &alljetsmetnomu_mindphi);
 		   reader->AddVariable("forward_tag_eta", &forward_tag_eta);
 		   reader->AddVariable("dijet_deta", &dijet_deta);
 		   //reader->AddVariable("sqrt_ht", &sqrt_ht);
-		   //reader->AddVariable("dijet_M", &dijet_M);
 		   reader->AddVariable("metnomuons", &metnomuons);
 
 		   reader->AddVariable("jet1_pt", &jet1_pt);
@@ -152,8 +155,6 @@ std::string job_name, bool unique_output_files)
 		   reader->AddVariable("jet1_phi", &jet1_phi);
 		   reader->AddVariable("jet2_phi", &jet2_phi);
 		   reader->AddVariable("jet_csv1", &jet_csv1);
-		   reader->AddVariable("jet_csv2", &jet_csv2);
-		   reader->AddVariable("dijet_dphi", &dijet_dphi);
 		   reader->AddVariable("metnomu_x", &metnomu_x);
 		   reader->AddVariable("metnomu_y", &metnomu_y);
 		   reader->AddVariable("sumet", &sumet);
@@ -162,8 +163,6 @@ std::string job_name, bool unique_output_files)
 		   reader->AddVariable("jetmetnomu_mindphi", &jetmetnomu_mindphi);
 		   reader->AddVariable("jetunclet_mindphi", &jetunclet_mindphi);
 		   reader->AddVariable("metnomuunclet_dphi", &metnomuunclet_dphi);
-		   //reader->AddVariable("dijetmetnomu_vectorialSum_pt", &dijetmetnomu_vectorialSum_pt);
-		   reader->AddVariable("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
 		   //reader->AddVariable("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
 		   //reader->AddVariable("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
 	*/

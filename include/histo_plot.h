@@ -117,7 +117,7 @@ DataChain* bg_chain,
 
 
   static TH1F* draw_data(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
-                         std::vector<Variable*>* variables = NULL, std::string mva_cut = "");
+                         std::vector<Variable*>* variables = NULL, std::string mva_cut = "", std::string selection = "");
 
   static TH1F* draw_signal(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
                            std::vector<Variable*>* variables = NULL, std::string mva_cut = "");
@@ -141,6 +141,16 @@ DataChain* bg_chain,
   static std::string build_file_name(Variable* variable, bool with_cut);
 
   static std::string build_signal_leg_entry(Variable* var, DataChain* signal_chain);
+
+  static void plot_control(Variable* mva_output, DataChain* data, std::vector<DataChain*> bg_chains,
+                                      std::vector<Variable*>* variables, std::string file_name, 
+                                      std::string control, std::string mva_cut);
+
+  static THStack draw_stacked_control(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
+                                      bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::vector<double> mc_weights_vector,
+				 std::string mva_cut, std::string control);
+
+
 };
 
 #endif

@@ -10,7 +10,14 @@ std::string MCWeights::get_mc_selection_str(DataChain* bg_chain, Variable* varia
     selection_str = variable->build_multicut_selection(false, variables);
   }
   else if(if_parked){
-    selection_str = variable->build_parked_selection(variables);
+	if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+	{
+		selection_str = "(&&((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))&&((metnomuons/metnomu_significance)>4)&&(metnomu_significance>4)&&(jetmetnomu_mindphi>1.0)&&(mht>20)&&(dijet_M>1200.0)&&(jet2_eta>-4.7)&&(jet2_eta<4.7)&&(jet1_eta>-4.7)&&(jet1_eta<4.7)&&(metnomuons>90)&&(dijet_deta>3.6)&&(jet2_pt>45.0)&&(jet1_pt>50.0))*total_weight_lepveto";
+	}
+	else
+	{
+    		selection_str = "(&&((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))&&((metnomuons/metnomu_significance)>4)&&(metnomu_significance>4)&&(alljetsmetnomu_mindphi>2.3)&&(dijet_M>1200.0)&&(jet2_eta>-4.7)&&(jet2_eta<4.7)&&(jet1_eta>-4.7)&&(jet1_eta<4.7)&&(metnomuons>90)&&(dijet_deta>3.6)&&(jet2_pt>45.0)&&(jet1_pt>50.0))*total_weight_lepveto";//variable->build_parked_selection(variables);
+	}
   }
   if (bg_chain->lep_sel != "")
   {
@@ -21,6 +28,8 @@ std::string MCWeights::get_mc_selection_str(DataChain* bg_chain, Variable* varia
   {
   		selection_str.erase(1, 2);
   }
+
+ // cout<<"mc selection string="<<selection_str<<"\n";
   // This function below checks to see if mva_cut != ""
   selection_str = HistoPlot::add_mva_cut_to_selection(selection_str, mva_cut);
   //std::cout << "Selection str in get_mc_select_str: " << selection_str << std::endl;
@@ -51,12 +60,37 @@ double MCWeights::get_other_bg_in_ctrl(int desired_bg_index,std::vector<double> 
     		double integral = bg_h->Integral();     
 		if(double_test_bg){if(i==trained_bg){integral=integral*2;}}
     		total_integral += integral;
+		//if(i==7){cout<<"QCD bg in control ="<<integral<<"\n";}
 	}
   }
 
   return total_integral;
 }
+double MCWeights::calc_nunu_mc_weight(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* nunu_chain,Variable* var, 
+bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int trained_bg, bool double_test_bg,bool if_parked)
+{
+  double mc_arr[8] = {1,1,1,1,1,1,1,1};
+  std::vector<double> mc_weights (mc_arr, mc_arr + sizeof(mc_arr)/sizeof(mc_arr[0]));
 
+  string selection;
+  if(variables != NULL){selection = get_mc_selection_str(bg_chains[0], var, variables, mva_cut,if_parked);}
+  else{  
+    selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chains[0]->lep_sel+")*total_weight_lepveto";
+    	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+   }
+  double weight;
+  double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
+  double other_bg_in_ctrl = get_other_bg_in_ctrl(0,mc_weights, bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg);
+
+  string nunu_selection ="((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+
+  TH1F* nunu_h = HistoPlot::build_1d_histo(nunu_chain, var, true, false, "goff", variables, nunu_selection,1,mva_cut);
+  double nunu_unweighted = nunu_h->Integral();
+//cout<<"Zvv weighted total: "<<(data_in_ctrl-other_bg_in_ctrl)*5.651*1.513<<"\n";
+//cout<<"Zvv unweighted total:"<<nunu_unweighted<<"\n";
+  weight = (data_in_ctrl-other_bg_in_ctrl)*5.651*1.513/nunu_unweighted;
+  return weight;
+}
 double MCWeights::calc_mc_weight(std::vector<double> mc_weights, int desired_bg_index,DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,Variable* var, 
 bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int trained_bg, bool double_test_bg, bool if_parked)
 {
@@ -64,11 +98,11 @@ bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int traine
   std::string selection;
   if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut, if_parked);}
   else{  
-    /*if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
     {
-	selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+	selection = "((jetmetnomu_mindphi>1.0)&&(mht>20)&&(jet_csv2<0.2)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
-    	else{*/selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chain->lep_sel+")*total_weight_lepveto";//}
+    	else{selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chain->lep_sel+")*total_weight_lepveto";}
     	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);//}
    }
   double weight;
@@ -77,13 +111,13 @@ bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int traine
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
 //cout<<"data in control region: "<<data_in_ctrl<<"\n";
 
-  TH1F* desired_h = HistoPlot::build_1d_histo(bg_chains[desired_bg_index], var, true, false, "goff", variables, selection);
+  TH1F* desired_h = HistoPlot::build_1d_histo(bg_chains[desired_bg_index], var, true, false, "goff", variables, selection,1);
 
   double ctrl_mc_in_ctrl  = desired_h->Integral();
-cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
+//cout<<"desired background in control region: "<<ctrl_mc_in_ctrl<<"\n";
 
   double other_bg_in_ctrl = get_other_bg_in_ctrl(desired_bg_index,mc_weights, bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg);
-cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
+//cout<<"other backgrounds in control region: "<<other_bg_in_ctrl<<"\n";
  if(ctrl_mc_in_ctrl!=0){
  weight = (data_in_ctrl - other_bg_in_ctrl) / ctrl_mc_in_ctrl;
   }
@@ -104,16 +138,18 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva
   else if(desired_bg_index==3){mc_weights[3]=1;}
 
 
-  if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut);}
+  if(variables != NULL){selection = get_mc_selection_str(bg_chain, var, variables, mva_cut,if_parked);}
   else
   { 
-    /*if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    if(!strcmp(bg_chain->label, "bg_wjets_tauv"))
+    {
+	selection = "((jetmetnomu_mindphi>1.0)&&(mht>20)&&(jet_csv2<0.2)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
+    }
+    else
     {
 	selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";
     }
-    else
-    {*/selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&" + bg_chain->lep_sel + ")" + "*total_weight_lepveto";//}
-    selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);//}
+    selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   }
   double weight_error;
 
@@ -155,4 +191,35 @@ weight_error = 1000;}
 //cout<<bg_chain->label<<"=============================weight error: "<<weight_error<<"\n";
   return weight_error;
 
+}
+double MCWeights::calc_nunu_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* nunu_chain,
+Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut, bool if_parked)
+{
+  string selection;
+  double mc_arr[8] = {1,1,1,1,1,1,1,1};
+  std::vector<double> mc_weights (mc_arr, mc_arr + sizeof(mc_arr)/sizeof(mc_arr[0]));
+  TH1F* nunu_h = HistoPlot::build_1d_histo(nunu_chain, var, true, false, "goff", variables, "",1,mva_cut);
+  double nunu_unweighted = nunu_h->Integral();
+
+  if(variables != NULL){selection = get_mc_selection_str(bg_chains[0], var, variables, mva_cut, if_parked);}
+  else{  
+    selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chains[0]->lep_sel+")*total_weight_lepveto";
+    	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+   }
+  double weight;
+  double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection);
+  double other_bg_in_ctrl = get_other_bg_in_ctrl(0,mc_weights, bg_chains, var, with_cut, variables, selection,0,false);
+  double sigma_data_N_C =pow(data_in_ctrl,0.5);
+  double sigma_bg_N_C = pow(other_bg_in_ctrl,0.5);
+
+ /* double err1           = sigma_data_N_C/nunu_unweighted;
+  double err2           = sigma_bg_N_C/nunu_unweighted;
+  double err3           = (data_in_ctrl- other_bg_in_ctrl)/(pow(nunu_unweighted,1.5));
+  double error_sq       = pow(err1,2)+ pow(err2,2) + pow(err3,2);*/
+  double error_sq       = data_in_ctrl+other_bg_in_ctrl;
+
+  double weight_error   = (std::pow(error_sq, 0.5)*5.651*1.513);//
+
+//cout<<"nnunu mc weight error: "<<weight_error<<"\n";
+  return weight_error;
 }

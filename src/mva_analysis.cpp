@@ -60,11 +60,14 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		std::vector<Variable*> vars2 = super_vars->get_discriminating_vars();
 		std::string selection_str = super_vars->get_final_cuts_str();
 		TFile* trained_output;
-//for(int i=0; i<8;i++){
 		const char* trained_bg_label = bg_chains[bg_to_train]->label;
+		std::string app_output_name; 
+
+
+ /* for(int i=0; i<8;i++)
+  {*/
 //step 1 get output name and train MVa
 //________________________________________________________________________________________________________________________________________________
-		std::string app_output_name; 
 		if (method_name == "BDT")
 		{
 			app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
@@ -79,12 +82,16 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 				NeuronType, NCycles, HiddenLayers, LearningRate, trained_bg_label);
 
 			trained_output = TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root");/* MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);*/
+				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);*///bg_to_train
 		}
+//  }
 //MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,
 //				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
+	//BDTAnalysis::create_BDT(data_chain, signal_chain, &vars2, folder_name,
+	//			NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
+
 		std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
-//}
+
  if (create_cards) {		
 
 
@@ -211,7 +218,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","0.0","1.0","","","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","0.0","1.0","","","50","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 

@@ -190,7 +190,9 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   ////////////////////////////////////////////////////////
   //step 3.5 add data histo
   TH1F* data_histo;
-  data_histo = draw_data(data, mva_output, true, legend, NULL, mva_cut);
+  string data_selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))";
+  data_selection = HistoPlot::add_mva_cut_to_selection(data_selection, mva_cut);
+  data_histo = draw_data(data, mva_output, true, legend, NULL, mva_cut,data_selection);
   /////////////////////////////////////////////////////////
   //step 4: draw and style primary histogram
   //step 4.1 draw background histogram
@@ -400,23 +402,24 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
   std::vector<double> mc_weights_vector (mc_weight, mc_weight + sizeof(mc_weight) / sizeof(mc_weight[0]));
 
   for(int i =0; i< 8;i++){mc_weights_vector[i]=1;}
-
   mc_weights_vector[0] = MCWeights::calc_mc_weight(mc_weights_vector,0, data, bg_chains, bg_chains[0], var, with_cut,
 						variables, mva_cut, trained_bg, double_test_bg,if_parked)*1.513;
-  mc_weights_vector[6] = mc_weights_vector[0]*5.651;
+  mc_weights_vector[6] = MCWeights::calc_nunu_mc_weight(data, bg_chains, bg_chains[6], var, 
+ with_cut, variables, mva_cut, trained_bg, double_test_bg,if_parked);
+
   for(int i =1; i < 4;i++)
   {
   	mc_weights_vector[i] = MCWeights::calc_mc_weight(mc_weights_vector,i, data, bg_chains, bg_chains[i], var, with_cut,
 						variables, mva_cut, trained_bg, double_test_bg,if_parked);
-cout<<"mc weights:"<<mc_weights_vector[0];
+/*cout<<"mc weights:"<<mc_weights_vector[0];
 cout<<","<<mc_weights_vector[1];
 cout<<","<<mc_weights_vector[2];
 cout<<","<<mc_weights_vector[3];
-cout<<","<<mc_weights_vector[6]<<"\n";
+cout<<","<<mc_weights_vector[6]<<"\n";*/
   }
 
     //std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
-  
+
 
   return mc_weights_vector;
 }
@@ -462,21 +465,19 @@ string selection="";
 
 	   if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 	   {
-             double zll_weight_error =  MCWeights::calc_weight_error( bg_mc_weights,0,data, bg_chains,  bg_chains[0], var, 
-                        with_cut,  variables,  mva_cut, if_parked);
+             double nunu_weight_error =  MCWeights::calc_nunu_weight_error(data, bg_chains, bg_chains[i],
+ var,  with_cut,  variables,  mva_cut, if_parked);
 //cout<<"zll_weight_error: "<<zll_weight_error<<"\n";
-	     double zll_weight_error_sq=std::pow(zll_weight_error,2);
-	     double W_ll_sq=std::pow(bg_mc_weights[0],2);
-	     double N_nunu = integral[i];
-	     double to_root = N_nunu*(W_ll_sq+ N_nunu*zll_weight_error_sq);
+	    /* double N_nunu = integral[i];
+	     double to_root = pow((bg_mc_weights[i]*pow(N_nunu,0.5)),2)+pow((nunu_weight_error*N_nunu),2);
 //cout<<"W_ll_sq"<<W_ll_sq<<"\n";
             //cout<<"to root: "<<to_root<<"\n";
-cout<<i<<" znunu "<<N_nunu<<"\n";
-	     bg_errors[i] = 5.651 * 1.513*std::pow(to_root,0.5);
+cout<<i<<" znunu "<<N_nunu<<"\n";*/
+	     bg_errors[i] = nunu_weight_error;
 // cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 
 	   }
- cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
+// cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 	 }
 	 std::vector<double> bg_error_vector (bg_errors, bg_errors + sizeof(bg_errors) / sizeof(bg_errors[0]));
 
@@ -493,11 +494,11 @@ std::string mva_cut, std::string selection, bool if_parked)
   TH1F* bg = build_1d_histo(bg_chain, var, with_cut, false, "goff", variables, selection, 1, mva_cut);
   //cout << "histo" << bg << endl;
   double MC_N_S = get_histo_integral(bg, with_cut, var);
-cout <<"unweighted background: "<< MC_N_S << endl;
+//cout <<"unweighted background: "<< MC_N_S << endl;
   double sigma_N = std::pow(MC_N_S, 0.5);
 //cout << "got sigma_N" << endl;
   double sigma_w = MCWeights::calc_weight_error(bg_mc_weights,desired_bg_index,data, bg_chains, bg_chain, var, with_cut, variables, mva_cut,if_parked);
-cout << "got weight error:"<< sigma_w << endl;
+//cout << "got weight error:"<< sigma_w << endl;
   double sigma_total_sq = std::pow(sigma_w*MC_N_S,2)+std::pow(sigma_N*weight,2);
   double sigma_total = std::pow(sigma_total_sq,0.5);
   //std::cout << bg_chain->label << " - single bg error: " << sigma_total << std::endl;
@@ -774,13 +775,13 @@ TH1F* HistoPlot::build_parked_histo(DataChain* data_chain, Variable* variable,st
 
 
 TH1F* HistoPlot::draw_data(DataChain* data_chain, Variable* variable, bool with_cut, TLegend* legend,
-                           std::vector<Variable*>* variables, std::string mva_cut)
+                           std::vector<Variable*>* variables, std::string mva_cut, std::string selection)
 {
   data_chain->chain->SetMarkerStyle(7);
   data_chain->chain->SetMarkerColor(1);
   data_chain->chain->SetLineColor(1);
   TH1F* data_histo = set_error_bars(
-  build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, "", 1,mva_cut)
+  build_1d_histo(data_chain, variable, with_cut, false, "E1", variables, selection, 1,mva_cut)
   //build_parked_histo(data_chain, variable, variables, 1)
 );
   legend->AddEntry(data_histo, data_chain->legend, "lep");
@@ -812,6 +813,7 @@ TH1F* HistoPlot::draw_background(DataChain* data_chain, Variable* variable, int 
   return build_1d_histo(data_chain, variable, with_cut, false, "goff", variables, "", mc_weight, mva_cut);
   //return build_parked_histo(data_chain, variable, variables, mc_weight);
 }
+//_______________________________________________________________________________________________________________________
 
 TH1F* HistoPlot::draw_background_from_trees(DataChain* data_chain, Variable* variable, int fill_colour, string selection,
  double mc_weight, std::string mva_cut)
@@ -824,6 +826,7 @@ TH1F* HistoPlot::draw_background_from_trees(DataChain* data_chain, Variable* var
 
   return build_1d_histo(data_chain, variable, true, false, "goff", NULL,selection, mc_weight, mva_cut);
 }
+//_______________________________________________________________________________________________________________________
 
 
 TH1F* HistoPlot::data_to_bg_ratio_histo(TH1F* data_histo, TH1F* bg_histo)
@@ -834,6 +837,7 @@ TH1F* HistoPlot::data_to_bg_ratio_histo(TH1F* data_histo, TH1F* bg_histo)
 
   return set_ratio_error_bars(ratio_histo, data_histo, bg_histo);
 }
+//_______________________________________________________________________________________________________________________
 
 TH1F* HistoPlot::set_ratio_error_bars(TH1F* ratio_histo, TH1F* data_histo, TH1F* bg_histo)
 {
@@ -847,6 +851,7 @@ TH1F* HistoPlot::set_ratio_error_bars(TH1F* ratio_histo, TH1F* data_histo, TH1F*
 
   return ratio_histo;
 }
+//_______________________________________________________________________________________________________________________
 
 TH1F* HistoPlot::set_error_bars(TH1F* histo) 
 {
@@ -859,6 +864,7 @@ TH1F* HistoPlot::set_error_bars(TH1F* histo)
 
   return histo;
 }
+//_______________________________________________________________________________________________________________________
 
 void HistoPlot::set_th1d_error_bars(TH1D* histo)
 {
@@ -869,6 +875,7 @@ void HistoPlot::set_th1d_error_bars(TH1D* histo)
     histo->SetBinError(i, error_val);
   }
 }
+//_______________________________________________________________________________________________________________________
 
 float HistoPlot::get_data_error(TH1F* histo, int bin) 
 {
@@ -906,6 +913,7 @@ std::string HistoPlot::build_file_name(Variable* variable, bool with_cut)
 
   return file_name;
 }
+//_______________________________________________________________________________________________________________________
 
 std::string HistoPlot::build_signal_leg_entry(Variable* var, DataChain* signal_chain)
 {
@@ -915,6 +923,142 @@ std::string HistoPlot::build_signal_leg_entry(Variable* var, DataChain* signal_c
   signal_leg_str += ")";
 
   return signal_leg_str;
+}
+//_______________________________________________________________________________________________________________________
+void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<DataChain*> bg_chains,
+                                      std::vector<Variable*>* variables, std::string file_name, 
+                                      std::string control, std::string mva_cut)
+{
+  //////////////////////////////////////////////////////////////////
+  cout<<"---------------------Started HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
+  //step 1: initialise TCanvas
+  TCanvas* c1     = new TCanvas("c1", mva_output->name_styled, 800, 800);
+  TPad* p1        = new TPad("p1", "p1", 0.0, 0.95, 1.0, 1.0);
+  TPad* p2        = new TPad("p2", "p2", 0.0, 0.2, 1.0, 0.95);
+  TPad* p3        = new TPad("p3", "p3", 0.0, 0.0, 1.0, 0.2);
+  TLegend* legend = new TLegend(0.0, 0.5, 0.0, 0.88);
+
+  p1->SetLeftMargin(0.102);
+  p2->SetBottomMargin(0.012);
+  p2->SetLeftMargin(0.105);
+  p3->SetBottomMargin(0.3);
+  p3->SetLeftMargin(0.102);
+
+  p1->Draw();
+  p2->Draw();
+  p3->Draw();
+  p2->cd();
+  std::cout << "mva cut: " << mva_cut << std::endl;
+   //step 1.2 clone data chain
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //step 2: create background histo
+  //step 2.1: get zjets mc weight
+  double mc_weights_arr[] = {1, 1, 1, 1, 1, 1, 1, 1};
+  std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0]));  
+
+
+   THStack stack = draw_stacked_control(legend, mva_output, bg_chains, true, variables, data, mc_weights_vector, mva_cut,
+			control);
+
+    std::cout << "step 2 done" << std::endl;
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //step 3: create data histo 
+  //step 3.1 get regular selection string
+  string sig_selection = "(" + control + ")*total_weight_lepveto";
+  sig_selection = add_classID_to_selection(sig_selection, false);
+  //step 3.2: add class ID to selection
+  sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
+  TH1F* data_histo = draw_data(data, mva_output, true, legend, NULL, mva_cut, sig_selection);
+  std::cout<<"final sig_selection: "<< sig_selection<<"\n";
+
+  std::cout << "step 3 done" << std::endl;
+
+  /////////////////////////////////////////////////////////
+  //step 4: draw and style primary histogram
+  //step 4.1 draw background histogram
+  stack.Draw();
+  data_histo->Draw("same");
+  std::cout << "step 4.1 done" << std::endl;
+
+  //step 4.2 draw signal histogram
+  //signal_histo->Draw("SAME");
+
+  std::cout << "step 4.2 done" << std::endl;
+
+  //step 4.3 style histogram
+  style_stacked_histo(&stack, mva_output->name_styled);
+  std::cout << "step 4 done" << std::endl;
+
+  ////////////////////////////////////////////////////////////
+  //step 5: build legend and draw substitle
+  //step 5.1 build legend
+  build_legend(legend, data_histo, mva_output, true);
+
+  //step 5.2 draw subtitles
+  draw_subtitle(mva_output, variables, true, data, "", mva_cut);
+  std::cout << "step 5 done" << std::endl;
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  //step 6: draw signal/background secondary histogram
+  //step 6.1 change pad then create signal/background histogram
+  p3->cd();
+  TH1F* signal_bg_ratio_histo = data_to_bg_ratio_histo(data_histo, (TH1F*)(stack.GetStack()->Last()));
+
+  //step 6.2 draw signal/background histo
+  signal_bg_ratio_histo->Draw("e1");
+
+  //step 6.3 style signal/background histo
+  style_ratio_histo(signal_bg_ratio_histo, mva_output->name_styled);
+  std::cout << "ratio histo done" << std::endl;
+  //step 6.4 draw line, y=1 on signal/background histogram
+  draw_yline_on_plot(mva_output, true, 1.0);
+  draw_yline_on_plot(mva_output, true, 1.0);
+  std::cout << "step 6 done" << std::endl;
+
+  ////////////////////////////////////////////////
+  //step 7: add title and save histogram to file
+  //step 7.1 create file name
+  std::string img_name = file_name;
+  std::cout << "file name" << std::endl;
+  
+  //step 7.2 change pad and add title
+  p1->cd();
+  draw_title(mva_output->name_styled);
+  //
+  //step 7.3 close and save the file
+  c1->SaveAs(img_name.c_str());
+cout<<"file saved\n";
+  c1->Close();
+  std::cout << "step 7 done" << std::endl;
+cout<<"---------------------Finished HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
+}
+//_______________________________________________________________________________________________________________________
+THStack HistoPlot::draw_stacked_control(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
+                                      bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::vector<double> mc_weights_vector,
+				 std::string mva_cut, std::string control)
+{
+  THStack stack(var->name_styled, "");
+  std::string selection;
+  selection = "(" + control + ")*total_weight_lepveto";
+  
+  selection = add_classID_to_selection(selection, false);
+  selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+  std::cout << "selection in draw stacked control histo " << selection << std::endl;
+  for(int i = 0; i < bg_chains.size(); i++) {
+      //cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
+      TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, mc_weights_vector[i], mva_cut);
+      stack.Add(single_bg_histo);
+      std::string legend_str(bg_chains[i]->legend);
+      legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weights_vector[i]) + ")}");
+      legend->AddEntry(single_bg_histo, legend_str.c_str(), "f");
+      //cout<<"drew background: "<<bg_chains[i]->label<<endl;
+  }
+  return stack;
 }
 
 

@@ -47,7 +47,7 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
 }
 void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,int cut_number)
 {
-  string fline = get_line_from_file(const char* weights_file_name,int cut_number);
+  string fline = get_line_from_file(weights_file_name, cut_number);
   std::vector<string> line_vector = DataCard::get_vector_from_line(fline);
   double total = DataCard::get_total_events_from_line(line_vector);
   std::vector<double> rates = DataCard::get_rates_from_line(line_vector);
@@ -58,7 +58,6 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
   std::cout << data_card_name << std::endl;
   fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
   int size = 9;
-  cout<<mva_cut<<"\n";
   //cout<<"opened text file\n";
   fs << imax_string();
   fs << jmax_string(size - 1);
@@ -79,7 +78,7 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
   //cout<<"got rates string\n";
   fs << dashed_line();
   //cout<<"got dashed line\n";
-  fs << get_systematic_string(get_uncertainties_string(errors));
+  fs << get_uncertainties_string(get_uncertainty_vectors(1.0,errors));
   std::cout << "Data card created" << std::endl;
   fs.close();  
 }
@@ -499,7 +498,7 @@ double DataCard::get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_c
     selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
 
     TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], var, with_cut, false, "goff", variables, selection, bg_mc_weights[i], mva_cut);
-    //    TH1F* histo = HistoPlot::build_parked_histo(bg_chains[i], var, variables,bg_mc_weights[i]);
+     // TH1F* histo = HistoPlot::build_parked_histo(bg_chains[i], var, variables,bg_mc_weights[i]);
 
     double integral;
     integral = HistoPlot::get_histo_integral(histo, with_cut, var);

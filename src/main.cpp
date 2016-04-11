@@ -35,27 +35,10 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   int min = 0;//1769; // the minimum value you want cuts to be from
   int max =82;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
-  /*for (int i = 0; i < LearningRate.size(); i++)
-  {  
-    
-    for (int k = 0; k < 4; k++)
-    {
-      for (int j = 0; j < HiddenLayers.size(); j++)
-      {
-          int bg_to_train = rel_bgs[k];
-          std::string bg_label = bg_chains[bg_to_train]->label;
-          std::string folder_name = "MLP/" + bg_label;
-        
-    			MVAAnalysis::get_mva_results(bg_chains, bg_to_train, signal_chain, data_chain, super_vars, folder_name, method_name,
-    				  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0],
-    				  NCycles[0], HiddenLayers[j], LearningRate[i],unique_output_files, create_cards, job_name, 
-              mva_cut, sign, min, max, digits);
 
-    		}
-    }
-    
-  }
 
+
+/*
 std::cout<<"Area under tanh ROC: "<<RocCurves::get_auc( method_name,"test/MLP-all_bg-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
 std::cout<<"Area under radial ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
 std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
@@ -78,23 +61,50 @@ std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP
 
 TFile* trained_file;
 /*for(int j=0; j<1;j++){
-for(int i =0; i<3;i++){*/
+for(int i =0; i<3;i++){
 trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
-  "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+  "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);*/
+
+/*
+    Variable* control_var2 = super_vars->dijet_M;
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "zll_control.png",
+		zll_ch->lep_sel, "");
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "ev_control.png",
+		wjets_ev_ch->lep_sel, "");
+
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "muv_control.png",
+		wjets_muv_ch->lep_sel, "");
+	HistoPlot::plot_control_testTree(bg_to_train, control_var, mva_output_test_chain,
+		output_data_chain, output_bg_chains,
+		&vars, "tauv_control.png", wjets_tauv_ch->lep_sel, "");
+
+*/
+
+
+
 //std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;}
 //}}
   /* const char* train_file_arr[1] = {trained_output->GetName()};
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
-   MVAAnalysis::get_estimators(single_file_vector);*/
-//}
-//for( int i =0;i< vars.size();i++){
- // cout<<vars[i]->name<<endl;}
-	//plot_name.append(".png");
-	//HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, false, &vars, true, plot_name);
+   MVAAnalysis::get_estimators(single_file_vector);
+//}*/
+for( int i =0;i< vars.size();i++)
+{
+  cout<<vars[i]->name<<endl;
+        string plot_name = "cuts/";
+	plot_name.append(vars[i]->name);
+	plot_name.append(".png");
+	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, true, &cut_vars, true, plot_name);
+}
+cout<<"plotted graph\n";
 
-//cout<<"plotted graph\n";
-//
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
 cout<<"got regular mc weights\n";
 
@@ -124,11 +134,15 @@ for(int i=0; i<8;i++){
 }
  cout << "total background = "<< total <<endl;
 
-//  TH1F* parked_signal_histo = HistoPlot::build_parked_histo(signal_chain, parked_vars[7], &parked_vars,1);
 
 // cout << "total signal = "<< HistoPlot::get_histo_integral(parked_signal_histo, with_cut, parked_vars[7]) << endl;// taking into account test/train data s 
 */
-//DataCard::create_datacard(5, data_chain, signal_chain, bg_chains, parked_vars[0], with_cut, &parked_vars, "parked_preselection.png");
+
+
+
+  /*TH1F* parked_signal_histo = HistoPlot::build_parked_histo(signal_chain, parked_vars[7], &parked_vars,1);
+
+DataCard::create_datacard(5, data_chain, signal_chain, bg_chains, parked_vars[0], with_cut, &parked_vars, "parked_preselection.png");*/
 /*double z = MCWeights::calc_mc_weight(data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, mva_cut, 1, false,false);
 double z_error = MCWeights::calc_weight_error( data_chain, bg_chains, bg_chains[0], cut_vars[0], with_cut, &cut_vars, 1, false,  mva_cut);
 cout<<"zll: "<<z<<endl;
