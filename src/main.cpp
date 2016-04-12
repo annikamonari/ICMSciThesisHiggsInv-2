@@ -69,7 +69,7 @@ for(int i =0; i<3;i++){*/
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);*/
 
 int var_index[] ={7,11,12,5,6,8,10};// forward_tag_eta, jet1_pt, jet2_pt,alljetsmetnomu_mindphi, metnomu_significance, dijet_deta, MET
-for(int i=0;i<1;i++)
+for(int i=0;i<4;i++)
 {
 	string file_name;
 	for(int j=0;j<7;j++)
