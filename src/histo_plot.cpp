@@ -23,9 +23,9 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   p2->cd();
   //std::cout << "mva cut: " << mva_cut << std::endl;
   THStack stack      = draw_stacked_histo(legend, var, bg_chains, with_cut, variables, data, mva_cut);
-  //std::cout << "drew stack" << std::endl;
+  std::cout << "drew stack" << std::endl;
   TH1F* signal_histo = draw_signal(signal_chain, var, with_cut, legend, variables, mva_cut);
-  //std::cout << "drew signal" << std::endl;
+  std::cout << "drew signal" << std::endl;
   //std::cout << signal_histo << std::endl;
   TH1F* data_histo;
   if (plot_data) {data_histo = draw_data(data, var, with_cut, legend, variables, mva_cut);}
@@ -35,7 +35,7 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
 
   if (plot_data) {data_histo->Draw("SAME");}
 
-  //std::cout << "drew all" << std::endl;
+  std::cout << "drew all" << std::endl;
   style_stacked_histo(&stack, var->name_styled);
 //cout<<"histo styled"<<endl;
   /*TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo, signal_histo};
@@ -930,7 +930,7 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
                                       std::string control, std::string mva_cut)
 {
   //////////////////////////////////////////////////////////////////
-  cout<<"---------------------Started HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
+  cout<<"---------------------Started HistoPlot::plot_control --------------------------------"<<endl;
   //step 1: initialise TCanvas
   TCanvas* c1     = new TCanvas("c1", mva_output->name_styled, 800, 800);
   TPad* p1        = new TPad("p1", "p1", 0.0, 0.95, 1.0, 1.0);
@@ -955,7 +955,7 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 2: create background histo
   //step 2.1: get zjets mc weight
-  double mc_weights_arr[] = {1, 1, 1, 1, 1, 1, 1, 1};
+  double mc_weights_arr[] = { 0.34, 0.74, 0.38, 1.25, 1, 1,0.63, 1};
   std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0]));  
 
 
@@ -969,7 +969,6 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
   //step 3: create data histo 
   //step 3.1 get regular selection string
   string sig_selection = "(" + control + ")*total_weight_lepveto";
-  sig_selection = add_classID_to_selection(sig_selection, false);
   //step 3.2: add class ID to selection
   sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
   TH1F* data_histo = draw_data(data, mva_output, true, legend, NULL, mva_cut, sig_selection);
@@ -1035,7 +1034,7 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
 cout<<"file saved\n";
   c1->Close();
   std::cout << "step 7 done" << std::endl;
-cout<<"---------------------Finished HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
+cout<<"---------------------Finished HistoPlot::plot_control --------------------------------"<<endl;
 }
 //_______________________________________________________________________________________________________________________
 THStack HistoPlot::draw_stacked_control(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
@@ -1046,7 +1045,6 @@ THStack HistoPlot::draw_stacked_control(TLegend* legend, Variable* var, std::vec
   std::string selection;
   selection = "(" + control + ")*total_weight_lepveto";
   
-  selection = add_classID_to_selection(selection, false);
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   std::cout << "selection in draw stacked control histo " << selection << std::endl;
   for(int i = 0; i < bg_chains.size(); i++) {

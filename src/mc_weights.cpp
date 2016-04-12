@@ -198,8 +198,8 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva
   string selection;
   double mc_arr[8] = {1,1,1,1,1,1,1,1};
   std::vector<double> mc_weights (mc_arr, mc_arr + sizeof(mc_arr)/sizeof(mc_arr[0]));
-  TH1F* nunu_h = HistoPlot::build_1d_histo(nunu_chain, var, true, false, "goff", variables, "",1,mva_cut);
-  double nunu_unweighted = nunu_h->Integral();
+  //TH1F* nunu_h = HistoPlot::build_1d_histo(nunu_chain, var, true, false, "goff", variables, "",1,mva_cut);
+  //double nunu_unweighted = nunu_h->Integral();
 
   if(variables != NULL){selection = get_mc_selection_str(bg_chains[0], var, variables, mva_cut, if_parked);}
   else{  

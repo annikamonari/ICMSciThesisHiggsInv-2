@@ -52,9 +52,12 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
   double total = DataCard::get_total_events_from_line(line_vector);
   std::vector<double> rates = DataCard::get_rates_from_line(line_vector);
   std::vector<double> errors = DataCard::get_errors_from_line(line_vector);
+  
+  string mva_cut_formatted = double_to_str(cut_number);
+  if(cut_number<10){mva_cut_formatted = 0+cut_number;}
 
   std::fstream fs;
-  std::string data_card_name = "Optimum-MLP-config-output>" + double_to_str(cut_number);
+  std::string data_card_name = "Optimum-MLP-config-output>0." + mva_cut_formatted + ".txt";
   std::cout << data_card_name << std::endl;
   fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
   int size = 9;
@@ -70,7 +73,7 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
   //cout<<"got observation string\n";  
   fs << dashed_line();
   fs << bin_grid_line(size);
-  fs << "Signal   Z_ll   W_enu   W_munu   W_taunu   top   VV   Z_nunu   QCD";
+  fs << "process   Signal   Z_ll   W_enu   W_munu   W_taunu   top   VV   Z_nunu   QCD\n";
   fs << process_2_string(process_line_2(size));
   string rate_str = rate_string(rates);
   //cout<<rate_str<<"\n";
@@ -143,7 +146,7 @@ std::vector<string> DataCard::get_vector_from_line(string line)
 	string string_before_comma;
         int comma_position;
 
-	for(int i=0;i<35;i++)
+	for(int i=0;i<56;i++)
 	{
 		comma_position =line.find(",");
 	//	cout<<"commas position"<<comma_position<<"\n";
@@ -157,34 +160,46 @@ std::vector<string> DataCard::get_vector_from_line(string line)
 double DataCard::get_total_events_from_line(std::vector<string> line_vector)
 {
 	double total_events;
-	total_events = atof(line_vector[1].c_str());
 
-	for(int i=1;i<9;i++)
+	for(int i=1;i<6;i++)
 	{
-		total_events += atof(line_vector[4*i-1].c_str());
+		total_events += atof(line_vector[7*i-4].c_str());
 	}
+//cout<<"this wimpy vector is has a length of : "<<line_vector.size()<<"\n";
+	total_events += atof(line_vector[37].c_str());//VV
+	total_events += atof(line_vector[43].c_str());// Z nunu
+	total_events += atof(line_vector[50].c_str());// QCD
+
 	return total_events;
 }
 std::vector<double> DataCard::get_rates_from_line(std::vector<string> line_vector)
 {
 	double rates_arr[9];
 	rates_arr[0] = atof(line_vector[1].c_str());
-	for(int i=1;i<9;i++)
+	for(int i=1;i<6;i++)
 	{
-		rates_arr[i] = atof(line_vector[4*i-1].c_str());
+		rates_arr[i] = atof(line_vector[7*i-4].c_str());
 	}
+	rates_arr[6] = atof(line_vector[37].c_str());//VV
+	rates_arr[7] = atof(line_vector[43].c_str());// Z nunu
+	rates_arr[8] = atof(line_vector[50].c_str());// QCD
+
 	std::vector<double> rates (rates_arr, rates_arr + sizeof(rates_arr)/sizeof(double)); 
 	return rates;
 }
 
 std::vector<double> DataCard::get_errors_from_line(std::vector<string> line_vector)
 {
-	double error_arr[9];
-	error_arr[0] = atof(line_vector[2].c_str());
-	for(int i=1;i<9;i++)
+	double error_arr[8];
+
+		for(int i=0;i<4;i++)
 	{
-		error_arr[i] = atof(line_vector[4*i].c_str());
+		error_arr[i] = atof(line_vector[7*i+9].c_str());
 	}
+	error_arr[4] = atof(line_vector[36].c_str());//top
+	error_arr[5] = atof(line_vector[42].c_str());//VV
+	error_arr[6] = atof(line_vector[49].c_str());// Z nunu
+	error_arr[7] = atof(line_vector[55].c_str());// QCD
 
 	std::vector<double> errors (error_arr, error_arr + sizeof(error_arr)/sizeof(double));
 	return errors;

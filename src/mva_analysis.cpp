@@ -244,6 +244,7 @@ HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_
 			
 		}
 
+
 //roc curve plots plot train set so useless
 //std::cout<<"Area unde ROC: "<<RocCurves::get_auc( method_name, trained_output->GetName());
 
@@ -410,6 +411,7 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 		Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
 		std::string method_name, std::string sign, int min, int max, double digits)
 	{
+	//double arr[79];
 		std::string trained_output_str = trained_output->GetName();
 		std::string folder_name = trained_output_str;
 
@@ -429,11 +431,12 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 
 		for (int i = 0; i < cut_arr.size(); i++)
 		{
-			std::string output_graph_name = HistoPlot::replace_all(folder_name, ".root", cut_arr[i] + ".png");
+			//std::string output_graph_name = HistoPlot::replace_all(folder_name, ".root", cut_arr[i] + ".png");
 			//build_output_graph_name(trained_output, cut_arr[i]);
+		        cout<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
 
-			DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
-				mva_output, true, variables, output_graph_name, cut_arr[i]);
+			//DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
+			//	mva_output, true, variables, output_graph_name, cut_arr[i]);
 		}
 
 	}

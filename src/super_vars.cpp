@@ -2,19 +2,19 @@
 
 SuperVars::SuperVars()
 {
-  forward_tag_eta        = new Variable("forward_tag_eta","Forward Tag #eta","","","1.8",
-                                        "","60","5", "", true);//why is there upper limit
-  dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","3.5","","4.2","","25","10", "");//why is there upper limit
+  forward_tag_eta        = new Variable("forward_tag_eta","Forward Tag #eta","0","5","1.8",
+                                        "","20","5", "", true);//why is there upper limit
+  dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","0.0","7","4.2","","25","10", "");//why is there upper limit
   metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)",
-                                        "3.0","","3.5","","50","10", "");
+                                        "2","10","3.5","","20","10", "");
   sqrt_ht                = new Variable("sqrt_ht","Square Root HCAL Scalar Sum of Energy","0.0","35.0","9.0",
                                         "18.0","75","10", "GeV^{0.5}");
   alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)","0","3.15","2.0","","50","1", "");
   dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","","800.0","","50","10", "GeV");// whyis there upper limit
-  metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","","120.0","",//why the upper limit?
-                                        "50","5", "GeV");
-  jet1_pt                 = new Variable("jet1_pt","Jet1pt","0.0","","50.0","","30","", "GeV");
-  jet2_pt                 = new Variable("jet2_pt","Jet2pt","0.0","","45.0","","30","", "GeV");
+  metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","600","120.0","",//why the upper limit?
+                                        "25","5", "GeV");
+  jet1_pt                 = new Variable("jet1_pt","Jet1pt","0.0","500","50.0","","20","", "GeV");
+  jet2_pt                 = new Variable("jet2_pt","Jet2pt","0.0","500","45.0","","20","", "GeV");
   jet1_eta = new Variable("jet1_eta","jet1_eta", "-5.0", "5.0", "-5.0", "5.0","50","1","");
   jet2_eta = new Variable("jet2_eta","jet2_eta", "-5.0", "5.0", "-5.0", "5.0","50","1","");
   jet1_phi = new Variable("jet1_phi","jet1_phi", "-4.0", "4.0", "-4.0", "4.0","50","1","");
@@ -61,10 +61,10 @@ std::vector<Variable*> SuperVars::get_discriminating_vars()
                          dijetmetnomu_ptfraction, 
 			dijetmetnomu_vectorialSum_pt, jet_csv2, 
                           dijet_dphi, dijet_M,
-                          alljetsmetnomu_mindphi,metnomu_significance/*, forward_tag_eta, dijet_deta, 
+                          alljetsmetnomu_mindphi,metnomu_significance, forward_tag_eta, dijet_deta, 
   		  	                   sqrt_ht, metnomuons ,jet1_pt,jet2_pt, jet1_eta,jet2_eta, jet1_phi,jet2_phi,
 																										jet_csv1, metnomu_x,metnomu_y,sumet,mht,unclustered_et,
-  		                      jetmetnomu_mindphi,jetunclet_mindphi,metnomuunclet_dphi, jet1metnomu_scalarprod,jet2metnomu_scalarprod*/
+  		                      jetmetnomu_mindphi,jetunclet_mindphi,metnomuunclet_dphi, jet1metnomu_scalarprod,jet2metnomu_scalarprod
 						};
 
   std::vector<Variable*> vars (var_arr, var_arr + sizeof(var_arr) / sizeof(var_arr[0]));
