@@ -29,21 +29,21 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   //std::cout << signal_histo << std::endl;
   TH1F* data_histo;
   if (plot_data) {data_histo = draw_data(data, var, with_cut, legend, variables, mva_cut);}
-
+  stack.Add(signal_histo);
   stack.Draw();
-  signal_histo->Draw("SAME");
+  //signal_histo->Draw("SAME");
 
+  cout<<"total data ="<<data_histo->Integral()<<"\n";
   if (plot_data) {data_histo->Draw("SAME");}
 
   std::cout << "drew all" << std::endl;
   style_stacked_histo(&stack, var->name_styled);
 //cout<<"histo styled"<<endl;
-  /*TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo, signal_histo};
-  if (!plot_data) {plot_histos[1] = NULL;}
+  TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo, signal_histo};
   std::vector<TH1F*> plot_histos_vector (plot_histos, plot_histos + sizeof(plot_histos) / sizeof(plot_histos[0]));
   TH1F* max_histo      = get_max_histo(plot_histos_vector);
   std::cout << "got max" << max_histo << std::endl;
-  stack.SetMaximum(get_histo_y_max(max_histo)*1.15);*/
+  stack.SetMaximum(get_histo_y_max(max_histo)*1.15);
 
   build_legend(legend, signal_histo, var, with_cut);
 //cout<<"legend built"<<endl;
@@ -618,8 +618,8 @@ THStack HistoPlot::draw_stacked_histo(TLegend* legend, Variable* var, std::vecto
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::string mva_cut)
 {
   THStack stack(var->name_styled, "");
-  std::vector<double> mc_weights_vector = mc_weights(data, bg_chains, var, with_cut, variables, mva_cut);
-
+  double mc_weights_arr[] = { 0.34, 0.74, 0.38, 1.25, 1, 1,0.63, 1};
+  std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0])); 
   for(int i = 0; i < bg_chains.size(); i++) {
     TH1F* single_bg_histo = draw_background(bg_chains[i], var, colours()[i], with_cut, variables, mc_weights_vector[i],
 																																												mva_cut);
@@ -951,6 +951,15 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
   std::cout << "mva cut: " << mva_cut << std::endl;
    //step 1.2 clone data chain
 
+  string selection;
+  if(strcmp(control.c_str(), "(nselelectrons == 1)&&(nselmuons == 0)&&(nvetomuons==0)&&(ntaus == 0)"))
+  { 
+  	selection = "((jet1_pt>50.0)&&(jet2_pt>45.0)&&(metnomu_significance>3.5)&&(dijet_deta>4.2)&&(alljetsmetnomu_mindphi>2.0)&&" + control + ")*total_weight_lepveto";
+  }
+  else
+  {
+	selection = "((jet1_pt>50.0)&&(jet2_pt>45.0)&&(metnomu_significance>3.5)&&(dijet_deta>4.2)&&(jetmetnomu_mindphi>1.0)&&(mht>20)&&(jet_csv2<0.2)&&" + control + ")*total_weight_lepveto";
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 2: create background histo
@@ -960,19 +969,16 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
 
 
    THStack stack = draw_stacked_control(legend, mva_output, bg_chains, true, variables, data, mc_weights_vector, mva_cut,
-			control);
+			selection);
 
     std::cout << "step 2 done" << std::endl;
 
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 3: create data histo 
-  //step 3.1 get regular selection string
-  string sig_selection = "(" + control + ")*total_weight_lepveto";
-  //step 3.2: add class ID to selection
-  sig_selection = HistoPlot::add_mva_cut_to_selection(sig_selection, mva_cut);
-  TH1F* data_histo = draw_data(data, mva_output, true, legend, NULL, mva_cut, sig_selection);
-  std::cout<<"final sig_selection: "<< sig_selection<<"\n";
+  
+  TH1F* data_histo = draw_data(data, mva_output, false, legend, variables, "", selection);
+  std::cout<<"final sig_selection: "<< selection<<"\n";
 
   std::cout << "step 3 done" << std::endl;
 
@@ -981,16 +987,16 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
   //step 4.1 draw background histogram
   stack.Draw();
   data_histo->Draw("same");
-  std::cout << "step 4.1 done" << std::endl;
-
-  //step 4.2 draw signal histogram
-  //signal_histo->Draw("SAME");
-
-  std::cout << "step 4.2 done" << std::endl;
 
   //step 4.3 style histogram
   style_stacked_histo(&stack, mva_output->name_styled);
   std::cout << "step 4 done" << std::endl;
+
+  TH1F* plot_histos[3] = {(TH1F*)(stack.GetStack()->Last()), data_histo};
+
+  std::vector<TH1F*> plot_histos_vector (plot_histos, plot_histos + sizeof(plot_histos) / sizeof(plot_histos[0]));
+  TH1F* max_histo      = get_max_histo(plot_histos_vector);
+  stack.SetMaximum(get_histo_y_max(max_histo)*1.15);
 
   ////////////////////////////////////////////////////////////
   //step 5: build legend and draw substitle
@@ -1017,6 +1023,7 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
   //step 6.4 draw line, y=1 on signal/background histogram
   draw_yline_on_plot(mva_output, true, 1.0);
   draw_yline_on_plot(mva_output, true, 1.0);
+
   std::cout << "step 6 done" << std::endl;
 
   ////////////////////////////////////////////////
@@ -1039,13 +1046,10 @@ cout<<"---------------------Finished HistoPlot::plot_control -------------------
 //_______________________________________________________________________________________________________________________
 THStack HistoPlot::draw_stacked_control(TLegend* legend, Variable* var, std::vector<DataChain*> bg_chains,
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::vector<double> mc_weights_vector,
-				 std::string mva_cut, std::string control)
+				 std::string mva_cut, string selection)
 {
   THStack stack(var->name_styled, "");
-  std::string selection;
-  selection = "(" + control + ")*total_weight_lepveto";
   
-  selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   std::cout << "selection in draw stacked control histo " << selection << std::endl;
   for(int i = 0; i < bg_chains.size(); i++) {
       //cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;

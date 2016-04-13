@@ -29,7 +29,7 @@ std::string MCWeights::get_mc_selection_str(DataChain* bg_chain, Variable* varia
   		selection_str.erase(1, 2);
   }
 
- // cout<<"mc selection string="<<selection_str<<"\n";
+  cout<<"mc selection string="<<selection_str<<"\n";
   // This function below checks to see if mva_cut != ""
   selection_str = HistoPlot::add_mva_cut_to_selection(selection_str, mva_cut);
   //std::cout << "Selection str in get_mc_select_str: " << selection_str << std::endl;

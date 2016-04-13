@@ -65,14 +65,14 @@ TFile* trained_file;
 /*for(int j=0; j<1;j++){
 for(int i =0; i<3;i++){*/
 /*trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
-  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], nCuts[0], NeuronType[0], 
+  NTrees[0],BoostType[0], AdaBoostBeta[0], SeparationType[0], "-1", NeuronType[0], 
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);*/
-
-int var_index[] ={7,11,12,5,6,8,10};// forward_tag_eta, jet1_pt, jet2_pt,alljetsmetnomu_mindphi, metnomu_significance, dijet_deta, MET
-for(int i=0;i<4;i++)
+/*
+int var_index[] ={7,11,12,5,6,8};// forward_tag_eta, jet1_pt, jet2_pt,alljetsmetnomu_mindphi, metnomu_significance, dijet_deta
+for(int i=3;i<4;i++)
 {
 	string file_name;
-	for(int j=0;j<7;j++)
+	for(int j=0;j<6;j++)
 	{
 		file_name = vars[var_index[j]]->name;
 		file_name.append("_");
@@ -81,7 +81,7 @@ for(int i=0;i<4;i++)
 		HistoPlot::plot_control(vars[var_index[j]], data_chain,  bg_chains, &cut_vars, file_name, bg_chains[i]->lep_sel , "");
 	}
 }
-    
+*/    
 /*	HistoPlot::plot_control_testTree(bg_to_train, cut_vars[0], mva_output_test_chain,
 		output_data_chain, output_bg_chains,
 		&vars, "ev_control.png",
@@ -105,7 +105,7 @@ for(int i=0;i<4;i++)
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);
 //}*/
-/*for( int i =0;i< vars.size();i++)
+for( int i =26;i< vars.size();i++)
 {
   cout<<vars[i]->name<<endl;
         string plot_name = "cuts/";
@@ -113,7 +113,7 @@ for(int i=0;i<4;i++)
 	plot_name.append(".png");
 	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, true, &cut_vars, true, plot_name);
 }
-cout<<"plotted graph\n";*/
+cout<<"plotted graph\n";
 
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
 cout<<"got regular mc weights\n";
