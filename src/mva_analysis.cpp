@@ -64,7 +64,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		std::string app_output_name; 
 
 
- /* for(int i=0; i<8;i++)
+ /*for(int i=0; i<8;i++)
   {*/
 //step 1 get output name and train MVa
 //________________________________________________________________________________________________________________________________________________
@@ -73,22 +73,22 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
 				NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts,
 				trained_bg_label);
-			trained_output = BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
+			trained_output = TFile::Open("test/BDT-job_name=1-bg_zjets_vv-NTrees=300-BoostType=AdaBoost-AdaBoostBeta=0.2-SeparationType=GiniIndex-nCuts=-1.root");/*BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);*/
 		}
 		else if (method_name == "MLP")
 		{
 			app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
 				NeuronType, NCycles, HiddenLayers, LearningRate, trained_bg_label);
 
-			trained_output = TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root");/* MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);*///bg_to_train
+			trained_output = /*TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root");*/ MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);///bg_to_train
 		}
-//  }
+ // }
 //MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,
 //				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
-	//BDTAnalysis::create_BDT(data_chain, signal_chain, &vars2, folder_name,
-	//			NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
+//	BDTAnalysis::create_BDT(data_chain, signal_chain, &vars2, folder_name,
+//				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
 
 		std::cout << "=> Trained method " << method_name << ", output file: " << trained_output->GetName() << std::endl;
 
@@ -119,7 +119,15 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	f->Close();
 
 //step 2.2 get data tree
-	const char* d_arr[] = {"dataTrees/data_chain.root"};
+	const char* d_arr[1];
+	if(method_name == "MLP"){
+ 		d_arr = {"dataTrees/data_chain.root"};
+	}
+	else if(method_name == "BDT")
+	{
+ 		d_arr = {"bdtTrees/data_chain.root"};
+	}
+
 	//step 2.2.2 intialise DataChain paramters for test set
 	std::vector<const char*> data_vector (d_arr, d_arr + sizeof(d_arr)/sizeof(const char*));
 
@@ -128,55 +136,111 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 //step 2.2 get output chains for test,data and other BGs
 //////////qcd
-	const char* qcd_arr[] = {"dataTrees/bg_qcd.root"};
+	const char* qcd_arr[1];
+	if(method_name == "MLP"){
+
+		qcd_arr = {"dataTrees/bg_qcd.root"};
+	}
+	else if(method_name == "BDT")
+	{
+		qcd_arr = {"bdtTrees/bg_qcd.root"};
+	}
 
 	std::vector<const char*> qcd_vector (qcd_arr, qcd_arr + sizeof(qcd_arr)/sizeof(const char*));
 
 	DataChain* qcd_ch = new DataChain(qcd_vector,qcd_label,qcd_legend,"");
 //////////VV
-	const char* VV_arr[] = {"dataTrees/bg_vv.root"};
-
+	const char* VV_arr[1];
+	if(method_name == "MLP"){
+		VV_arr = {"dataTrees/bg_vv.root"};
+	}
+	else if(method_name == "BDT")
+	{
+		VV_arr = {"bdtTrees/bg_vv.root"};
+	}
 	std::vector<const char*> VV_vector (VV_arr, VV_arr + sizeof(VV_arr)/sizeof(const char*));
 
 	DataChain* VV_ch = new DataChain(VV_vector,vv_label,vv_legend,"");
 
 //////////wjets->enu
-	const char* ev_arr[] = {"dataTrees/bg_wjets_ev.root"};
+	const char* ev_arr[1];
+	if(method_name == "MLP"){
+ 		ev_arr = {"dataTrees/bg_wjets_ev.root"};
+	}
+	else if(method_name == "BDT")
+	{
+ 		ev_arr = {"bdtTrees/bg_wjets_ev.root"};
+	}
 
 	std::vector<const char*> ev_vector (ev_arr, ev_arr + sizeof(ev_arr)/sizeof(const char*));
 
 	DataChain* wjets_ev_ch = new DataChain(ev_vector,wjets_ev_label,wjets_ev_legend,"(nselelectrons == 1)");
 
 //////////wjets->munu
-	const char* muv_arr[] = {"dataTrees/bg_wjets_muv.root"};
+	const char* muv_arr[1];
+	if(method_name == "MLP"){
+ 		muv_arr = {"dataTrees/bg_wjets_muv.root"};
+	}
+	else if(method_name == "BDT")
+	{
+ 		muv_arr = {"bdtTrees/bg_wjets_muv.root"};
+	}
 
 	std::vector<const char*> muv_vector (muv_arr, muv_arr + sizeof(muv_arr)/sizeof(const char*));
 
 	DataChain* wjets_muv_ch = new DataChain(muv_vector,wjets_muv_label,wjets_muv_legend,"(nselmuons == 1)");
 
 //////////wjets->taunu
-	const char* tauv_arr[] = {"dataTrees/bg_wjets_tauv.root"};
+	const char* tauv_arr[1];
+	if(method_name == "MLP"){
+  		tauv_arr = {"dataTrees/bg_wjets_tauv.root"};
+	}
+	else if(method_name == "BDT")
+	{
+  		tauv_arr = {"bdtTrees/bg_wjets_tauv.root"};
+	}
 
 	std::vector<const char*> tauv_vector (tauv_arr, tauv_arr + sizeof(tauv_arr)/sizeof(const char*));
 
 	DataChain* wjets_tauv_ch = new DataChain(tauv_vector,wjets_tauv_label,wjets_tauv_legend,"(nvetomuons==0)&&(nvetoelectrons==0)&&(ntaus == 1)");
 
 //////////zjets->nunu
-	const char* zjets_vv_arr[] = {"dataTrees/bg_zjets_vv.root"};
+	const char* zjets_vv_arr[1];
+	if(method_name == "MLP"){
+  		zjets_vv_arr = {"dataTrees/bg_zjets_vv.root"};
+	}
+	else if(method_name == "BDT")
+	{
+  		zjets_vv_arr = {"bdtTrees/bg_zjets_vv.root"};
+	}
 
 	std::vector<const char*> zjets_vv_vector (zjets_vv_arr, zjets_vv_arr + sizeof(zjets_vv_arr)/sizeof(const char*));
 
 	DataChain* zjets_vv_ch = new DataChain(zjets_vv_vector,zjets_vv_label,zjets_vv_legend,"");
 
 //////////top
-	const char* top_arr[] = {"dataTrees/bg_top.root"};
+	const char* top_arr[1];
+	if(method_name == "MLP"){
+ 		top_arr = {"dataTrees/bg_top.root"};
+	}
+	else if(method_name == "BDT")
+	{
+ 		top_arr = {"bdtTrees/bg_top.root"};
+	}
 
 	std::vector<const char*> top_vector (top_arr, top_arr + sizeof(top_arr)/sizeof(const char*));
 
 	DataChain* top_ch = new DataChain(top_vector,top_label,top_legend,"");
 
 //////////Z->ll
-	const char* zll_arr[] = {"dataTrees/bg_zll.root"};
+	const char* zll_arr[1];
+	if(method_name == "MLP"){
+		zll_arr = {"dataTrees/bg_zll.root"};
+	}
+	else if(method_name == "BDT")
+	{
+		zll_arr = {"dataTrees/bg_zll.root"};
+	}
 
 	std::vector<const char*> zll_vector (zll_arr, zll_arr + sizeof(zll_arr)/sizeof(const char*));
 
@@ -214,7 +278,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 	if (method_name == "BDT")
 	{
-		mva_output = new Variable("output","MVA Output","-1.0","1.0","-0.8","0.8","125","1", "", false);
+		mva_output = new Variable("output","MVA Output","-1.0","1.0","-1.1","1.1","100","1", "", false);
 	}
 	else if (method_name == "MLP")
 	{
@@ -228,6 +292,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //step 4 draw plot
 //_________________________
 cout<<"step 4 in mva analysis"<<endl;
+
 HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
 
@@ -431,12 +496,12 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 
 		for (int i = 0; i < cut_arr.size(); i++)
 		{
-			//std::string output_graph_name = HistoPlot::replace_all(folder_name, ".root", cut_arr[i] + ".png");
-			//build_output_graph_name(trained_output, cut_arr[i]);
-		        cout<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
+			std::string output_graph_name = HistoPlot::replace_all(folder_name, ".root", cut_arr[i] + ".png");
+			build_output_graph_name(trained_output, cut_arr[i]);
+		        //cout<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
 
-			//DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
-			//	mva_output, true, variables, output_graph_name, cut_arr[i]);
+			DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
+				mva_output, true, variables, output_graph_name, cut_arr[i]);
 		}
 
 	}

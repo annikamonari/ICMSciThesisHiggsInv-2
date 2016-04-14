@@ -108,7 +108,7 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 			var, with_cut,  variables, mva_cut, if_parked);// W taunu
 
 	std::fstream fsw;
-	fsw.open ("weights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+	fsw.open ("BDTweights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 	fsw<<mva_cut;
 	fsw<<","<<rates_d[0]<<",0";
 	fsw<<","<<rates_d[1]<<",,"<<mc_weights[0]<<","<<mc_weight_errors[0];

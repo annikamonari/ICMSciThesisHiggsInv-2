@@ -24,6 +24,14 @@ TFile* BDTAnalysis::create_BDT(DataChain* bg_chain, DataChain* signal_chain, std
 	  {
 	    factory->AddVariable((*variables)[i]->name, (*variables)[i]->name_styled, (*variables)[i]->units, 'F');
 	  }
+	factory->AddSpectator("total_weight_lepveto",  "total_weight_lepveto", "", 'F' );
+	factory->AddSpectator("nselmuons",  "nselmuons", "", 'F' );
+	factory->AddSpectator("m_mumu",  "m_mumu", "", 'F' );
+	factory->AddSpectator("ntaus",  "ntaus", "", 'F' );
+	factory->AddSpectator("nselelectrons",  "nselelectrons", "", 'F' );
+	factory->AddSpectator("nvetoelectrons",  "nvetoelectrons", "", 'F' );
+	factory->AddSpectator("nvetomuons",  "nvetomuons", "", 'F' );
+
 
 	  // Background
 	    double background_weight = 1.0;
@@ -36,7 +44,8 @@ TFile* BDTAnalysis::create_BDT(DataChain* bg_chain, DataChain* signal_chain, std
 	    factory->SetSignalWeightExpression("total_weight_lepveto");
 
 	    // Apply additional cuts on the signal and background samples (can be different)
-	    TCut signal_cuts = "jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 "; // alljetsmetnomu_mindphi>2.0 &&    && nvetomuons==0 && nvetoelectrons==0
+	    TCut signal_cuts = "jet1_pt>50.0 && jet2_pt>45.0 && metnomu_significance>3.5 && dijet_deta>4.2 && alljetsmetnomu_mindphi>2.0 && nvetomuons==0 && nvetoelectrons==0";
+
 	    TCut bg_cuts = signal_cuts; // for example: TCut mycutb = "abs(var1)<0.5";
 
 	    factory->PrepareTrainingAndTestTree(signal_cuts, bg_cuts,
@@ -104,6 +113,14 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 	   Float_t dijetmetnomu_ptfraction;
 	   Float_t jet1metnomu_scalarprod;
 	   Float_t jet2metnomu_scalarprod;
+                  Float_t total_weight_lepveto;
+                   Float_t nselmuons;
+                   Float_t m_mumu;
+                   Float_t ntaus;
+                   Float_t nselelectrons;
+		   Float_t nvetoelectrons;
+		   Float_t nvetomuons;
+
 
 
      reader->AddVariable("dijetmetnomu_ptfraction", &dijetmetnomu_ptfraction);
@@ -117,6 +134,15 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 		   reader->AddVariable("dijet_deta", &dijet_deta);
 		   reader->AddVariable("sqrt_ht", &sqrt_ht);
 		   reader->AddVariable("metnomuons", &metnomuons);
+
+     reader->AddSpectator("total_weight_lepveto", &total_weight_lepveto);
+     reader->AddSpectator("nselmuons", &nselmuons);
+     reader->AddSpectator("m_mumu", &m_mumu);
+     reader->AddSpectator("ntaus", &ntaus);
+     reader->AddSpectator("nselelectrons", &nselelectrons );
+	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
+	reader->AddSpectator("nvetomuons",  &nvetomuons);
+
 
 		   reader->AddVariable("jet1_pt", &jet1_pt);
 		   reader->AddVariable("jet2_pt", &jet2_pt);
@@ -197,7 +223,7 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 	   sw.Start();
 	   for (Long64_t ievt=0; ievt<data->GetEntries(); ievt++) {
 
-	      if (ievt%1000 == 0) std::cout << "--- ... Processing event: " << ievt << std::endl;
+	      if (ievt%10000 == 0) std::cout << "--- ... Processing event: " << ievt << std::endl;
 
 	      data->GetEntry(ievt);
 

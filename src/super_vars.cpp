@@ -11,8 +11,8 @@ SuperVars::SuperVars()
                                         "18.0","20","1", "GeV^{0.5}");
   alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)","2.0","3.15","2.0","","20","1", "");
   dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","2000","","","10","1", "GeV");// whyis there upper limit
-  metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","600","120.0","",//why the upper limit?
-                                        "25","1", "GeV");
+  metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","2000","120.0","",//why the upper limit?
+                                        "50","50", "GeV");
   jet1_pt                 = new Variable("jet1_pt","Jet1pt","50.0","250","50.0","","20","", "GeV");
   jet2_pt                 = new Variable("jet2_pt","Jet2pt","45.0","150","45.0","","20","", "GeV");
   jet1_eta = new Variable("jet1_eta","jet1_eta", "-5.0", "5.0", "-5.0", "5.0","50","1","");

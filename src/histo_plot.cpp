@@ -46,9 +46,9 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   stack.SetMaximum(get_histo_y_max(max_histo)*1.15);
 
   build_legend(legend, signal_histo, var, with_cut);
-//cout<<"legend built"<<endl;
+cout<<"legend built"<<endl;
   draw_subtitle(var, variables, with_cut, data, "", mva_cut);
-  //std::cout << "drew subtitle" << std::endl;
+  std::cout << "drew subtitle" << std::endl;
   p3->cd();
   TH1F* data_bg_ratio_histo;
 
@@ -66,7 +66,7 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   data_bg_ratio_histo->Draw("e1");
   style_ratio_histo(data_bg_ratio_histo, var->name_styled);
   draw_yline_on_plot(var, with_cut, 1.0);
- // std::cout << "ratio histo done" << std::endl;
+  std::cout << "ratio histo done" << std::endl;
   std::string img_name;
 
   if (file_name == "")
@@ -621,8 +621,7 @@ THStack HistoPlot::draw_stacked_histo(TLegend* legend, Variable* var, std::vecto
   double mc_weights_arr[] = { 0.34, 0.74, 0.38, 1.25, 1, 1,0.63, 1};
   std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0])); 
   for(int i = 0; i < bg_chains.size(); i++) {
-    TH1F* single_bg_histo = draw_background(bg_chains[i], var, colours()[i], with_cut, variables, mc_weights_vector[i],
-																																												mva_cut);
+    TH1F* single_bg_histo = draw_background(bg_chains[i], var, colours()[i], with_cut, variables, mc_weights_vector[i],mva_cut);
     stack.Add(single_bg_histo);
     std::string legend_str(bg_chains[i]->legend);
     legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weights_vector[i]) + ")}");
@@ -630,6 +629,7 @@ THStack HistoPlot::draw_stacked_histo(TLegend* legend, Variable* var, std::vecto
   }
   return stack;
 }
+//_______________________________________________________________________________________________________________________
 
 TH1F* HistoPlot::get_max_histo(std::vector<TH1F*> plot_histos)
 {
