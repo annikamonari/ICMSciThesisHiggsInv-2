@@ -26,13 +26,13 @@ void DataCard::create_datacard(int bg_to_train, DataChain* data_chain, DataChain
   fs << dashed_line();
   fs << bin_header_string();
   //cout<<"about to get observation string\n";
-  fs << bin_observation_string(get_total_nevents(bg_to_train, bg_chs, var, with_cut, variables, mc_weights, mva_cut));
+  fs << bin_observation_string(get_total_nevents(data_chain, bg_to_train, bg_chains, var, with_cut, variables, mc_weights, mva_cut));
   //cout<<"got observation string\n";  
   fs << dashed_line();
   fs << bin_grid_line(size);
   fs << process_labels(bg_chains, signal_chain);
   fs << process_2_string(process_line_2(size));
-  std::vector<double> rates_d = get_rates(bg_to_train, data_chain, bg_chs, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
+  std::vector<double> rates_d = get_rates(bg_to_train, data_chain, bg_chains, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
   string rate_str = rate_string(rates_d);
   //cout<<rate_str<<"\n";
   fs <<  rate_str;
@@ -54,10 +54,30 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
   std::vector<double> errors = DataCard::get_errors_from_line(line_vector);
   
   string mva_cut_formatted = double_to_str(cut_number);
-  if(cut_number<10){mva_cut_formatted = 0+cut_number;}
+  
 
   std::fstream fs;
-  std::string data_card_name = "Optimum-MLP-config-output>0." + mva_cut_formatted + ".txt";
+  string intro ="";
+  string cut_num_str;
+
+  if(cut_number<100)
+  {
+  	intro = "0.";
+	if(cut_number<10){ intro += "0";}
+	cut_num_str = intro + mva_cut_formatted;
+  }
+  else
+  {
+	if(cut_number %100>9)
+	{
+		cut_num_str = "1."+double_to_str(cut_number % 100);
+	}
+	else
+	{	
+		cut_num_str = "1.0"+double_to_str(cut_number % 100);
+	}
+  }
+  std::string data_card_name = "Optimum-MLP-config-output>" + cut_num_str + ".txt";
   std::cout << data_card_name << std::endl;
   fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
   int size = 9;
@@ -98,7 +118,8 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 	double mc_weight_errors[5];
 	mc_weight_errors[0]=MCWeights::calc_weight_error(mc_weights, 0, data_chain, bg_chains, bg_chains[0], // zll
 			var, with_cut,  variables, mva_cut, if_parked)*1.513;// zll
-	mc_weight_errors[1]=5.651 * mc_weight_errors[0];// znunu
+	mc_weight_errors[1]=MCWeights::calc_nunu_weight_error(data_chain, bg_chains, bg_chains[6],
+        var, with_cut, variables, mva_cut, if_parked);// znunu
 
 	mc_weight_errors[2]=MCWeights::calc_weight_error(mc_weights, 1,data_chain, bg_chains, bg_chains[1], // W enu
 			var, with_cut,  variables, mva_cut, if_parked);// W enu
@@ -270,6 +291,7 @@ std::vector<double> DataCard::get_rates(int bg_to_train, DataChain* data, std::v
 //std::cout<<rates[0]<<"\n";
   for(int i = 0; i < bg_chains.size();i++)
   {
+  if(i!=6){
     //std::cout << "=====" << bg_chains[i]->label << std::endl;
     std::string selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     selection = HistoPlot::add_classID_to_selection(selection, false);
@@ -283,6 +305,27 @@ std::vector<double> DataCard::get_rates(int bg_to_train, DataChain* data, std::v
     if(!strcmp(bg_chains[i]->label, bg_chains[bg_to_train]->label)){N = 2*N;}// comment outif parked , *2 for taking into account test/train data split
     rates[i + 1]= N;
     //std::cout << bg_chains[i]->label << " -rate: " << N << std::endl;
+    cout<<"rates: "<<i+1<<", "<<N<<"\n";
+  }
+  else
+	{
+		double mc_arr[8] = {1,1,1,1,1,1,1,1};
+  		std::vector<double> mc_weights (mc_arr, mc_arr + sizeof(mc_arr)/sizeof(mc_arr[0]));
+  		string selection;
+  		if(variables != NULL){selection = MCWeights::get_mc_selection_str(bg_chains[0], var, variables, mva_cut,false);}
+ 		else{  
+    			selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chains[0]->lep_sel+")*total_weight_lepveto";
+    			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+   		}
+  		double weight;
+  		double data_in_ctrl     = MCWeights::get_nevents(data, var, with_cut, variables, selection, bg_chains[bg_to_train]->label, false);
+  		double other_bg_in_ctrl = MCWeights::get_other_bg_in_ctrl(0,mc_weights, bg_chains, var, 
+		with_cut, variables, selection,bg_to_train , true);
+
+  		double N = (data_in_ctrl-other_bg_in_ctrl)*5.651*1.513;
+		rates[i + 1]= N;
+		cout<<"rates: "<<i+1<<", "<<N<<"\n";
+	}
   }
   std::vector<double> rates_vector (rates, rates + sizeof(rates) / sizeof(rates[0]));
 //std::cout<<"bg zll rate is: "<<rates[1]<<"\n";
@@ -498,15 +541,17 @@ double DataCard::get_total_data_events(DataChain* data, Variable* var, bool with
   return integral;
 }
 
-double DataCard::get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, std::vector<Variable*>* variables,
+double DataCard::get_total_nevents(DataChain* data, int bg_to_train, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, std::vector<Variable*>* variables,
  std::vector<double> bg_mc_weights, std::string mva_cut)
 {
   std::string selection; 
 
   double total = 0;
-  
+  double integral;
+
   for (int i = 0; i < bg_chains.size(); i++)
   {
+    if(i!=6){
     selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
     selection = HistoPlot::add_classID_to_selection(selection, false);
     selection = HistoPlot::add_mc_to_selection(bg_chains[i],var , selection, bg_mc_weights[i]);
@@ -515,11 +560,30 @@ double DataCard::get_total_nevents(int bg_to_train, std::vector<DataChain*> bg_c
     TH1F* histo = HistoPlot::build_1d_histo(bg_chains[i], var, with_cut, false, "goff", variables, selection, bg_mc_weights[i], mva_cut);
      // TH1F* histo = HistoPlot::build_parked_histo(bg_chains[i], var, variables,bg_mc_weights[i]);
 
-    double integral;
     integral = HistoPlot::get_histo_integral(histo, with_cut, var);
 
     if(i==bg_to_train) {integral = 2*integral;}// multiply this by 2 //if  parked comment out 
+cout<<integral<<"\n";
+	}
+	else
+	{
+		double mc_arr[8] = {1,1,1,1,1,1,1,1};
+  		std::vector<double> mc_weights (mc_arr, mc_arr + sizeof(mc_arr)/sizeof(mc_arr[0]));
+  		string selection;
+  		if(variables != NULL){selection = MCWeights::get_mc_selection_str(bg_chains[0], var, variables, mva_cut,false);}
+ 		else{  
+    			selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+bg_chains[0]->lep_sel+")*total_weight_lepveto";
+    			selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+   		}
+  		double weight;
+  		double data_in_ctrl     = MCWeights::get_nevents(data, var, with_cut, variables, selection, bg_chains[bg_to_train]->label, false);
+  		double other_bg_in_ctrl = MCWeights::get_other_bg_in_ctrl(0,mc_weights, bg_chains, var, 
+		with_cut, variables, selection,bg_to_train , true);
 
+  		double N = (data_in_ctrl-other_bg_in_ctrl)*5.651*1.513;
+		integral= N;
+		cout<<"rates: "<<i+1<<", "<<N<<"\n";
+	}
     total += integral;
   }
 

@@ -29,12 +29,12 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
   std::string mva_cut = "";
-  std::string method_name = "BDT";
+  std::string method_name = "MLP";
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
-  int min = -80;//1769; // the minimum value you want cuts to be from
-  int max =60;//1770; // max value you want cuts to be to
-  double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
+  int min = 310;//1769; // the minimum value you want cuts to be from
+  int max =310;//1770; // max value you want cuts to be to
+  double digits = 1000; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
 
 
@@ -57,9 +57,9 @@ std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP
 		RocCurves::get_rocs(files, signal_chain, bg_chains[6], super_vars, method_name, folder_name);
 
 *//*
-for(int i=0;i<79;i++)
+for(int i=0;i<72;i++)
 {
-	DataCard::create_card_from_MC_weights_file("weights_plots.csv",i);
+	DataCard::create_card_from_MC_weights_file("MLP_extrapolated_weights.csv",i);
 }*/
 TFile* trained_file;
 /*for(int j=0; j<1;j++){

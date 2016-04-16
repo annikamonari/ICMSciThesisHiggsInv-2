@@ -62,7 +62,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 		TFile* trained_output;
 		const char* trained_bg_label = bg_chains[bg_to_train]->label;
 		std::string app_output_name; 
-
+//cout<<"in get mva results"<<"\n";
 
  /*for(int i=0; i<8;i++)
   {*/
@@ -73,16 +73,16 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
 				NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts,
 				trained_bg_label);
-			trained_output = TFile::Open("test/BDT-job_name=1-bg_zjets_vv-NTrees=300-BoostType=AdaBoost-AdaBoostBeta=0.2-SeparationType=GiniIndex-nCuts=-1.root");/*BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);*/
+			trained_output = /*TFile::Open("test/BDT-job_name=1-bg_zjets_vv-NTrees=300-BoostType=AdaBoost-AdaBoostBeta=0.2-SeparationType=GiniIndex-nCuts=-1.root");*/BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
 		}
 		else if (method_name == "MLP")
 		{
 			app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
 				NeuronType, NCycles, HiddenLayers, LearningRate, trained_bg_label);
 
-			trained_output = /*TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root");*/ MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
-				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);///bg_to_train
+			trained_output = TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root");/* MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);*///bg_to_train
 		}
  // }
 //MLPAnalysis::create_MLP(data_chain, signal_chain, &vars2, folder_name,
@@ -94,6 +94,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
  if (create_cards) {		
 
+//cout<<"step 1 done"<<"\n";
 
 	//step 2 evaluate MVA's
 //________________________________________________________________________________________________________________________________________________	
@@ -293,7 +294,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //_________________________
 cout<<"step 4 in mva analysis"<<endl;
 
-HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+//HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
 
 //output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
@@ -493,13 +494,25 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 		folder_name += "/" + trained_output_str.substr(output_name_idx + 1, -1);
 		
 		std::vector<std::string> cut_arr = get_mva_cut_range(sign, min, max, digits);
-
+cout<<"data in zll control region"<<"\n";
 		for (int i = 0; i < cut_arr.size(); i++)
 		{
 			std::string output_graph_name = HistoPlot::replace_all(folder_name, ".root", cut_arr[i] + ".png");
 			build_output_graph_name(trained_output, cut_arr[i]);
-		        //cout<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
+//cout<<"in datacared loop"<<"\n";
+			/*string mc_selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&"+output_bg_chains[0]->lep_sel+")*total_weight_lepveto";
+    	mc_selection = HistoPlot::add_mva_cut_to_selection(mc_selection,cut_arr[i]  );
+			double data_in_ctrl     = MCWeights::get_nevents(output_data_chain, mva_output, with_cut, variables, 
+                        mc_selection, output_bg_chains[6]->label, false);
+  double mc_weight[8] = {1,1,1,1,1,1,1,1};
 
+  std::vector<double> mc_weights_vector (mc_weight, mc_weight + sizeof(mc_weight) / sizeof(mc_weight[0]));
+
+/			double other_bg_in_ctrl = MCWeights::get_other_bg_in_ctrl(0,mc_weights_vector, output_bg_chains, mva_output, with_cut, variables, mc_selection, 6, false);*/
+			
+//cout<<data_in_ctrl<<"\n";
+		        //cout<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
+//cout<<MCWeights::calc_nunu_weight_error( output_data_chain, output_bg_chains, output_bg_chains[6] , mva_output,  with_cut, variables,  cut_arr[i], false)<<"\n";
 			DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
 				mva_output, true, variables, output_graph_name, cut_arr[i]);
 		}

@@ -41,7 +41,7 @@ double MCWeights::get_nevents(DataChain* data_chain, Variable* var, bool with_cu
 {
 
   TH1F* h = HistoPlot::build_1d_histo(data_chain, var, true, false, "goff", variables, selection);
-  double integral = h->Integral();//HistoPlot::get_histo_integral(, with_cut, var);
+  double integral = h->Integral();
   //cout<<"integral: "<<integral;
 
   return integral;
@@ -81,6 +81,7 @@ bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int traine
   double weight;
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
   double other_bg_in_ctrl = get_other_bg_in_ctrl(0,mc_weights, bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg);
+cout<<"in histoplot call bg in control, data"<< other_bg_in_ctrl<<","<<data_in_ctrl<<"\n";
 
   string nunu_selection ="((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
 
