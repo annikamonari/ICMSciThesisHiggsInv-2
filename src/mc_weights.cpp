@@ -29,7 +29,7 @@ std::string MCWeights::get_mc_selection_str(DataChain* bg_chain, Variable* varia
   		selection_str.erase(1, 2);
   }
 
-  cout<<"mc selection string="<<selection_str<<"\n";
+  //cout<<"mc selection string="<<selection_str<<"\n";
   // This function below checks to see if mva_cut != ""
   selection_str = HistoPlot::add_mva_cut_to_selection(selection_str, mva_cut);
   //std::cout << "Selection str in get_mc_select_str: " << selection_str << std::endl;
@@ -81,7 +81,7 @@ bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int traine
   double weight;
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
   double other_bg_in_ctrl = get_other_bg_in_ctrl(0,mc_weights, bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg);
-cout<<"in histoplot call bg in control, data"<< other_bg_in_ctrl<<","<<data_in_ctrl<<"\n";
+//cout<<"in histoplot call bg in control, data"<< other_bg_in_ctrl<<","<<data_in_ctrl<<"\n";
 
   string nunu_selection ="((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
 

@@ -283,7 +283,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 	else if (method_name == "MLP")
 	{
-		mva_output = new Variable("output","MVA Output","0.0","1.0","","","50","1", "", false);
+		mva_output = new Variable("output","MVA Output","0.0","1.0","","","100","1", "", false);
 	}
 	std::cout << "=> Declared MVA_Output Variable" << std::endl;
 
@@ -294,7 +294,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //_________________________
 cout<<"step 4 in mva analysis"<<endl;
 
-//HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
 
 //output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
