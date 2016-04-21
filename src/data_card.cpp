@@ -49,11 +49,11 @@ cout<<"data at opt val is: "<<get_total_data_events(data_chain, var,with_cut, va
   create_weights_series(data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut,rates_d, data);
   std::cout << "weights and errors added to series\n"; 
 }
-void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,int cut_number)
+void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,int cut_number, bool use_data)
 {
   string fline = get_line_from_file(weights_file_name, cut_number);
   std::vector<string> line_vector = DataCard::get_vector_from_line(fline);
-  double total = DataCard::get_total_events_from_line(line_vector);
+  double total = DataCard::get_total_events_from_line(line_vector,use_data);
   std::vector<double> rates = DataCard::get_rates_from_line(line_vector);
   std::vector<double> errors = DataCard::get_errors_from_line(line_vector);
   
@@ -81,7 +81,7 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
 		cut_num_str = "1.0"+double_to_str(cut_number % 100);
 	}
   }
-  std::string data_card_name = "Optimum-MLP-config-output>" + cut_num_str + ".txt";
+  std::string data_card_name = "Opt-MLP-Data-output>" + cut_num_str + ".txt";
   std::cout << data_card_name << std::endl;
   fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
   int size = 9;
@@ -133,7 +133,7 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 			var, with_cut,  variables, mva_cut, if_parked);// W taunu
 
 	std::fstream fsw;
-	fsw.open ("MLPweights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+	fsw.open ("BDTweights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 	fsw<<mva_cut;
 	fsw<<","<<rates_d[0]<<",0";
 	fsw<<","<<rates_d[1]<<",,"<<mc_weights[0]<<","<<mc_weight_errors[0];
@@ -151,7 +151,7 @@ void DataCard::create_weights_series(DataChain* data_chain, DataChain* signal_ch
 
 string DataCard::get_line_from_file(const char* weights_file_name,int cut_number)
 {
-	int line_number = cut_number+ 3; //cut number of 1 corresponds to output>0.01 
+	int line_number = cut_number+ 2; //cut number of 1 corresponds to output>0.01 
         double total;
 	std::ifstream ifs;
 	ifs.open (weights_file_name, std::fstream::in);
@@ -171,7 +171,7 @@ std::vector<string> DataCard::get_vector_from_line(string line)
 	string string_before_comma;
         int comma_position;
 
-	for(int i=0;i<56;i++)
+	for(int i=0;i<57;i++)
 	{
 		comma_position =line.find(",");
 	//	cout<<"commas position"<<comma_position<<"\n";
@@ -182,10 +182,14 @@ std::vector<string> DataCard::get_vector_from_line(string line)
 	}
 	return line_vector;
 }
-double DataCard::get_total_events_from_line(std::vector<string> line_vector)
+double DataCard::get_total_events_from_line(std::vector<string> line_vector, bool use_data)
 {
 	double total_events;
-
+  if(use_data)
+  {
+  	total_events = atof(line_vector[56].c_str());
+  }
+  else{
 	for(int i=1;i<6;i++)
 	{
 		total_events += atof(line_vector[7*i-4].c_str());
@@ -194,7 +198,7 @@ double DataCard::get_total_events_from_line(std::vector<string> line_vector)
 	total_events += atof(line_vector[37].c_str());//VV
 	total_events += atof(line_vector[43].c_str());// Z nunu
 	total_events += atof(line_vector[50].c_str());// QCD
-
+  }
 	return total_events;
 }
 std::vector<double> DataCard::get_rates_from_line(std::vector<string> line_vector)

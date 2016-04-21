@@ -61,10 +61,10 @@ std::vector<Variable*> SuperVars::get_discriminating_vars()
                          dijetmetnomu_ptfraction, 
 			dijetmetnomu_vectorialSum_pt, jet_csv2, 
                           dijet_dphi, dijet_M,
-                          alljetsmetnomu_mindphi,metnomu_significance/*, forward_tag_eta, dijet_deta, 
+                          alljetsmetnomu_mindphi,metnomu_significance, forward_tag_eta, dijet_deta, 
   		  	                   sqrt_ht, metnomuons ,jet1_pt,jet2_pt, jet1_eta,jet2_eta, jet1_phi,jet2_phi,
 																										jet_csv1, metnomu_x,metnomu_y,sumet,mht,unclustered_et,
-  		                      jetmetnomu_mindphi,jetunclet_mindphi,metnomuunclet_dphi, jet1metnomu_scalarprod,jet2metnomu_scalarprod*/
+  		                      jetmetnomu_mindphi,jetunclet_mindphi,metnomuunclet_dphi, jet1metnomu_scalarprod,jet2metnomu_scalarprod
 						};
 
   std::vector<Variable*> vars (var_arr, var_arr + sizeof(var_arr) / sizeof(var_arr[0]));

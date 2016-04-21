@@ -134,19 +134,8 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 		   reader->AddVariable("dijet_deta", &dijet_deta);
 		   reader->AddVariable("sqrt_ht", &sqrt_ht);
 		   reader->AddVariable("metnomuons", &metnomuons);
-
-     reader->AddSpectator("total_weight_lepveto", &total_weight_lepveto);
-     reader->AddSpectator("nselmuons", &nselmuons);
-     reader->AddSpectator("m_mumu", &m_mumu);
-     reader->AddSpectator("ntaus", &ntaus);
-     reader->AddSpectator("nselelectrons", &nselelectrons );
-	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
-	reader->AddSpectator("nvetomuons",  &nvetomuons);
-
-
 		   reader->AddVariable("jet1_pt", &jet1_pt);
 		   reader->AddVariable("jet2_pt", &jet2_pt);
-
 		   reader->AddVariable("jet1_eta", &jet1_eta);
 		   reader->AddVariable("jet2_eta", &jet2_eta);
 		   reader->AddVariable("jet1_phi", &jet1_phi);
@@ -162,6 +151,15 @@ TTree* BDTAnalysis::evaluate_BDT(DataChain* bg_chain, std::vector<Variable*>* va
 		   reader->AddVariable("metnomuunclet_dphi", &metnomuunclet_dphi);
 		   reader->AddVariable("jet1metnomu_scalarprod", &jet1metnomu_scalarprod);
 		   reader->AddVariable("jet2metnomu_scalarprod", &jet2metnomu_scalarprod);
+
+     reader->AddSpectator("total_weight_lepveto", &total_weight_lepveto);
+     reader->AddSpectator("nselmuons", &nselmuons);
+     reader->AddSpectator("m_mumu", &m_mumu);
+     reader->AddSpectator("ntaus", &ntaus);
+     reader->AddSpectator("nselelectrons", &nselelectrons );
+	reader->AddSpectator("nvetoelectrons", &nvetoelectrons);
+	reader->AddSpectator("nvetomuons",  &nvetomuons);
+
 
      std::string weight_file_path = "weights/TMVAClassification" + job_name + "_BDT.weights.xml";
 
