@@ -294,7 +294,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //_________________________
 cout<<"step 4 in mva analysis"<<endl;
 
-HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+//HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
 
 
 //output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
@@ -494,7 +494,7 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 		folder_name += "/" + trained_output_str.substr(output_name_idx + 1, -1);
 		
 		std::vector<std::string> cut_arr = get_mva_cut_range(sign, min, max, digits);
-cout<<"data in zll control region"<<"\n";
+//cout<<"data in zll control region"<<"\n";
 		for (int i = 0; i < cut_arr.size(); i++)
 		{
 			std::string output_graph_name = HistoPlot::replace_all(folder_name, ".root", cut_arr[i] + ".png");
@@ -511,7 +511,13 @@ cout<<"data in zll control region"<<"\n";
 /			double other_bg_in_ctrl = MCWeights::get_other_bg_in_ctrl(0,mc_weights_vector, output_bg_chains, mva_output, with_cut, variables, mc_selection, 6, false);*/
 			
 //cout<<data_in_ctrl<<"\n";
-		        //cout<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
+ // double mc_weights_arr[] = {};
+//std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0]));
+		        cout<<"Data: "<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
+//TH1F* histo_bg;
+
+// DataCard::get_total_nevents(output_data_chain, 6,  output_bg_chains, mva_output , with_cut,NULL,
+//  mc_weights_vector,cut_arr[i] );
 //cout<<MCWeights::calc_nunu_weight_error( output_data_chain, output_bg_chains, output_bg_chains[6] , mva_output,  with_cut, variables,  cut_arr[i], false)<<"\n";
 			DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
 				mva_output, true, variables, output_graph_name, cut_arr[i]);

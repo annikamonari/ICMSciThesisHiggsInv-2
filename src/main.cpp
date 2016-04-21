@@ -33,7 +33,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
   int min = 0;//1769; // the minimum value you want cuts to be from
-  int max =80;//1770; // max value you want cuts to be to
+  int max =70;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
 
@@ -61,13 +61,30 @@ for(int i=0;i<72;i++)
 {
 	DataCard::create_card_from_MC_weights_file("MLP_extrapolated_weights.csv",i);
 }*/
+
+
 TFile* trained_file;
 /*for(int j=0; j<1;j++){
 for(int i =0; i<3;i++){*/
 trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
   "300", BoostType[0], "0.2", "GiniIndex", "-1", NeuronType[0], 
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
+
+//  double mc_weights_arr[] = {};
+  string selection = "((alljetsmetnomu_mindphi>2.0) &&(nvetomuons==0)&&(nvetoelectrons==0)&&(jet1_pt>50.0)&&(jet2_pt>45.0)&&(metnomu_significance>3.5)&&(dijet_deta>4.2))";
+
+    TH1F* histo = HistoPlot::build_1d_histo(data_chain, cut_vars[0], with_cut, false, "goff", &cut_vars,selection, 1, mva_cut);
+    double integral = histo->Integral();
+    cout<<data_chain->label<<": "<<integral<<endl;
+
+/*for(int i=0; i<8;i++){
+    TH1F* histo_bg = HistoPlot::build_1d_histo(bg_chains[i], cut_vars[0], with_cut, false, "goff", &cut_vars,"", mc_weights_arr[i], mva_cut);
+    integral = histo_bg->Integral();
+    cout<<bg_chains[i]->label<<": "<<integral<<endl;
+}*/
+
 /*
+
 int var_index[] ={7,11,12,5,6,8};// forward_tag_eta, jet1_pt, jet2_pt,alljetsmetnomu_mindphi, metnomu_significance, dijet_deta
 for(int i=3;i<4;i++)
 {
@@ -81,7 +98,7 @@ for(int i=3;i<4;i++)
 		HistoPlot::plot_control(vars[var_index[j]], data_chain,  bg_chains, &cut_vars, file_name, bg_chains[i]->lep_sel , "");
 	}
 }
-*/    
+    */
 /*	HistoPlot::plot_control_testTree(bg_to_train, cut_vars[0], mva_output_test_chain,
 		output_data_chain, output_bg_chains,
 		&vars, "ev_control.png",
@@ -105,16 +122,16 @@ for(int i=3;i<4;i++)
    std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
    MVAAnalysis::get_estimators(single_file_vector);
 //}*/
-/*for( int i =10;i< 11;i++)
+/*for( int i = 6;i < 7;i++)
 {
   cout<<vars[i]->name<<endl;
         string plot_name = "cuts/";
 	plot_name.append(vars[i]->name);
 	plot_name.append(".png");
-	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, false, NULL, true, plot_name);
+	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, true, &cut_vars , true, plot_name);
 }
-cout<<"plotted graph\n";
-*/
+cout<<"plotted graph\n";*/
+
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
 cout<<"got regular mc weights\n";
 

@@ -4,17 +4,17 @@ SuperVars::SuperVars()
 {
   forward_tag_eta        = new Variable("forward_tag_eta","Forward Tag #eta","1.8","4.5","1.8",
                                         "","20","1", "", true);//why is there upper limit
-  dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","4.2","7","4.2","","20","1", "");//why is there upper limit
+  dijet_deta             = new Variable("dijet_deta","Dijet #Delta#eta","4.2","","4.2","","20","1", "");//why is there upper limit
   metnomu_significance   = new Variable("metnomu_significance","MET Significance (No Muons)",
-                                        "3.5","10","3.5","","20","1", "");
+                                        "3.0","","3.5","","20","1", "");
   sqrt_ht                = new Variable("sqrt_ht","Square Root HCAL Scalar Sum of Energy","0.0","35.0","9.0",
                                         "18.0","20","1", "GeV^{0.5}");
-  alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)","2.0","3.15","2.0","","20","1", "");
+  alljetsmetnomu_mindphi = new Variable("alljetsmetnomu_mindphi","All Jets - MET Min. #Delta#phi (No Muons)","2.0","","2.0","","20","1", "");
   dijet_M                = new Variable("dijet_M","Dijet Mass","0.0","2000","","","10","1", "GeV");// whyis there upper limit
   metnomuons             = new Variable("metnomuons","MET (No Muons)","0.0","2000","120.0","",//why the upper limit?
                                         "50","50", "GeV");
-  jet1_pt                 = new Variable("jet1_pt","Jet1pt","50.0","250","50.0","","20","", "GeV");
-  jet2_pt                 = new Variable("jet2_pt","Jet2pt","45.0","150","45.0","","20","", "GeV");
+  jet1_pt                 = new Variable("jet1_pt","Jet1pt","50.0","","50.0","","20","", "GeV");
+  jet2_pt                 = new Variable("jet2_pt","Jet2pt","45.0","","45.0","","20","", "GeV");
   jet1_eta = new Variable("jet1_eta","jet1_eta", "-5.0", "5.0", "-5.0", "5.0","50","1","");
   jet2_eta = new Variable("jet2_eta","jet2_eta", "-5.0", "5.0", "-5.0", "5.0","50","1","");
   jet1_phi = new Variable("jet1_phi","jet1_phi", "-4.0", "4.0", "-4.0", "4.0","50","1","");

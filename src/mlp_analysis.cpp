@@ -2,7 +2,7 @@
 
 TFile* MLPAnalysis::create_MLP(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,
 																															std::string folder_name, const char* NeuronType, const char* NCycles, const char* HiddenLayers,
-																															const char* LearningRate, std::string job_name)
+																															const char* LearningRate, std::string job_name,bool is_data)
 {
 	  if (!opendir(folder_name.c_str()))
 	  {
@@ -125,6 +125,8 @@ std::string job_name, bool unique_output_files)
      reader->AddVariable("jet_csv2", &jet_csv2);
      reader->AddVariable("dijet_dphi", &dijet_dphi);
      reader->AddVariable("dijet_M", &dijet_M);
+		   reader->AddVariable("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
+		   reader->AddVariable("metnomu_significance", &metnomu_significance);
 
      reader->AddSpectator("total_weight_lepveto", &total_weight_lepveto);
      reader->AddSpectator("nselmuons", &nselmuons);
@@ -137,8 +139,6 @@ std::string job_name, bool unique_output_files)
 	reader->AddSpectator("jetmetnomu_mindphi",  &jetmetnomu_mindphi);
 	reader->AddSpectator("mht",  &mht);	
 	   
-		   reader->AddVariable("alljetsmetnomu_mindphi", &alljetsmetnomu_mindphi);
-		   reader->AddVariable("metnomu_significance", &metnomu_significance);
 
 
 /*
@@ -230,6 +230,8 @@ std::string job_name, bool unique_output_files)
 	   	      data->GetEntry(ievt);
 
 	   	      output = reader->EvaluateMVA( "MLP method" );
+			//Double_t mvaErr = reader->GetMVAError();
+			//std::cout<<mvaErr<<"\n";
 	   	      output_tree->Fill();
 	   	      histNn->Fill(output);
 	   	   }

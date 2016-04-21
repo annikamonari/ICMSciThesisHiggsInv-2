@@ -21,7 +21,7 @@ class MLPAnalysis
 
 	 static TFile* create_MLP(DataChain* bg_chain, DataChain* signal_chain, std::vector<Variable*>* variables,
 																																									std::string folder_name, const char* NeuronType, const char* NCycles, const char* HiddenLayers,
-																																									const char* LearningRate, std::string job_name);
+																																									const char* LearningRate, std::string job_name,bool is_data=false);
 
 	 static TTree* evaluate_MLP(DataChain* bg_chain, std::vector<Variable*>* variables, std::string output_name,
 																																										std::string job_name, bool unique_output_files);

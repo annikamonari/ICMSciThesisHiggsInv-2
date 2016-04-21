@@ -29,9 +29,9 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   //std::cout << signal_histo << std::endl;
   TH1F* data_histo;
   if (plot_data) {data_histo = draw_data(data, var, with_cut, legend, variables, mva_cut);}
-  stack.Add(signal_histo);
+  //stack.Add(signal_histo);
   stack.Draw();
-  //signal_histo->Draw("SAME");
+  signal_histo->Draw("SAME");
 
   cout<<"total data ="<<data_histo->Integral()<<"\n";
   if (plot_data) {data_histo->Draw("SAME");}
@@ -43,11 +43,11 @@ void HistoPlot::draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
   std::vector<TH1F*> plot_histos_vector (plot_histos, plot_histos + sizeof(plot_histos) / sizeof(plot_histos[0]));
   TH1F* max_histo      = get_max_histo(plot_histos_vector);
   std::cout << "got max" << max_histo << std::endl;
-  stack.SetMaximum(get_histo_y_max(max_histo)*1.15);
+  stack.SetMaximum(get_histo_y_max(max_histo)*1.5);
 
   build_legend(legend, signal_histo, var, with_cut);
 cout<<"legend built"<<endl;
-  draw_subtitle(var, variables, with_cut, data, "", mva_cut);
+//  draw_subtitle(var, variables, with_cut, data, "", mva_cut);
   std::cout << "drew subtitle" << std::endl;
   p3->cd();
   TH1F* data_bg_ratio_histo;
@@ -417,9 +417,10 @@ cout<<","<<mc_weights_vector[2];
 cout<<","<<mc_weights_vector[3];
 cout<<","<<mc_weights_vector[6]<<"\n";*/
   }
-
-    //std::cout << bg_chains[i]->label <<": "<<mc_weight[i]<<"\n";
-
+ /* for(int i =0; i < 8;i++)
+  {
+    std::cout << bg_chains[i]->label <<": "<<mc_weights_vector[i]<<"\n";
+  }*/
 
   return mc_weights_vector;
 }
@@ -618,7 +619,7 @@ THStack HistoPlot::draw_stacked_histo(TLegend* legend, Variable* var, std::vecto
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::string mva_cut)
 {
   THStack stack(var->name_styled, "");
-  double mc_weights_arr[] = { 0.34, 0.74, 0.38, 1.25, 1, 1,0.63, 1};
+  double mc_weights_arr[] = { 1, 1, 1, 1, 1, 1,1, 1};
   std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0])); 
   for(int i = 0; i < bg_chains.size(); i++) {
     TH1F* single_bg_histo = draw_background(bg_chains[i], var, colours()[i], with_cut, variables, mc_weights_vector[i],mva_cut);
@@ -1050,7 +1051,7 @@ THStack HistoPlot::draw_stacked_control(TLegend* legend, Variable* var, std::vec
 {
   THStack stack(var->name_styled, "");
   
-  std::cout << "selection in draw stacked control histo " << selection << std::endl;
+  //std::cout << "selection in draw stacked control histo " << selection << std::endl;
   for(int i = 0; i < bg_chains.size(); i++) {
       //cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
       TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, mc_weights_vector[i], mva_cut);
