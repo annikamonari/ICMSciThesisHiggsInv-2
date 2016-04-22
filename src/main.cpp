@@ -32,8 +32,8 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   std::string method_name = "BDT";
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
-  int min = -49;//1769; // the minimum value you want cuts to be from
-  int max =40;//1770; // max value you want cuts to be to
+  int min = -80;//1769; // the minimum value you want cuts to be from
+  int max =60;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
 
