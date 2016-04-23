@@ -712,7 +712,7 @@ void HistoPlot::style_stacked_histo(THStack* hs, const char* x_label)
 
 void HistoPlot::style_ratio_histo(TH1F* single_histo, const char* x_label)
 {
-  single_histo->GetYaxis()->SetTitle("Signal/Background"); //when not tmva was data/MC
+  single_histo->GetYaxis()->SetTitle("Data/Background"); //when not tmva was data/MC
   single_histo->GetYaxis()->SetLabelSize(0.12);
   single_histo->GetYaxis()->SetTitleOffset(0.45);
   single_histo->GetYaxis()->SetTitleSize(0.12);
@@ -930,7 +930,7 @@ std::string HistoPlot::build_signal_leg_entry(Variable* var, DataChain* signal_c
   return signal_leg_str;
 }
 //_______________________________________________________________________________________________________________________
-void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<DataChain*> bg_chains,
+void HistoPlot::plot_control(bool not_tau, Variable* mva_output, DataChain* data, std::vector<DataChain*> bg_chains,
                                       std::vector<Variable*>* variables, std::string file_name, 
                                       std::string control, std::string mva_cut)
 {
@@ -957,7 +957,7 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
    //step 1.2 clone data chain
 
   string selection;
-  if(strcmp(control.c_str(), "(nselelectrons == 1)&&(nselmuons == 0)&&(nvetomuons==0)&&(ntaus == 0)"))
+  if(not_tau)
   { 
   	selection = "((jet1_pt>50.0)&&(jet2_pt>45.0)&&(metnomu_significance>3.5)&&(dijet_deta>4.2)&&(alljetsmetnomu_mindphi>2.0)&&" + control + ")*total_weight_lepveto";
   }
@@ -969,7 +969,7 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //step 2: create background histo
   //step 2.1: get zjets mc weight
-  double mc_weights_arr[] = { 0.34, 0.74, 0.38, 1.25, 1, 1,0.63, 1};
+  double mc_weights_arr[] = { 0.22, 0.73, 0.32, 1.24, 1, 1,1.70, 1};
   std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0]));  
 
 
@@ -1009,7 +1009,7 @@ void HistoPlot::plot_control(Variable* mva_output, DataChain* data, std::vector<
   build_legend(legend, data_histo, mva_output, true);
 
   //step 5.2 draw subtitles
-  draw_subtitle(mva_output, variables, true, data, "", mva_cut);
+  //draw_subtitle(mva_output, variables, true, data, "", mva_cut);
   std::cout << "step 5 done" << std::endl;
 
 
@@ -1056,7 +1056,7 @@ THStack HistoPlot::draw_stacked_control(TLegend* legend, Variable* var, std::vec
   THStack stack(var->name_styled, "");
   
   //std::cout << "selection in draw stacked control histo " << selection << std::endl;
-  for(int i = 0; i < bg_chains.size(); i++) {
+  for(int i = 0; i < 8; i++) {
       //cout<<bg_chains[i]->label<<" === background, mc weight: "<<mc_weights_vector[i]<<endl;
       TH1F* single_bg_histo = draw_background_from_trees(bg_chains[i], var, colours()[i], selection, mc_weights_vector[i], mva_cut);
       stack.Add(single_bg_histo);

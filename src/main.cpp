@@ -38,7 +38,7 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   int min = -80;//1769; // the minimum value you want cuts to be from
   int max =25;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
-
+/*
 for(int i=0; i<vars.size();i++)
 {
 	string file_name;
@@ -47,7 +47,7 @@ for(int i=0; i<vars.size();i++)
 	file_name.append(vars[i]->name);
 	file_name.append(".png");
 	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, with_cut,&cut_vars,  true, file_name,mva_cut);
-}
+}*/
 
 
 //double e_f = HistoPlot::get_efficiency_factor(ewk_chain,qcd_chain,cut_vars[0], &cut_vars, mva_cut);
@@ -79,11 +79,12 @@ for(int i=0; i<8;i++){
     cout<<bg_chains[i]->label<<": "<<integral<<endl;
 }*/
 
-/*
 
+bool not_tau=true;
 int var_index[] ={7,11,12,5,6,8};// forward_tag_eta, jet1_pt, jet2_pt,alljetsmetnomu_mindphi, metnomu_significance, dijet_deta
 for(int i=3;i<4;i++)
 {
+	if(i==3){not_tau=false;}
 	string file_name;
 	for(int j=0;j<6;j++)
 	{
@@ -91,10 +92,10 @@ for(int i=3;i<4;i++)
 		file_name.append("_");
 		file_name.append(bg_chains[i]->label);
 		file_name.append("_control.png");
-		HistoPlot::plot_control(vars[var_index[j]], data_chain,  bg_chains, &cut_vars, file_name, bg_chains[i]->lep_sel , "");
+		HistoPlot::plot_control(not_tau, vars[var_index[j]], data_chain,  bg_chains, &cut_vars, file_name, bg_chains[i]->lep_sel , "");
 	}
 }
-for( int i = 6;i < 7;i++)
+/*for( int i = 6;i < 7;i++)
 {
   cout<<vars[i]->name<<endl;
         string plot_name = "cuts/";
@@ -102,8 +103,8 @@ for( int i = 6;i < 7;i++)
 	plot_name.append(".png");
 	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, true, &cut_vars , true, plot_name);
 }
-cout<<"plotted graph\n";*/
-
+cout<<"plotted graph\n";
+*/
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
 cout<<"got regular mc weights\n";
 

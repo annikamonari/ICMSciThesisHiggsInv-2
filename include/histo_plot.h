@@ -144,7 +144,7 @@ DataChain* bg_chain,
 
   static std::string build_signal_leg_entry(Variable* var, DataChain* signal_chain);
 
-  static void plot_control(Variable* mva_output, DataChain* data, std::vector<DataChain*> bg_chains,
+  static void plot_control(bool not_tau, Variable* mva_output, DataChain* data, std::vector<DataChain*> bg_chains,
                                       std::vector<Variable*>* variables, std::string file_name, 
                                       std::string control, std::string mva_cut);
 
