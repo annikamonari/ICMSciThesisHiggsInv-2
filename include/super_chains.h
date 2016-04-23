@@ -19,6 +19,8 @@ class SuperChains
   DataChain* data_chain;
   DataChain* all_bg;
   DataChain* test_chain;
+  DataChain* bg_zll_ewk;
+  DataChain* bg_zll_qcd;
 
   SuperChains();
 

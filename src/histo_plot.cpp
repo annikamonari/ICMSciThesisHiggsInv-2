@@ -91,7 +91,7 @@ void HistoPlot::plot_evaluated_zjets_vv_testTree(int bg_trained, Variable* mva_o
 DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* variables, std::string file_name, std::string mva_cut)
 {
   //////////////////////////////////////////////////////////////////
-  cout<<"---------------------Started HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
+  /*cout<<"---------------------Started HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
   //step 1: initialise TCanvas
   TCanvas* c1     = new TCanvas("c1", mva_output->name_styled, 800, 800);
   TPad* p1        = new TPad("p1", "p1", 0.0, 0.95, 1.0, 1.0);
@@ -136,12 +136,12 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
   selection = add_mc_to_selection(testTree_chain,mva_output, selection, trained_mc_weight);
 
-  //step 2.4 add mc weight to selection  
+  //step 2.4 add mc weight to selection  */
   /*std::string mc_weight_str = get_string_from_double(mc_weight);
   selection = selection + "*" + mc_weight_str; */
   //std::cout << "selection for test tree background =============" << std::endl;
   //std::cout<<"final selection: "<< selection <<"\n";
-
+/*
   //step 2.5: get background histo  problem area caused by signal using the same chain, try cloning the tree and running agsain
   testTree_chain->chain->SetLineColor(1);
   testTree_chain->chain->SetFillColor(colours()[bg_trained]);
@@ -224,7 +224,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
   //step 6: draw signal/background secondary histogram
   //step 6.1 change pad then create signal/background histogram
   p3->cd();
-  TH1F* signal_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo,/*trained_histo */(TH1F*)(stack.GetStack()->Last()));
+  TH1F* signal_bg_ratio_histo = data_to_bg_ratio_histo(signal_histo,*//*trained_histo *//*(TH1F*)(stack.GetStack()->Last()));
 
   //step 6.2 draw signal/background histo
   signal_bg_ratio_histo->Draw("e1");
@@ -252,7 +252,7 @@ DataChain* data, std::vector<DataChain*> bg_chains,std::vector<Variable*>* varia
 //cout<<"file saved\n";
   c1->Close();
   std::cout << "step 7 done" << std::endl;
-cout<<"---------------------Finished HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;
+cout<<"---------------------Finished HistoPlot::plot_evaluated_zjets_vv_testTree --------------------------------"<<endl;*/
 }
 
 
@@ -394,16 +394,18 @@ std::string HistoPlot::add_mva_cut_to_selection(std::string selection, std::stri
 }
 //_______________________________________________________________________________________________________________________
 
-std::vector<double> HistoPlot::mc_weights(DataChain* data, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, 
+std::vector<double> HistoPlot::mc_weights(DataChain* ewk_chain, DataChain* qcd_chain,DataChain* data, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, 
 std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool double_test_bg, bool if_parked)
 {//cout<<"in HistoPlot::mc_weights\n";
   double mc_weight[8];
-
+  double e_f = HistoPlot::get_efficiency_factor( ewk_chain,  qcd_chain,var, variables, mva_cut);
   std::vector<double> mc_weights_vector (mc_weight, mc_weight + sizeof(mc_weight) / sizeof(mc_weight[0]));
 
   for(int i =0; i< 8;i++){mc_weights_vector[i]=1;}
   mc_weights_vector[0] = MCWeights::calc_mc_weight(mc_weights_vector,0, data, bg_chains, bg_chains[0], var, with_cut,
-						variables, mva_cut, trained_bg, double_test_bg,if_parked)*1.513;
+						variables, mva_cut, trained_bg, double_test_bg,if_parked)*e_f;
+//cout<<"mc weights:"<<mc_weights_vector[0]<<"\n";
+
   mc_weights_vector[6] = MCWeights::calc_nunu_mc_weight(data, bg_chains, bg_chains[6], var, 
  with_cut, variables, mva_cut, trained_bg, double_test_bg,if_parked);
 
@@ -411,11 +413,10 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
   {
   	mc_weights_vector[i] = MCWeights::calc_mc_weight(mc_weights_vector,i, data, bg_chains, bg_chains[i], var, with_cut,
 						variables, mva_cut, trained_bg, double_test_bg,if_parked);
-/*cout<<"mc weights:"<<mc_weights_vector[0];
-cout<<","<<mc_weights_vector[1];
-cout<<","<<mc_weights_vector[2];
-cout<<","<<mc_weights_vector[3];
-cout<<","<<mc_weights_vector[6]<<"\n";*/
+//cout<<","<<mc_weights_vector[1];
+//cout<<","<<mc_weights_vector[2];
+//cout<<","<<mc_weights_vector[3];
+//cout<<","<<mc_weights_vector[6]<<"\n";
   }
  /* for(int i =0; i < 8;i++)
   {
@@ -430,9 +431,10 @@ cout<<","<<mc_weights_vector[6]<<"\n";*/
 // region (its just sqrt(unweighted mc events in signal) / unweighted mc events in signal)
 // note:: changed so that if mc weight is 1 then dont calculate the mc weight error
 // TODO make error use sumw2 and integralanderror
-std::vector<double> HistoPlot::get_bg_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
+std::vector<double> HistoPlot::get_bg_errors(int bg_to_train,DataChain* ewk_chain, DataChain* qcd_chain, DataChain* data, std::vector<DataChain*> bg_chains,
 Variable* var, bool with_cut, std::vector<Variable*>* variables,std::vector<double> bg_mc_weights, std::string mva_cut, bool if_parked)
 {
+double e_f = HistoPlot::get_efficiency_factor( ewk_chain,  qcd_chain,var, variables, mva_cut);
 string selection="";
 	 double bg_errors[bg_chains.size()];
 	double integral[8];
@@ -467,7 +469,7 @@ string selection="";
 	   if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 	   {
              double nunu_weight_error =  MCWeights::calc_nunu_weight_error(data, bg_chains, bg_chains[i],
- var,  with_cut,  variables,  mva_cut, if_parked);
+ var,  with_cut,  variables,  mva_cut, if_parked)*e_f;
 //cout<<"zll_weight_error: "<<zll_weight_error<<"\n";
 	    /* double N_nunu = integral[i];
 	     double to_root = pow((bg_mc_weights[i]*pow(N_nunu,0.5)),2)+pow((nunu_weight_error*N_nunu),2);
@@ -1063,5 +1065,152 @@ THStack HistoPlot::draw_stacked_control(TLegend* legend, Variable* var, std::vec
   }
   return stack;
 }
+//_______________________________________________________________________________________________________________________
 
+double HistoPlot::get_efficiency_factor(DataChain* ewk_chain,DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables,std::string mva_cut)
+{
+	double e_S,e_C;
+
+	e_S = get_e_S(ewk_chain,qcd_chain, var, variables, mva_cut);
+	e_C = get_e_C(ewk_chain,qcd_chain, var, variables, mva_cut);
+
+	//cout<<e_S/e_C<<"\n";
+	return e_S/e_C;
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_e_S(DataChain* ewk_chain, DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut)
+{
+	double X_Zvv_ewk = 1380; //cross section in pb
+	double X_Zvv_qcd = 6600;
+
+	double R_S_ewk = get_R_S_ewk(ewk_chain, var, variables, mva_cut);
+	double R_S_qcd = get_R_S_qcd(qcd_chain, var, variables, mva_cut);
+
+	//cout<<"e_S:"<<(R_S_ewk*X_Zvv_ewk + R_S_qcd*X_Zvv_qcd)/(X_Zvv_ewk+X_Zvv_qcd)<<"\n";
+	return (R_S_ewk*X_Zvv_ewk + R_S_qcd*X_Zvv_qcd)/(X_Zvv_ewk+X_Zvv_qcd);
+
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_e_C(DataChain* ewk_chain, DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut)
+{
+	double X_Zmm_ewk = 0.303; //cross section in pb there ius msitake in the CMS note
+	double X_Zmm_qcd = 1168;
+
+	double R_C_ewk = get_R_C_ewk(ewk_chain, var, variables, mva_cut);
+	double R_C_qcd = get_R_C_qcd(qcd_chain, var, variables, mva_cut);
+
+	//cout<<"e_R: "<<(R_C_ewk*X_Zmm_ewk + R_C_qcd*X_Zmm_qcd)/(X_Zmm_ewk+X_Zmm_qcd)<<"\n";
+	return (R_C_ewk*X_Zmm_ewk + R_C_qcd*X_Zmm_qcd)/(X_Zmm_ewk+X_Zmm_qcd);
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_R_S_ewk(DataChain* ewk_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut)
+{
+	double N_S_ewk; // the number of Z ll EWK events in signal region
+	double N_g_ewk_Zm = 4226.5; //number of generated EWK z to ll events with a z mass cut applied
+	bool with_cut = true;
+
+    	std::string selection ="";
+ 	if(variables ==NULL)
+	{
+		selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    		selection = HistoPlot::add_classID_to_selection(selection, false);
+	}
+	else
+	{
+		selection = "((nvetomuons==0)&&(nvetoelectrons==0)&&(jet2_pt>45.0)&&(jet1_pt>50.0)&&(dijet_deta>4.2)&&(metnomu_significance>3.5)&&(alljetsmetnomu_mindphi>2.0))*total_weight_lepveto*1";
+	}
+    	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+
+	//cout<<"selection in get _r_S_ewk: "<<selection<<"\n";
+    	TH1F* histo = HistoPlot::build_1d_histo(ewk_chain, var, with_cut, false, "goff", variables, selection,1 , mva_cut);
+    	N_S_ewk = histo->Integral();
+
+	//cout<<"N_S_ewk: "<<N_S_ewk<<"\n"; 
+	//cout<<"R_S_ewk: "<<N_S_ewk/N_g_ewk_Zm<<"\n";
+	return N_S_ewk/N_g_ewk_Zm;
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_R_S_qcd(DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut)
+{
+	double N_g_qcd_Zm = 20334900; //number of generated QCD z to ll events with a z mass cut applied
+	double N_S_qcd;  // the number of Z ll QCD events in signal region
+	bool with_cut = true;
+
+    	std::string selection ="";
+ 	if(variables ==NULL)
+	{
+		selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
+    		selection = HistoPlot::add_classID_to_selection(selection, false);
+	}
+	else
+	{
+		selection = "((nvetomuons==0)&&(nvetoelectrons==0)&&(jet2_pt>45.0)&&(jet1_pt>50.0)&&(dijet_deta>4.2)&&(metnomu_significance>3.5)&&(alljetsmetnomu_mindphi>2.0))*total_weight_lepveto";
+	}
+    	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+
+	//cout<<"selection in get _r_S_qcd: "<<selection<<"\n";
+    	TH1F* histo = HistoPlot::build_1d_histo(qcd_chain, var, with_cut, false, "goff", variables, selection,1 , mva_cut);
+    	N_S_qcd = histo->Integral();
+
+	//cout<<"N_S_qcd: "<<N_S_qcd<<"\n";
+	//cout<<"R_S_qcd: "<<N_S_qcd/N_g_qcd_Zm<<"\n";
+	return N_S_qcd/N_g_qcd_Zm;
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_R_C_ewk(DataChain* ewk_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut)
+{
+	double N_g_ewk = 5781.9; //number of generated EWK z to ll events
+	double N_C_ewk; //the number of Z ll EWK events in control region
+	bool with_cut = true;
+
+    	std::string selection ="";
+ 	if(variables ==NULL)
+	{
+		selection = "((alljetsmetnomu_mindphi>2.0)&&(nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120))*total_weight_lepveto";
+    		selection = HistoPlot::add_classID_to_selection(selection, false);
+	}
+	else
+	{
+		selection ="((nvetoelectrons==0)&&(ntaus == 0)&&(nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120)&&(jet2_pt>45.0)&&(jet1_pt>50.0)&&(dijet_deta>4.2)&&(metnomu_significance>3.5)&&(alljetsmetnomu_mindphi>2.0))*total_weight_lepveto*1";//(&&((jet1_eta<0)&&(jet2_eta>0)||(jet1_eta>0)&&(jet2_eta<0))&&((metnomuons/metnomu_significance)>4)&&(metnomu_significance>4)&&(jetmetnomu_mindphi>1.0)&&(mht>20)&&(dijet_M>1200.0)&&(jet2_eta>-4.7)&&(jet2_eta<4.7)&&(jet1_eta>-4.7)&&(jet1_eta<4.7)&&(metnomuons>90)&&(dijet_deta>3.6)&&(jet2_pt>45.0)&&(jet1_pt>50.0))*total_weight_lepveto  
+	}
+	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+    	TH1F* histo = HistoPlot::build_1d_histo(ewk_chain, var, with_cut, false, "goff", variables, selection,1 , mva_cut);
+
+	N_C_ewk = histo->Integral();
+//cout<<"N_C_ewk:"<<N_C_ewk<<"\n";
+//	cout<<"R_C_ewk: "<<N_C_ewk/N_g_ewk<<"\n";
+	return N_C_ewk/N_g_ewk;
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_R_C_qcd(DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut)
+{
+	double N_g_qcd = 22789300; //number of generated QCD z to ll events
+	double N_C_qcd;// the number of Z ll QCD events in control region
+	bool with_cut = true;
+
+    	std::string selection ="";
+ 	if(variables ==NULL)
+	{
+		selection = "((alljetsmetnomu_mindphi>2.0)&&(nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120))*total_weight_lepveto";
+    		selection = HistoPlot::add_classID_to_selection(selection, false);
+	}
+	else
+	{
+		selection ="((nvetoelectrons==0)&&(ntaus == 0)&&(nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120)&&(jet2_pt>45.0)&&(jet1_pt>50.0)&&(dijet_deta>4.2)&&(metnomu_significance>3.5)&&(alljetsmetnomu_mindphi>2.0))*total_weight_lepveto*1";
+	}
+	selection = HistoPlot::add_mva_cut_to_selection(selection, mva_cut);
+    	TH1F* histo = HistoPlot::build_1d_histo(qcd_chain, var, with_cut, false, "goff", variables, selection,1 , mva_cut);
+
+	N_C_qcd = histo->Integral();
+
+	//cout<<"N_C_qcd: "<<N_C_qcd<<"\n";
+	//cout<<"R_C_qcd: "<<N_C_qcd/N_g_qcd<<"\n";
+	return N_C_qcd/N_g_qcd;
+}
 

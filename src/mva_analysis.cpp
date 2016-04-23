@@ -50,6 +50,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	}
 //_________________________________________________________________________________________________________________________________________________
 	TFile* MVAAnalysis::get_mva_results(std::vector<DataChain*> bg_chains, int bg_to_train, DataChain* signal_chain, DataChain* data_chain,
+		DataChain* ewk_chain, DataChain* qcd_chain,
 		SuperVars* super_vars, std::string folder_name, std::string method_name, const char* NTrees,
 		const char* BoostType, const char* AdaBoostBeta,const char* SeparationType,const char* nCuts,
 		const char* NeuronType, const char* NCycles, const char* HiddenLayers, const char* LearningRate,
@@ -73,7 +74,11 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			app_output_name = BDTAnalysis::BDT_output_file_path(folder_name, job_name, false,
 				NTrees, BoostType, AdaBoostBeta, SeparationType, nCuts,
 				trained_bg_label);
-			trained_output = TFile::Open("test/BDT-job_name=1-bg_zjets_vv-NTrees=300-BoostType=AdaBoost-AdaBoostBeta=0.2-SeparationType=GiniIndex-nCuts=-1.root");/*BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+			trained_output = /*BDTAnalysis::create_BDT(ewk_chain, signal_chain, &vars2, folder_name,
+				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);
+BDTAnalysis::create_BDT(qcd_chain, signal_chain, &vars2, folder_name,
+				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);*/
+TFile::Open("test/BDT-job_name=2-bg_zjets_vv-NTrees=300-BoostType=AdaBoost-AdaBoostBeta=0.2-SeparationType=GiniIndex-nCuts=-1.root");/*BDTAnalysis::create_BDT(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 				NTrees,BoostType,AdaBoostBeta, SeparationType, nCuts, job_name);*/
 		}
 		else if (method_name == "MLP")
@@ -81,7 +86,12 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 			app_output_name = MLPAnalysis::MLP_output_file_path(folder_name, job_name, false,
 				NeuronType, NCycles, HiddenLayers, LearningRate, trained_bg_label);
 
-			trained_output = TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root");/* MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
+			trained_output =/*MLPAnalysis::create_MLP(ewk_chain, signal_chain, &vars2, folder_name,
+				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);
+MLPAnalysis::create_MLP(qcd_chain, signal_chain, &vars2, folder_name,
+				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);*/
+
+ TFile::Open("test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root");/* MLPAnalysis::create_MLP(bg_chains[bg_to_train], signal_chain, &vars2, folder_name,
 				NeuronType, NCycles, HiddenLayers, LearningRate, job_name);*///bg_to_train
 		}
  // }
@@ -250,7 +260,33 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 	DataChain* bg_ch_arr[] = {zll_ch, wjets_ev_ch, wjets_muv_ch, wjets_tauv_ch, top_ch,VV_ch, zjets_vv_ch, qcd_ch };
 
 	std::vector<DataChain*> bg_chs (bg_ch_arr, bg_ch_arr + sizeof(bg_ch_arr) / sizeof(bg_ch_arr[0]));
+///////////Z->ll ewk
+	const char* zll_arr_ewk[1];
+	if(method_name == "MLP"){
+		zll_arr_ewk = {"dataTrees/bg_zll_ewk.root"};
+	}
+	else if(method_name == "BDT")
+	{
+		zll_arr_ewk = {"dataTrees/bg_zll_ewk.root"};
+	}
 
+	std::vector<const char*> zll_vector_ewk (zll_arr_ewk, zll_arr_ewk + sizeof(zll_arr_ewk)/sizeof(const char*));
+
+	DataChain* ch_ewk = new DataChain(zll_vector_ewk,z_ll_ewk_label,z_ll_ewk_legend,"(nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120)");
+
+///////////Z->ll qcd
+	const char* zll_arr_qcd[1];
+	if(method_name == "MLP"){
+		zll_arr_qcd = {"dataTrees/bg_zll_qcd.root"};
+	}
+	else if(method_name == "BDT")
+	{
+		zll_arr_qcd = {"dataTrees/bg_zll_qcd.root"};
+	}
+
+	std::vector<const char*> zll_vector_qcd (zll_arr_qcd, zll_arr_qcd + sizeof(zll_arr_qcd)/sizeof(const char*));
+
+	DataChain* ch_qcd = new DataChain(zll_vector_qcd,z_ll_qcd_label,z_ll_qcd_legend,"(nselmuons == 2)&&(m_mumu>60)&&(m_mumu<120)");
 
 //_________________________
 
@@ -266,9 +302,11 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 	std::cout << "=> All background put through MVA" << std::endl;
 
-
-
 	DataChain* output_data_chain = get_output_signal_chain(data_ch, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
+
+	DataChain* ewk_chain = get_output_signal_chain(ch_ewk, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
+
+	DataChain* qcd_chain = get_output_signal_chain(ch_qcd, vars, method_name, app_output_name, job_name,                                 		trained_bg_label, unique_output_files);
 
 	std::cout << "=> Data put through MVA" << std::endl;
 
@@ -279,7 +317,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 
 	if (method_name == "BDT")
 	{
-		mva_output = new Variable("output","MVA Output","-1.0","1.0","-1.1","1.1","100","1", "", false);
+		mva_output = new Variable("output","MVA Output","-1.0","1.0","-1.1","1.1","200","1", "", false);
 	}
 	else if (method_name == "MLP")
 	{
@@ -294,7 +332,7 @@ void MVAAnalysis::get_plots_varying_params(std::vector<DataChain*> bg_chains, in
 //_________________________
 cout<<"step 4 in mva analysis"<<endl;
 
-//HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,&vars, output_graph_name, mva_cut);
+HistoPlot::plot_evaluated_zjets_vv_testTree(bg_to_train, mva_output, mva_output_test_chain,output_data_chain, output_bg_chains,NULL, output_graph_name, mva_cut);
 
 
 //output_bg_chains[1]->chain->Draw("output>>test(100,-1.25,1.5)", "((output>0.1)&&(classID==0)&&(nselelectrons == 1))*total_weight_lepveto");
@@ -305,7 +343,7 @@ cout<<"step 4 in mva analysis"<<endl;
 
 	if (create_cards)
 		{
-			create_datacards(bg_to_train, output_data_chain,mva_output_test_chain , output_bg_chains,
+			create_datacards(ewk_chain, qcd_chain,bg_to_train, output_data_chain,mva_output_test_chain , output_bg_chains,
 							mva_output, true, NULL, trained_output, method_name, sign, min, max, digits);
 			
 		}
@@ -473,7 +511,7 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 	}
 //________________________________________________________________________________________________________________________________________________
 // creates datacards for a variety of output values
-	void MVAAnalysis::create_datacards(int bg_to_train, DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
+	void MVAAnalysis::create_datacards(DataChain*ewk_chain, DataChain*qcd_chain, int bg_to_train, DataChain* output_data_chain, DataChain* output_signal_chain, std::vector<DataChain*> output_bg_chains,
 		Variable* mva_output, bool with_cut, std::vector<Variable*>* variables, TFile* trained_output,
 		std::string method_name, std::string sign, int min, int max, double digits)
 	{
@@ -513,13 +551,13 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 //cout<<data_in_ctrl<<"\n";
  // double mc_weights_arr[] = {};
 //std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0]));
-		        cout<<"Data: "<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
+		      //  cout<<"Data: "<<DataCard::get_total_data_events(output_data_chain, mva_output, with_cut, variables, cut_arr[i])<<"\n";
 //TH1F* histo_bg;
 
 // DataCard::get_total_nevents(output_data_chain, 6,  output_bg_chains, mva_output , with_cut,NULL,
 //  mc_weights_vector,cut_arr[i] );
 //cout<<MCWeights::calc_nunu_weight_error( output_data_chain, output_bg_chains, output_bg_chains[6] , mva_output,  with_cut, variables,  cut_arr[i], false)<<"\n";
-			DataCard::create_datacard(bg_to_train, output_data_chain, output_signal_chain, output_bg_chains,
+			DataCard::create_datacard(bg_to_train,ewk_chain, qcd_chain, output_data_chain, output_signal_chain, output_bg_chains,
 				mva_output, true, variables, output_graph_name, cut_arr[i]);
 		}
 
@@ -624,7 +662,7 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 		std::vector<const char*> NCycles, std::vector<const char*> HiddenLayers,
 		std::vector<const char*> LearningRate,
 		bool unique_output_files, bool create_cards, std::string job_name)
-	{
+	{/*
 		std::string bg_label = bg_chains[bg_to_train]->label;
 		std::string folder_name = "analysis/" + method_name + "_varying_" + dir_name + "/" + bg_label;
 
@@ -789,7 +827,7 @@ std::string MVAAnalysis::create_auc_line_MLP(const char* bg_label, const char* N
 				return files;
 			}
 		}
-	}
+	*/}
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
 

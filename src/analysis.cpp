@@ -44,15 +44,35 @@ const char* z_ll_arr[] = {
                           "data/background/MC_DY3JetsToLL.root",
                           "data/background/MC_DY4JetsToLL.root",
                           "data/background/MC_DYJetsToLL_PtZ-100-madgraph.root",
-                          "data/background/MC_DYJetsToLL.root"
+                          "data/background/MC_DYJetsToLL.root",
+			  "data/background/MC_EWK-Z2j.root"
                          };
+const char* z_ll_qcd_arr[] = {
+                          "data/background/MC_DY1JetsToLL.root",
+                          "data/background/MC_DY2JetsToLL.root",
+                          "data/background/MC_DY3JetsToLL.root",
+                          "data/background/MC_DY4JetsToLL.root",
+                          "data/background/MC_DYJetsToLL_PtZ-100-madgraph.root",
+                          "data/background/MC_DYJetsToLL.root"
+				};
+const char* z_ll_ewk_arr[] = {
+			  "data/background/MC_EWK-Z2j.root"
+				};
+
+std::vector<const char*> z_ll_qcd (z_ll_qcd_arr, z_ll_qcd_arr + 
+                         sizeof(z_ll_qcd_arr)/sizeof(const char*));
+std::vector<const char*> z_ll_ewk (z_ll_ewk_arr, z_ll_ewk_arr + 
+                         sizeof(z_ll_ewk_arr)/sizeof(const char*));
 
 std::vector<const char*> z_ll (z_ll_arr, z_ll_arr + 
                          sizeof(z_ll_arr)/sizeof(const char*));
 
+const char* z_ll_ewk_label  = "bg_zll_ewk";
+const char* z_ll_ewk_legend = "Z #rightarrow ll(ewk)";
+const char* z_ll_qcd_label  = "bg_zll_qcd";
+const char* z_ll_qcd_legend = "Z #rightarrow ll(qcd)";
 const char* z_ll_label  = "bg_zll";
 const char* z_ll_legend = "Z #rightarrow ll";
-
 
 ///////////////////////////      W+jets->ev      ////////////////////////////////////////
 
@@ -145,8 +165,7 @@ const char* vv_legend = "VV";
 
 ///////////////////////////         Z+jets          ///////////////////////////////////////
 
-//"~/mproject/data/background/MC_EWK-Z2j.root"
-
+//
 
 ///////////////////////////       Z+jets->vv        ///////////////////////////////////////
 

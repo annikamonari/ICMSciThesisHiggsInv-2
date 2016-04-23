@@ -25,7 +25,17 @@ extern const char* qcd_legend;
 ///////////////////////////         Z->ll        ////////////////////////////////////////
 
 extern const char* z_ll_arr[];
+extern const char* z_ll_qcd_arr[];
+extern const char* z_ll_ewk_arr[];
+
+extern std::vector<const char*> z_ll_ewk;
+extern std::vector<const char*> z_ll_qcd;
 extern std::vector<const char*> z_ll;
+
+extern const char* z_ll_ewk_label;
+extern const char* z_ll_ewk_legend;
+extern const char* z_ll_qcd_label;
+extern const char* z_ll_qcd_legend;
 extern const char* z_ll_label;
 extern const char* z_ll_legend;
 

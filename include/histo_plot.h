@@ -25,6 +25,8 @@ class HistoPlot
     return "(nvetomuons==0)&&(nvetoelectrons==0)";
   }
 
+
+
   static void draw_plot(Variable* var, std::vector<DataChain*> bg_chains,
                         DataChain* signal_chain, DataChain* data, bool with_cut,
                         std::vector<Variable*>* variables = NULL, bool plot_data = true, std::string file_name = "",
@@ -72,7 +74,7 @@ class HistoPlot
 
   static std::string add_mva_cut_to_selection(std::string selection, std::string mva_cut_str);
 
-  static std::vector<double> mc_weights(DataChain* data, std::vector<DataChain*> bg_chains,
+  static std::vector<double> mc_weights(DataChain* ewk_chain, DataChain* qcd_chain,DataChain* data, std::vector<DataChain*> bg_chains,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables = NULL, std::string mva_cut = "",
                                  int trained_bg = 6, bool double_test_bg = false,  bool if_parked = false);
 
@@ -81,7 +83,7 @@ DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
 				std::string mva_cut = "", std::string selection="", bool if_parked=false);
 
-  static std::vector<double> get_bg_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,
+  static std::vector<double> get_bg_errors(int bg_to_train, DataChain* ewk_chain, DataChain* qcd_chain,DataChain* data, std::vector<DataChain*> bg_chains,
 																	                                 Variable* var, bool with_cut, std::vector<Variable*>* variables,
 		std::vector<double> bg_mc_weights, std::string mva_cut = "", bool if_parked=false);
 
@@ -150,7 +152,20 @@ DataChain* bg_chain,
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::vector<double> mc_weights_vector,
 				 std::string mva_cut, std::string control);
 
+  static double get_efficiency_factor(DataChain* ewk_chain, DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables,std::string mva_cut);
 
+  static double get_e_S(DataChain* ewk_chain,DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut);
+
+  static double get_e_C(DataChain* ewk_chain,DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut);
+
+  static double get_R_S_ewk(DataChain* ewk_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut);
+
+  static double get_R_S_qcd(DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut);  
+
+  static double get_R_C_ewk(DataChain* ewk_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut);
+ 
+  static double get_R_C_qcd(DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut);
+ 
 };
 
 #endif

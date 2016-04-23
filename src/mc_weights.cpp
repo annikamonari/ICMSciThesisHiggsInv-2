@@ -82,14 +82,17 @@ bool with_cut, std::vector<Variable*>* variables, std::string mva_cut,int traine
   double data_in_ctrl     = get_nevents(data, var, with_cut, variables, selection, bg_chains[trained_bg]->label, double_test_bg);
   double other_bg_in_ctrl = get_other_bg_in_ctrl(0,mc_weights, bg_chains, var, with_cut, variables, selection, trained_bg, double_test_bg);
 //cout<<"in histoplot call bg in control, data"<< other_bg_in_ctrl<<","<<data_in_ctrl<<"\n";
+  string nunu_selection;
 
-  string nunu_selection ="((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";
-
+  if(variables != NULL){nunu_selection = "((alljetsmetnomu_mindphi>2.0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";}
+  else{ nunu_selection = "((alljetsmetnomu_mindphi>2.0)&&(classID==0)&&(nvetomuons==0)&&(nvetoelectrons==0))*total_weight_lepveto";}
+  nunu_selection = HistoPlot::add_mva_cut_to_selection(nunu_selection, mva_cut);
+   
   TH1F* nunu_h = HistoPlot::build_1d_histo(nunu_chain, var, true, false, "goff", variables, nunu_selection,1,mva_cut);
   double nunu_unweighted = nunu_h->Integral();
 //cout<<"Zvv weighted total: "<<(data_in_ctrl-other_bg_in_ctrl)*5.651*1.513<<"\n";
 //cout<<"Zvv unweighted total:"<<nunu_unweighted<<"\n";
-  weight = (data_in_ctrl-other_bg_in_ctrl)*5.651*1.513/nunu_unweighted;
+  weight = (data_in_ctrl-other_bg_in_ctrl)*5.651/nunu_unweighted;
   return weight;
 }
 double MCWeights::calc_mc_weight(std::vector<double> mc_weights, int desired_bg_index,DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,Variable* var, 
@@ -187,7 +190,7 @@ if(MC_N_C!=0){
   double error_sq       = std::pow(err1,2) + std::pow(err2,2) + std::pow(err3,2);
   weight_error   = std::pow(error_sq, 0.5);
 }
-else if(MC_N_C==0){cout<<"Warning!!!\n"<<bg_chain->label<<"target background"<<" = "<<MC_N_C;
+else if(MC_N_C==0){//cout<<"Warning!!!\n"<<bg_chain->label<<"target background"<<" = "<<MC_N_C;
 weight_error = 1000;}
 //cout<<bg_chain->label<<"=============================weight error: "<<weight_error<<"\n";
   return weight_error;
@@ -219,7 +222,7 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva
   double error_sq       = pow(err1,2)+ pow(err2,2) + pow(err3,2);*/
   double error_sq       = data_in_ctrl+other_bg_in_ctrl;
 
-  double weight_error   = (std::pow(error_sq, 0.5)*5.651*1.513);//
+  double weight_error   = (std::pow(error_sq, 0.5)*5.651);//
 
 //cout<<"nnunu mc weight error: "<<weight_error<<"\n";
   return weight_error;

@@ -14,6 +14,9 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   std::vector<DataChain*> bg_chains = super_chains->get_bg_chains();
   DataChain* signal_chain           = super_chains->signal_chain;
   DataChain* data_chain             = super_chains->data_chain;
+  DataChain* ewk_chain             = super_chains->bg_zll_ewk;
+  DataChain* qcd_chain             = super_chains->bg_zll_qcd;
+
   std::vector<DataChain*> all_bg_chains = super_chains->get_all_bg_chains();
   std::vector<Variable*> parked_vars = super_vars->get_parked_vars();
    //const char* mva_type = "BDT";
@@ -29,60 +32,43 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
   std::string mva_cut = "";
-  std::string method_name = "BDT";
+  std::string method_name = "MLP";
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
-  int min = -80;//1769; // the minimum value you want cuts to be from
-  int max =60;//1770; // max value you want cuts to be to
+  int min = 0;//1769; // the minimum value you want cuts to be from
+  int max =80;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
+//double e_f = HistoPlot::get_efficiency_factor(ewk_chain,qcd_chain,cut_vars[0], &cut_vars, mva_cut);
 
 
-/*
-std::cout<<"Area under tanh ROC: "<<RocCurves::get_auc( method_name,"test/MLP-all_bg-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
-std::cout<<"Area under radial ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
-std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,"test/MLP-bg_zjets_vv-NeuronType=sigmoid-NCycles=500-HiddenLayers=2-LearningRate=0.01-EstimatorType=CE-50bins.root" )<<endl;
-
-		const char* file_arr[] =  {
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=CE-GN.root",
-"test/MLP-bg_zjets_vv-NeuronType=radial-NCycles=800-HiddenLayers=2,4-LearningRate=0.01-EstimatorType=MSE-GN.root"
-};
-		std::vector<const char*> file_paths (file_arr, file_arr +sizeof(file_arr)/sizeof(const char*));
-		std::vector<TFile*> files = MVAAnalysis::get_files_from_paths(file_paths);
-
-		std::string folder_name = "test/";
-		std::cout << "=> Set Folder Name: " << folder_name << std::endl;
-
-  ClassifierOutputs::plot_classifiers_for_all_files(files, method_name, folder_name, bg_chains[6]->label);
-		RocCurves::get_rocs(files, signal_chain, bg_chains[6], super_vars, method_name, folder_name);
-
-*//*
-for(int i=0;i<66;i++)
+/*for(int i=0;i<107;i++)
 {
-	DataCard::create_card_from_MC_weights_file("MLP_extrapolated_weights.csv",i,true);
-}
+	DataCard::create_card_from_MC_weights_file("extrapolated_BDTweights.csv",i,true);
+}*/
 
-*/
+
 TFile* trained_file;
 /*for(int j=0; j<1;j++){
 for(int i =0; i<3;i++){*/
-trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain, super_vars, "test", method_name,
+trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain,ewk_chain,qcd_chain, super_vars, "test", method_name,
   "300", BoostType[0], "0.2", "GiniIndex", "-1", NeuronType[0], 
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
 
 //  double mc_weights_arr[] = {};
-/*  string selection = "((alljetsmetnomu_mindphi>2.0) &&(nvetomuons==0)&&(nvetoelectrons==0)&&(jet1_pt>50.0)&&(jet2_pt>45.0)&&(metnomu_significance>3.5)&&(dijet_deta>4.2))";
+/*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
+  string selection = "((alljetsmetnomu_mindphi>2.0) &&(nvetomuons==0)&&(nvetoelectrons==0)&&(jet1_pt>50.0)&&(jet2_pt>45.0)&&(metnomu_significance>3.5)&&(dijet_deta>4.2))";
 
     TH1F* histo = HistoPlot::build_1d_histo(data_chain, cut_vars[0], with_cut, false, "goff", &cut_vars,selection, 1, mva_cut);
     double integral = histo->Integral();
     cout<<data_chain->label<<": "<<integral<<endl;
 
 for(int i=0; i<8;i++){
-    TH1F* histo_bg = HistoPlot::build_1d_histo(bg_chains[i], cut_vars[0], with_cut, false, "goff", &cut_vars,"", mc_weights_arr[i], mva_cut);
+    TH1F* histo_bg = HistoPlot::build_1d_histo(bg_chains[i], cut_vars[0], with_cut, false, "goff", &cut_vars,"", mc_weights_vector[i], mva_cut);
     integral = histo_bg->Integral();
     cout<<bg_chains[i]->label<<": "<<integral<<endl;
-}
-*/
+}*/
+
 /*
 
 int var_index[] ={7,11,12,5,6,8};// forward_tag_eta, jet1_pt, jet2_pt,alljetsmetnomu_mindphi, metnomu_significance, dijet_deta

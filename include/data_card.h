@@ -9,25 +9,25 @@ using namespace std;
 class DataCard
 {
  public:
-  static void create_datacard(int bg_to_train, DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
+  static void create_datacard(int bg_to_train,DataChain* ewk_chain, DataChain* qcd_chain, DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name = "",std::string mva_cut = "");
 
   static void create_card_from_MC_weights_file(const char* weights_file_name, int cut_number, bool use_data);
 
-  static void create_weights_series(DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
+  static void create_weights_series(DataChain* ewk_chain, DataChain* qcd_chain,DataChain* data_chain, DataChain* signal_chain, std::vector<DataChain*> bg_chains,
  Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string output_graph_name, std::string mva_cut, std::vector<double> rates_d, double data);
 
   static double get_signal_error(DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																 std::string mva_cut = "");
 
-  static std::vector<double> get_bg_errors(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, std::vector<DataChain*> bg_chs_tree, DataChain* signal_chain,
+  static std::vector<double> get_bg_errors(DataChain* ewk_chain, DataChain* qcd_chain,int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, std::vector<DataChain*> bg_chs_tree, DataChain* signal_chain,
                                Variable* var, bool with_cut, std::vector<Variable*>* variables, std::vector<double> bg_mc_weights,
 																														 std::string mva_cut);
 
-  static std::vector<double> get_rates(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
+  static std::vector<double> get_rates(DataChain* ewk_chain, DataChain* qcd_chain,int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
   							                              Variable* var, bool with_cut, std::vector<Variable*>* variables, std::vector<double> bg_mc_weights,	std::string mva_cut = "");
 
- static std::vector<double> get_raw_rates(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
+ static std::vector<double> get_raw_rates(DataChain* ewk_chain, DataChain* qcd_chain,int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* signal_chain,
   							                              Variable* var, bool with_cut, std::vector<Variable*>* variables, 	std::string mva_cut = "");
 
   static string get_line_from_file(const char* weights_file_name,int cut_number);
@@ -79,7 +79,7 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string out
   static double get_total_nevents(DataChain* data, int bg_to_train, std::vector<DataChain*> bg_chains, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																		std::vector<double> bg_mc_weights, std::string mva_cut = "");
 
-  static std::string get_systematic_string(int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,std::vector<DataChain*> bg_chs_tree,																																											DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
+  static std::string get_systematic_string(DataChain* ewk_chain, DataChain* qcd_chain,int bg_to_train, DataChain* data, std::vector<DataChain*> bg_chains,std::vector<DataChain*> bg_chs_tree,																																											DataChain* signal_chain, Variable* var, bool with_cut, std::vector<Variable*>* variables,
 																																											std::vector<double> bg_mc_weights, std::string mva_cut = "");
 
   static std::string no_shape_line();
