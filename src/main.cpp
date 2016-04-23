@@ -39,21 +39,32 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   int max =25;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
+for(int i=0; i<vars.size();i++)
+{
+	string file_name;
+	if(with_cut){file_name = "cuts/";}
+	else{file_name = "nocuts/";}
+	file_name.append(vars[i]->name);
+	file_name.append(".png");
+	HistoPlot::draw_plot(vars[i], bg_chains,signal_chain, data_chain, with_cut,&cut_vars,  true, file_name,mva_cut);
+}
+
+
 //double e_f = HistoPlot::get_efficiency_factor(ewk_chain,qcd_chain,cut_vars[0], &cut_vars, mva_cut);
 //double error_on_e_f = HistoPlot::get_error_on_efficiency_factor(ewk_chain,qcd_chain,cut_vars[0], &cut_vars, mva_cut);
 //cout<<e_f<<"+/-"<<error_on_e_f<<"\n";
 
-/*for(int i=0;i<107;i++)
+/*for(int i=0;i<61;i++)
 {
-	DataCard::create_card_from_MC_weights_file("extrapolated_BDTweights.csv",i,true);
+	DataCard::create_card_from_MC_weights_file("MLP","MLP_extrapolated_weights.csv",i,true);
 }*/
 
 
-TFile* trained_file;
+/*TFile* trained_file;
 trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain,ewk_chain,qcd_chain, super_vars, "test", method_name,
   "300", BoostType[0], "0.2", "GiniIndex", "-1", NeuronType[0], 
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);
-
+*/
 //  double mc_weights_arr[] = {};
 /*std::vector<double> mc_weights_vector = HistoPlot::mc_weights(data_chain, bg_chains, cut_vars[0], true, &cut_vars);
   string selection = "((alljetsmetnomu_mindphi>2.0) &&(nvetomuons==0)&&(nvetoelectrons==0)&&(jet1_pt>50.0)&&(jet2_pt>45.0)&&(metnomu_significance>3.5)&&(dijet_deta>4.2))";
@@ -83,31 +94,7 @@ for(int i=3;i<4;i++)
 		HistoPlot::plot_control(vars[var_index[j]], data_chain,  bg_chains, &cut_vars, file_name, bg_chains[i]->lep_sel , "");
 	}
 }
-    */
-/*	HistoPlot::plot_control_testTree(bg_to_train, cut_vars[0], mva_output_test_chain,
-		output_data_chain, output_bg_chains,
-		&vars, "ev_control.png",
-		wjets_ev_ch->lep_sel, "");
-
-	HistoPlot::plot_control_testTree(bg_to_train, cut_vars[0], mva_output_test_chain,
-		output_data_chain, output_bg_chains,
-		&vars, "muv_control.png",
-		wjets_muv_ch->lep_sel, "");
-	HistoPlot::plot_control_testTree(bg_to_train, cut_vars[0], mva_output_test_chain,
-		output_data_chain, output_bg_chains,
-		&vars, "tauv_control.png", wjets_tauv_ch->lep_sel, "");*/
-
-
-
-
-
-//std::cout<<"Area under sigmoid ROC: "<<RocCurves::get_auc( method_name,trained_file->GetName() )<<endl;}
-//}}
-  /* const char* train_file_arr[1] = {trained_output->GetName()};
-   std::vector<const char*> single_file_vector (train_file_arr,train_file_arr  + sizeof(train_file_arr)/sizeof(const char*));
-   MVAAnalysis::get_estimators(single_file_vector);
-//}*/
-/*for( int i = 6;i < 7;i++)
+for( int i = 6;i < 7;i++)
 {
   cout<<vars[i]->name<<endl;
         string plot_name = "cuts/";

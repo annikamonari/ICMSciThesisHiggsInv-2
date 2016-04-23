@@ -49,7 +49,7 @@ void DataCard::create_datacard(int bg_to_train,DataChain* ewk_chain, DataChain* 
   create_weights_series( ewk_chain,  qcd_chain,data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut,rates_d, data);
   std::cout << "weights and errors added to series\n"; 
 }
-void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,int cut_number, bool use_data)
+void DataCard::create_card_from_MC_weights_file(string MVA_type, const char* weights_file_name,int cut_number, bool use_data)
 {
   string fline = get_line_from_file(weights_file_name, cut_number);
   std::vector<string> line_vector = DataCard::get_vector_from_line(fline);
@@ -81,7 +81,18 @@ void DataCard::create_card_from_MC_weights_file(const char* weights_file_name,in
 		cut_num_str = "1.0"+double_to_str(cut_number % 100);
 	}
   }
-  std::string data_card_name = "Opt-BDT-Data-output>" + cut_num_str + ".txt";
+  std::string data_card_name = "Opt-";
+  data_card_name+=MVA_type;
+  if(use_data==true)
+  {
+	data_card_name += "-Data-";
+  }
+  else
+  {
+ 	data_card_name += "-SimOnly-";
+  }
+
+  data_card_name +="output>" + cut_num_str + ".txt";
   std::cout << data_card_name << std::endl;
   fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
   int size = 9;

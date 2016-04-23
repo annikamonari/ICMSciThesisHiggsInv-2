@@ -620,13 +620,16 @@ THStack HistoPlot::draw_stacked_histo(TLegend* legend, Variable* var, std::vecto
                                       bool with_cut, std::vector<Variable*>* variables, DataChain* data, std::string mva_cut)
 {
   THStack stack(var->name_styled, "");
-  double mc_weights_arr[] = { 1, 1, 1, 1, 1, 1,1, 1};
-  std::vector<double> mc_weights_vector (mc_weights_arr, mc_weights_arr + sizeof(mc_weights_arr) / sizeof(mc_weights_arr[0])); 
+  double mc_weights_arr[] = { 0.91, 0.73, 0.32, 1.24, 1, 1,1.70, 1};
+  if(!with_cut)
+  {
+  	for(int i=0;i<8;i++){mc_weights_arr[i] = 1;}
+  }
   for(int i = 0; i < bg_chains.size(); i++) {
-    TH1F* single_bg_histo = draw_background(bg_chains[i], var, colours()[i], with_cut, variables, mc_weights_vector[i],mva_cut);
+    TH1F* single_bg_histo = draw_background(bg_chains[i], var, colours()[i], with_cut, variables, mc_weights_arr[i],mva_cut);
     stack.Add(single_bg_histo);
     std::string legend_str(bg_chains[i]->legend);
-    legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weights_vector[i]) + ")}");
+    legend_str += (" #font[12]{(MC weight: " + get_string_from_double(mc_weights_arr[i]) + ")}");
     legend->AddEntry(single_bg_histo, legend_str.c_str(), "f");
   }
   return stack;
