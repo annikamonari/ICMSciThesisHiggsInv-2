@@ -78,7 +78,7 @@ class HistoPlot
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables = NULL, std::string mva_cut = "",
                                  int trained_bg = 6, bool double_test_bg = false,  bool if_parked = false);
 
-  static double single_bg_error(std::vector<double> bg_mc_weights,int desired_bg_index, DataChain* data, std::vector<DataChain*> bg_chains, 
+  static double single_bg_error(DataChain* ewk_chain, DataChain* qcd_chain, std::vector<double> bg_mc_weights,int desired_bg_index, DataChain* data, std::vector<DataChain*> bg_chains, 
 DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
 				std::string mva_cut = "", std::string selection="", bool if_parked=false);
@@ -165,7 +165,13 @@ DataChain* bg_chain,
   static double get_R_C_ewk(DataChain* ewk_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut);
  
   static double get_R_C_qcd(DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables, std::string mva_cut);
- 
+
+  static double get_error_on_efficiency_factor(DataChain* ewk_chain, DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables,std::string mva_cut);
+
+  static double get_error_on_e_S(DataChain* ewk_chain,DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut);
+
+  static double get_error_on_e_C(DataChain* ewk_chain,DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut);
+
 };
 
 #endif

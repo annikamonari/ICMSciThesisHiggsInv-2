@@ -32,15 +32,16 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
   const char* jn = job_name.c_str();
   int counter = std::atoi(jn);
   std::string mva_cut = "";
-  std::string method_name = "MLP";
+  std::string method_name = "BDT";
   //int rel_bgs[] = {1, 2, 3, 6};
   std::string sign = ">"; // direction of cut
-  int min = 0;//1769; // the minimum value you want cuts to be from
-  int max =80;//1770; // max value you want cuts to be to
+  int min = -80;//1769; // the minimum value you want cuts to be from
+  int max =25;//1770; // max value you want cuts to be to
   double digits = 100; // number of digits + 1 of your cuts, e.g. if you put ur min as 40 then put 100 as digits to make it 0.4
 
 //double e_f = HistoPlot::get_efficiency_factor(ewk_chain,qcd_chain,cut_vars[0], &cut_vars, mva_cut);
-
+//double error_on_e_f = HistoPlot::get_error_on_efficiency_factor(ewk_chain,qcd_chain,cut_vars[0], &cut_vars, mva_cut);
+//cout<<e_f<<"+/-"<<error_on_e_f<<"\n";
 
 /*for(int i=0;i<107;i++)
 {
@@ -49,8 +50,6 @@ void produce_graphs(bool with_cut, const char* job_ptr) {
 
 
 TFile* trained_file;
-/*for(int j=0; j<1;j++){
-for(int i =0; i<3;i++){*/
 trained_file = MVAAnalysis::get_mva_results(bg_chains, 6, signal_chain, data_chain,ewk_chain,qcd_chain, super_vars, "test", method_name,
   "300", BoostType[0], "0.2", "GiniIndex", "-1", NeuronType[0], 
   "800", HiddenLayers[1], LearningRate[1],unique_output_files, create_cards, job_name, mva_cut, sign, min, max, digits);

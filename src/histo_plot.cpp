@@ -434,7 +434,6 @@ std::vector<Variable*>* variables,std::string mva_cut, int trained_bg, bool doub
 std::vector<double> HistoPlot::get_bg_errors(int bg_to_train,DataChain* ewk_chain, DataChain* qcd_chain, DataChain* data, std::vector<DataChain*> bg_chains,
 Variable* var, bool with_cut, std::vector<Variable*>* variables,std::vector<double> bg_mc_weights, std::string mva_cut, bool if_parked)
 {
-double e_f = HistoPlot::get_efficiency_factor( ewk_chain,  qcd_chain,var, variables, mva_cut);
 string selection="";
 	 double bg_errors[bg_chains.size()];
 	double integral[8];
@@ -459,7 +458,7 @@ string selection="";
 					if(strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 					{
 			//cout<<"mc wiehgt in if loop: "<<bg_mc_weights[i]<<endl;
-							bg_errors[i] = single_bg_error(bg_mc_weights,i, data, bg_chains, bg_chains[i], var,
+							bg_errors[i] = single_bg_error(ewk_chain, qcd_chain,bg_mc_weights,i, data, bg_chains, bg_chains[i], var,
 							with_cut, variables, bg_mc_weights[i], mva_cut,selection,if_parked);
 	//cout<<"got bg error\n";
 
@@ -468,14 +467,9 @@ string selection="";
 
 	   if (!strcmp(bg_chains[i]->label, "bg_zjets_vv"))
 	   {
-             double nunu_weight_error =  MCWeights::calc_nunu_weight_error(data, bg_chains, bg_chains[i],
- var,  with_cut,  variables,  mva_cut, if_parked)*e_f;
-//cout<<"zll_weight_error: "<<zll_weight_error<<"\n";
-	    /* double N_nunu = integral[i];
-	     double to_root = pow((bg_mc_weights[i]*pow(N_nunu,0.5)),2)+pow((nunu_weight_error*N_nunu),2);
-//cout<<"W_ll_sq"<<W_ll_sq<<"\n";
-            //cout<<"to root: "<<to_root<<"\n";
-cout<<i<<" znunu "<<N_nunu<<"\n";*/
+             double nunu_weight_error =  MCWeights::calc_nunu_weight_error(ewk_chain, qcd_chain,data, bg_chains, bg_chains[i],
+ var,  with_cut,  variables,  mva_cut, if_parked);
+
 	     bg_errors[i] = nunu_weight_error;
 // cout << bg_chains[i]->label <<" ========ERROR VALUE========== "<<bg_errors[i]<<endl;
 
@@ -490,8 +484,7 @@ cout<<i<<" znunu "<<N_nunu<<"\n";*/
 
 // problem: TH1F* bg doesn't plot with the mc weight? in the function above this, whenever we call this we pass through
 // the mc weight (see last arg: double weight), so if you realise we need it then just put it onto the end of the build_1d_histo call
-double HistoPlot::single_bg_error(std::vector<double> bg_mc_weights, int desired_bg_index, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
-                                 Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
+double HistoPlot::single_bg_error(DataChain* ewk_chain, DataChain* qcd_chain, std::vector<double> bg_mc_weights, int desired_bg_index, DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,Variable* var, bool with_cut, std::vector<Variable*>* variables, double weight,
 std::string mva_cut, std::string selection, bool if_parked)
 {//cout<<"selection: "<<selection<<"\n";
   TH1F* bg = build_1d_histo(bg_chain, var, with_cut, false, "goff", variables, selection, 1, mva_cut);
@@ -505,6 +498,12 @@ std::string mva_cut, std::string selection, bool if_parked)
   double sigma_total_sq = std::pow(sigma_w*MC_N_S,2)+std::pow(sigma_N*weight,2);
   double sigma_total = std::pow(sigma_total_sq,0.5);
   //std::cout << bg_chain->label << " - single bg error: " << sigma_total << std::endl;
+  if(desired_bg_index==0)
+  {
+	double e_f = HistoPlot::get_efficiency_factor(ewk_chain,  qcd_chain,var, variables, mva_cut);
+	double error_on_e_f = HistoPlot::get_error_on_efficiency_factor( ewk_chain,  qcd_chain,var, variables, mva_cut);
+	sigma_total =pow((pow((sigma_total*e_f),2)+pow((MC_N_S*error_on_e_f),2)),0.5);
+  }
   return sigma_total;
 }
 //_______________________________________________________________________________________________________________________
@@ -1213,4 +1212,60 @@ double HistoPlot::get_R_C_qcd(DataChain* qcd_chain, Variable* var, std::vector<V
 	//cout<<"R_C_qcd: "<<N_C_qcd/N_g_qcd<<"\n";
 	return N_C_qcd/N_g_qcd;
 }
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_error_on_efficiency_factor(DataChain* ewk_chain,DataChain* qcd_chain, Variable* var, std::vector<Variable*>* variables,std::string mva_cut)
+{
+	double e_S,e_C,error_e_S,error_e_C,erp1,erp2,error_on_efficiency_factor;
+
+	e_S = get_e_S(ewk_chain,qcd_chain, var, variables, mva_cut);
+	e_C = get_e_C(ewk_chain,qcd_chain, var, variables, mva_cut);
+	error_e_S = get_error_on_e_S(ewk_chain,qcd_chain, var, variables, mva_cut);
+	error_e_C = get_error_on_e_C(ewk_chain,qcd_chain, var, variables, mva_cut);
+	erp1 = pow((error_e_S/e_C),2);
+	erp2 = pow((error_e_C*e_S/pow(e_C,2)),2);
+
+	error_on_efficiency_factor = pow((erp1+erp2),0.5);
+	
+	return error_on_efficiency_factor;
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_error_on_e_S(DataChain* ewk_chain, DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut)
+{
+	double X_Zvv_ewk = 1380; //cross section in pb
+	double X_Zvv_qcd = 6600;
+	double N_g_ewk_Zm = 4226.5;
+	double N_g_qcd_Zm = 20334900;
+	
+	double R_S_ewk = get_R_S_ewk(ewk_chain, var, variables, mva_cut);
+	double R_S_qcd = get_R_S_qcd(qcd_chain, var, variables, mva_cut);
+	double errorp1 = R_S_ewk*pow((X_Zvv_ewk/N_g_ewk_Zm),2);
+	double errorp2 = R_S_qcd*pow((X_Zvv_qcd/N_g_qcd_Zm),2);
+	
+	double error_on_e_S = pow((errorp1 + errorp2),0.5)/(X_Zvv_ewk+X_Zvv_qcd);
+	
+	return error_on_e_S;
+
+}
+//_______________________________________________________________________________________________________________________
+
+double HistoPlot::get_error_on_e_C(DataChain* ewk_chain, DataChain* qcd_chain,Variable* var, std::vector<Variable*>* variables,std::string mva_cut)
+{
+	double X_Zmm_ewk = 0.303; //cross section in pb there ius msitake in the CMS note
+	double X_Zmm_qcd = 1168;
+	double N_g_ewk = 5781.9;
+	double N_g_qcd = 22789300; 
+
+	double R_C_ewk = get_R_C_ewk(ewk_chain, var, variables, mva_cut);
+	double R_C_qcd = get_R_C_qcd(qcd_chain, var, variables, mva_cut);
+	double errorp1 = R_C_ewk*pow((X_Zmm_ewk/N_g_ewk),2);
+	double errorp2 = R_C_qcd*pow((X_Zmm_qcd/N_g_qcd),2);
+
+	double error_on_e_C = pow((errorp1 + errorp2),0.5)/(X_Zmm_ewk+X_Zmm_qcd);
+
+	return  error_on_e_C;
+}
+//_______________________________________________________________________________________________________________________
+
 

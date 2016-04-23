@@ -196,7 +196,7 @@ weight_error = 1000;}
   return weight_error;
 
 }
-double MCWeights::calc_nunu_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* nunu_chain,
+double MCWeights::calc_nunu_weight_error(DataChain* ewk_chain, DataChain* qcd_chain,DataChain* data, std::vector<DataChain*> bg_chains, DataChain* nunu_chain,
 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut, bool if_parked)
 {
   string selection;
@@ -222,8 +222,12 @@ Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva
   double error_sq       = pow(err1,2)+ pow(err2,2) + pow(err3,2);*/
   double error_sq       = data_in_ctrl+other_bg_in_ctrl;
 
-  double weight_error   = (std::pow(error_sq, 0.5)*5.651);//
+  double N_nunu_error   = (std::pow(error_sq, 0.5)*5.651);//
+
+  double e_f = HistoPlot::get_efficiency_factor( ewk_chain,  qcd_chain,var, variables, mva_cut);
+  double error_on_e_f = HistoPlot::get_error_on_efficiency_factor( ewk_chain,  qcd_chain,var, variables, mva_cut);
+  double sigma_total =pow((pow((N_nunu_error*e_f),2)+pow((error_sq*error_on_e_f),2)),0.5);
 
 //cout<<"nnunu mc weight error: "<<weight_error<<"\n";
-  return weight_error;
+  return sigma_total;
 }

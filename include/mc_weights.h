@@ -26,7 +26,7 @@ int trained_bg = 6, bool double_test_bg = false, bool if_parked =false);
   static double calc_weight_error(std::vector<double> mc_weights,int desired_bg_index,DataChain* data, std::vector<DataChain*> bg_chains, DataChain* bg_chain,
                                  Variable* var, bool with_cut, std::vector<Variable*>* variables,std::string mva_cut = "", bool if_parked =false);
 
-  static double calc_nunu_weight_error(DataChain* data, std::vector<DataChain*> bg_chains, DataChain* nunu_chain,
+  static double calc_nunu_weight_error(DataChain* ewk_chain, DataChain* qcd_chain,DataChain* data, std::vector<DataChain*> bg_chains, DataChain* nunu_chain,
 Variable* var, bool with_cut, std::vector<Variable*>* variables, std::string mva_cut, bool if_parked);
 };
 

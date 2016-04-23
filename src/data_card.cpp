@@ -12,38 +12,38 @@ void DataCard::create_datacard(int bg_to_train,DataChain* ewk_chain, DataChain* 
   bg_chs[bg_to_train] = signal_chain;//if parked remove this line
 
   std::vector<double> mc_weights = HistoPlot::mc_weights(ewk_chain, qcd_chain,data_chain, bg_chains, var, with_cut,variables , mva_cut,1,false, false);//last var is if parked
-  std::fstream fs;
-  std::string data_card_name = get_data_card_name(output_graph_name, mva_cut);
-  std::cout << data_card_name << std::endl;
-  fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
-  int size = 1 + bg_chains.size();
+  //std::fstream fs;
+  //std::string data_card_name = get_data_card_name(output_graph_name, mva_cut);
+  //std::cout << data_card_name << std::endl;
+  //fs.open (data_card_name.c_str(), std::fstream::out | std::fstream::trunc);
+  //int size = 1 + bg_chains.size();
   cout<<mva_cut<<"\n";
   //cout<<"opened text file\n";
-  fs << imax_string();
-  fs << jmax_string(size - 1);
-  fs << kmax_string(size);
-  fs << no_shape_line();
-  fs << dashed_line();
-  fs << bin_header_string();
+  //fs << imax_string();
+  //fs << jmax_string(size - 1);
+  //fs << kmax_string(size);
+  //fs << no_shape_line();
+  //fs << dashed_line();
+  //fs << bin_header_string();
   //cout<<"about to get observation string\n";
   double data = get_total_data_events(data_chain, var,with_cut, variables,mva_cut);
-  fs << bin_observation_string(data);//get_total_nevents(data_chain, bg_to_train, bg_chains, var, with_cut, variables, mc_weights, mva_cut));
+  //fs << bin_observation_string(data);//get_total_nevents(data_chain, bg_to_train, bg_chains, var, with_cut, variables, mc_weights, mva_cut));
 //cout<<"data at opt val is: "<<get_total_data_events(data_chain, var,with_cut, variables,mva_cut);
   //cout<<"got observation string\n";  
-  fs << dashed_line();
-  fs << bin_grid_line(size);
-  fs << process_labels(bg_chains, signal_chain);
-  fs << process_2_string(process_line_2(size));
-  std::vector<double> rates_w = get_rates( ewk_chain,  qcd_chain,bg_to_train, data_chain, bg_chains, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
-  string rate_str = rate_string(rates_w);
+  //fs << dashed_line();
+  //fs << bin_grid_line(size);
+  //fs << process_labels(bg_chains, signal_chain);
+  //fs << process_2_string(process_line_2(size));
+  //std::vector<double> rates_w = get_rates( ewk_chain,  qcd_chain,bg_to_train, data_chain, bg_chains, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
+  //string rate_str = rate_string(rates_w);
   //cout<<rate_str<<"\n";
-  fs <<  rate_str;
+  //fs <<  rate_str;
   //cout<<"got rates string\n";
-  fs << dashed_line();
+  //fs << dashed_line();
   //cout<<"got dashed line\n";
-  fs << get_systematic_string( ewk_chain,  qcd_chain,bg_to_train, data_chain, bg_chains,bg_chs, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
-  std::cout << "Data card created" << std::endl;
-  fs.close();  
+  //fs << get_systematic_string( ewk_chain,  qcd_chain,bg_to_train, data_chain, bg_chains,bg_chs, signal_chain, var, with_cut, variables, mc_weights, mva_cut);
+  //std::cout << "Data card created" << std::endl;
+  //fs.close();  
 
   std::vector<double> rates_d = get_raw_rates( ewk_chain,  qcd_chain,bg_to_train, data_chain, bg_chains, signal_chain, var, with_cut, variables, mva_cut);
   create_weights_series( ewk_chain,  qcd_chain,data_chain,signal_chain,bg_chains, var, with_cut, variables, output_graph_name,mva_cut,rates_d, data);
@@ -122,7 +122,7 @@ void DataCard::create_weights_series(DataChain* ewk_chain, DataChain* qcd_chain,
 	double mc_weight_errors[5];
 	mc_weight_errors[0]=MCWeights::calc_weight_error(mc_weights, 0, data_chain, bg_chains, bg_chains[0], // zll
 			var, with_cut,  variables, mva_cut, if_parked)*1.513;// zll
-	mc_weight_errors[1]=MCWeights::calc_nunu_weight_error(data_chain, bg_chains, bg_chains[6],
+	mc_weight_errors[1]=MCWeights::calc_nunu_weight_error(ewk_chain, qcd_chain,data_chain, bg_chains, bg_chains[6],
         var, with_cut, variables, mva_cut, if_parked);// znunu
 
 	mc_weight_errors[2]=MCWeights::calc_weight_error(mc_weights, 1,data_chain, bg_chains, bg_chains[1], // W enu
@@ -133,7 +133,7 @@ void DataCard::create_weights_series(DataChain* ewk_chain, DataChain* qcd_chain,
 			var, with_cut,  variables, mva_cut, if_parked);// W taunu
 
 	std::fstream fsw;
-	fsw.open ("MLPweights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+	fsw.open ("BDTweights.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 	fsw<<mva_cut;
 	fsw<<","<<rates_d[0]<<",0";
 	fsw<<","<<rates_d[1]<<",,"<<mc_weights[0]<<","<<mc_weight_errors[0];
